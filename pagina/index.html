@@ -262,9 +262,10 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .card p { margin: 0; font-size: 15px; color: var(--soft); }
 .card .price { font-weight: 700; color: var(--gold-ink); }
 .card .btn { margin-top: auto; align-self: flex-start; padding: 11px 22px; font-size: 15px; box-shadow: none; }
-.card .btn-wrap { margin-top: 12px; }
+.card .btn-wrap { margin-top: auto; padding-top: 16px; }
 .cta-row { text-align: center; margin-top: 36px; }
 .cta-row p { margin: 0 0 14px; color: var(--soft); }
+.apoyo-cards { max-width: 44rem; margin: 0 auto 28px; }
 .pay { max-width: 36rem; margin: 0 auto; display: grid; gap: 12px; }
 .pay li { list-style: none; padding: 16px 20px; border-radius: 18px; background: var(--card-solid); border: 1px solid var(--line); }
 .pay ul { margin: 0; padding: 0; display: grid; gap: 12px; }
@@ -576,8 +577,9 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
     <div class="sec-head">
       <p class="eyebrow">Apoya esta página</p>
       <h2 class="script">Un aporte voluntario</h2>
-      <p class="lede">La página es gratuita. Si te ayuda, puedes colaborar con su sostenimiento.</p>
+      <p class="lede">La página es gratuita para todos. Si te ayuda, puedes colaborar con su sostenimiento.</p>
     </div>
+    <div class="cards apoyo-cards" id="apoyo-cards"></div>
     <div class="pay"><ul id="pay-list"></ul></div>
     <p class="sources" id="pay-note"></p>
   </div>
@@ -680,6 +682,10 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
   /* Apoyo voluntario: { label: "Nequi", value: "300 123 4567" }. Pon quién recibe en PAY_NOTE. */
   var PAY = [];
   var PAY_NOTE = "";
+  /* Enlaces de pago (pasarela como Wompi o Mercado Pago). Déjalos vacíos hasta tenerlos. */
+  var DONATE_LINK = "";
+  var SUB_LINK = "";
+  var SUB_PRICE = "$20.000";
   /* Más ayuda para visitantes: { name: "Guía X", desc: "Recorridos por Tunja" } */
   var TOUR = [];
 
@@ -715,7 +721,20 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
     if (WHATSAPP) { setWa("spons-wa", "Hola, quiero anunciar mi negocio en la página Virgen del Milagro de Tunja."); $("spons-cta").hidden = false; }
     if (SPONSORS.length) $("patrocinadores").hidden = false;
   }
-  if (PAY.length) {
+  if (PAY.length || DONATE_LINK || SUB_LINK) {
+    function payCard(titulo, texto, precio, enlace, boton) {
+      var c = el("div", "card");
+      c.appendChild(el("h3", null, titulo));
+      if (precio) c.appendChild(el("p", "price", precio));
+      c.appendChild(el("p", null, texto));
+      if (enlace && /^https:\/\//.test(enlace)) {
+        var a = el("a", "btn", boton); a.href = enlace; a.target = "_blank"; a.rel = "noopener";
+        var w = el("div", "btn-wrap"); w.appendChild(a); c.appendChild(w);
+      }
+      $("apoyo-cards").appendChild(c);
+    }
+    payCard("Aporte voluntario", "Da lo que quieras, una sola vez. Cada aporte ayuda a que la página siga abierta para todos.", "", DONATE_LINK, "Aportar");
+    payCard("Suscripción mensual", "Apoya cada mes el sostenimiento de la página: dominio, servidor y la inteligencia artificial del chat.", SUB_PRICE + " al mes", SUB_LINK, "Suscribirme");
     PAY.forEach(function (p) {
       var li = el("li");
       li.appendChild(el("b", null, p.label));
@@ -1115,9 +1134,99 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
     { t: "Dios te salve, María (Ave María)", p: "Dios te salve, María, llena eres de gracia, el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén." },
     { t: "Dios te salve, Reina y Madre (Salve)", p: "Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra; Dios te salve. A ti llamamos los desterrados hijos de Eva; a ti suspiramos, gimiendo y llorando en este valle de lágrimas. Ea, pues, Señora, abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y después de este destierro, muéstranos a Jesús, fruto bendito de tu vientre. ¡Oh clemente, oh piadosa, oh dulce Virgen María! Ruega por nosotros, santa Madre de Dios, para que seamos dignos de alcanzar las promesas de nuestro Señor Jesucristo. Amén." }
   ];
+  var NUEVAS = {
+    N1: { t: "Mi vida es de Dios", f: "Ofrécele hoy tu día al Señor.", p: "Señor, hoy quiero ofrecerte mi vida completa: mis planes, mi trabajo, mis cansancios y mis alegrías. No quiero guardarme nada. Haz de mí lo que quieras y úsame para el bien de los demás. Que mi pequeña vida sea una ofrenda agradable ante ti. Y cuando me sienta lejos, recuérdame que desde siempre me perteneces y que me cuidas. Amén." },
+    N2: { t: "Cristo, Rey de mi vida", f: "Que Jesús reine en tu casa.", p: "Señor Jesús, Rey del universo, tú reinas sirviendo y amando, no con poder ni con fuerza. Reina en mi corazón, en mi familia, en mi trabajo y en mi país. Quita de mí el orgullo y la ambición y enséñame a servir. Que mis decisiones sean tuyas y que, al final de mi camino, pueda contemplarte con alegría. Venga a nosotros tu reino de justicia, de paz y de amor. Amén." },
+    N3: { t: "Líbranos del mal", f: "Dios te cubre en la tentación.", p: "Señor, conoces mis debilidades y los lugares donde caigo con facilidad. No me dejes caer en la tentación y líbrame del mal: de la mentira, del rencor, de los vicios y de las malas compañías. Dame fuerza para decir no cuando haga falta y humildad para pedir ayuda. Que tu gracia sea mi escudo cada día y que, si caigo, me levante pronto con tu perdón. Amén." },
+    N4: { t: "Empieza el Adviento", f: "Esperar con el corazón despierto.", p: "Señor Jesús, empieza el tiempo de esperarte. Despierta mi corazón dormido por la rutina y las prisas. Ayúdame a preparar espacio para ti: un rato de silencio, una oración, una buena obra, un perdón. Que no viva distraído por el ruido de la Navidad, sino atento a tu llegada. Ven, Señor Jesús, y quédate en mi casa. Amén." },
+    N5: { t: "Preparar el camino", f: "Haz sitio para Jesús.", p: "Dios de la esperanza, quiero preparar en mi vida el camino de tu Hijo. Ayúdame a enderezar lo torcido, a rebajar mi orgullo y a limpiar lo que me estorba. Reconcilia lo que está roto en mi familia y en mi corazón. Que estos días sean de conversión sincera, de generosidad y de oración, para que el Niño Dios encuentre en mí un lugar acogedor. Amén." },
+    N6: { t: "Una velita por la Virgen", f: "Enciende una luz y reza.", p: "Señor, esta noche encendemos velitas para alumbrar el camino a la Virgen y a tu Hijo. Que cada llama sea una oración: por mi familia, por mis amigos, por los que sufren y por los que han partido. Que la luz de las velitas me recuerde que tú eres la luz que no se apaga. Bendice a los hogares que hoy se reúnen a rezar, a compartir y a esperar con alegría. Amén." },
+    N7: { t: "La Inmaculada Concepción", f: "Dios preparó a María para su Hijo.", p: "Dios, Padre santo, tú preservaste a María del pecado desde el primer instante de su vida, para que fuera digna madre de tu Hijo. Hoy te doy gracias por este regalo para toda la humanidad. Límpiame de mis culpas, renueva mi corazón y dame el deseo sincero de vivir en tu gracia. Que, imitando a María, diga cada día «sí» a tu voluntad. Amén." },
+    N8: { t: "Madre de todos los pueblos", f: "Guadalupe, ternura para América.", p: "Señor, en la Virgen de Guadalupe nos regalaste una Madre cercana, que se queda con los pobres y sencillos. Te pido por todos los pueblos de América: por los que sufren pobreza, violencia y olvido. Que encuentren en María consuelo y esperanza, y que todos, sin distinción, nos reconozcamos hermanos. Haznos solidarios y justos, y mantén viva nuestra fe. Amén." },
+    N9: { t: "Luz para mi camino", f: "Dios ilumina tus pasos.", p: "Señor, tú eres la luz del mundo. Hoy te pido luz para mis ojos, para ver con claridad lo bueno y lo malo; luz para mi mente, para decidir con sabiduría; y luz para mi corazón, para amar sin miedo. Que la luz de tu Palabra guíe mis pasos y que, a mi vez, yo sea luz para quien camina en tinieblas. Amén." },
+    N10: { t: "Comienza la Novena", f: "Nueve días para esperar al Niño.", p: "Niño Dios, comenzamos la Novena de Aguinaldos para esperar tu llegada. Reúne a mi familia, a mis vecinos y a mis amigos para rezar y cantar. Que estos nueve días sean de alegría sencilla, de reconciliación y de buenas obras. Prepara mi corazón para que, cuando llegues, te reciba con amor. Ven, Señor Jesús, no tardes más. Amén." },
+    N11: { t: "Un Niño nos ha nacido", f: "La alegría está por llegar.", p: "Dios de amor, nos prometiste un Salvador y estás cumpliendo tu promesa. Gracias porque te haces niño para estar cerca de nosotros. Quita de mi vida la tristeza que me paraliza y dame la alegría de quien espera algo grande. Que mi casa se llene de cantos, de perdón y de gestos de cariño en estos días. Ven pronto, Niño Dios. Amén." },
+    N12: { t: "Un hijo en camino", f: "María esperó con amor.", p: "Señor, hoy pienso en María esperando a su Hijo con amor y confianza. Bendice a las madres que esperan un bebé: dales salud, tranquilidad y apoyo. Bendice también a todos los que esperan algo: un trabajo, una noticia, una sanación, un reencuentro. Enséñanos a esperar sin desesperarnos, sabiendo que cada espera está en tus manos. Amén." },
+    N13: { t: "José, el hombre justo", f: "Fiel y callado, protegió a Jesús.", p: "Señor, gracias por José, el hombre justo que cuidó a María y a Jesús en silencio. Bendice a los padres de familia y a quienes hacen de padres: dales trabajo digno, paciencia y ternura. Enséñales a proteger a los suyos y a confiar en ti cuando no entienden. Que todos aprendamos de José a obedecerte con sencillez y a cumplir cada día con nuestro deber. Amén." },
+    N14: { t: "Un lugar para el Niño", f: "Abre tu casa y tu corazón.", p: "Señor, en Belén no hubo lugar para tu Hijo en la posada. Hoy te pido que no me cierre a nadie: ni al vecino, ni al extranjero, ni al que está solo. Haz que mi casa y mi corazón sean un lugar acogedor, donde cualquiera pueda sentirse recibido. Cuida a las personas sin techo y a los que viajan, y que nadie pase frío esta Navidad. Amén." },
+    N15: { t: "La sencillez de Belén", f: "Dios nace en lo pequeño.", p: "Niño Dios, naciste en un pesebre pobre y no en un palacio. Enséñame que la verdadera riqueza no está en lo que tengo sino en el amor con que vivo. Líbrame de la prisa por comprar y aparentar, y regálame ojos para ver tu presencia en lo sencillo: una mirada, un abrazo, un plato compartido. Que mi Navidad sea humilde, alegre y llena de ti. Amén." },
+    N16: { t: "Los pastores", f: "Los sencillos llegan primero.", p: "Señor, los pastores fueron los primeros en recibir la noticia de tu nacimiento. Hazme sencillo para escucharte y dispuesto a ir hasta ti sin demora. Que, como ellos, regrese a mi trabajo y a mi casa alabándote por lo que he visto y oído. Bendice a los campesinos, a los trabajadores del campo y a quienes cuidan lo ajeno con honradez. Amén." },
+    N17: { t: "La estrella que guía", f: "Dios te muestra el camino.", p: "Señor, una estrella condujo a los Magos hasta tu Hijo. Cuando me sienta perdido, muéstrame la luz que me lleve a ti. Dame perseverancia para buscarte aunque el camino sea largo y valentía para cambiar de ruta si hace falta. Que, al encontrarte, te ofrezca lo mejor de mí: mi tiempo, mi trabajo y mi amor. Amén." },
+    N18: { t: "Nochebuena", f: "Esta noche nace la paz.", p: "Niño Dios, esta noche nos reunimos para recibirte. Bendice la mesa, bendice a los que están presentes y a los que faltan. Consuela a quienes pasan esta noche solos, enfermos o de luto, y haz que alguien les haga compañía. Que la paz de Belén entre en cada hogar de Colombia y que nuestro corazón sea tu pesebre. Feliz Nochebuena. Amén." },
+    N19: { t: "Nació Jesús", f: "Dios con nosotros.", p: "Señor Jesús, hoy celebramos que Dios se hizo uno de nosotros. Gracias porque no estás lejos, sino a nuestro lado, en lo alegre y en lo difícil. Naces hoy en mi corazón: quédate para siempre. Regálanos tu paz, reconcilia a las familias distanciadas y alegra a los que sufren. Que este día sea de gratitud, de perdón y de abrazos sinceros. ¡Feliz Navidad! Amén." },
+    N20: { t: "La Sagrada Familia", f: "Nazaret es modelo para tu hogar.", p: "Señor, gracias por la Sagrada Familia de Nazaret, ejemplo de amor sencillo, trabajo y oración. Bendice a mi familia: que en nuestra casa haya respeto, diálogo y perdón. Ayuda a los que viven conflictos, a las familias separadas y a los que están lejos. Que, como José, María y Jesús, nos apoyemos en las dificultades y compartamos la fe en lo cotidiano. Amén." },
+    N21: { t: "Por los niños inocentes", f: "Cuida a los más pequeños.", p: "Señor, hoy recordamos a los niños inocentes que sufrieron la violencia. Te pido por todos los niños que hoy padecen hambre, abandono, maltrato o guerra. Protégelos, rodéalos de personas que los quieran y despierta nuestra conciencia para defenderlos. Convierte el corazón de quienes les hacen daño. Que cada niño de Colombia crezca seguro, amado y con esperanza. Amén." },
+    N22: { t: "Gracias por este año", f: "Termina un año; Dios sigue contigo.", p: "Señor, termina este año y quiero darte gracias por todo: por lo logrado, por lo aprendido y también por lo que me dolió, porque me hizo crecer. Perdóname por lo que hice mal o dejé de hacer. Te entrego a mi familia, mis proyectos y mis temores del año que viene. Dame un corazón nuevo para comenzar con fe y esperanza. Bendice a Colombia y a Tunja. Amén." }
+  };
+  /* Calendario hasta el 31 de diciembre: fecha → tema (número = oración de la lista, N = tema nuevo) y su oración a la Virgen */
+  var PLAN = [["11-11", 0], ["11-12", 1], ["11-13", 2], ["11-14", 6], ["11-15", 10], ["11-16", 12], ["11-17", 7], ["11-18", 8], ["11-19", 9], ["11-20", 3], ["11-21", "N1"], ["11-22", "N2"], ["11-23", 5], ["11-24", 13], ["11-25", 23], ["11-26", 17], ["11-27", "N3"], ["11-28", 18], ["11-29", "N4"], ["11-30", 4], ["12-01", "N5"], ["12-02", 11], ["12-03", 21], ["12-04", 22], ["12-05", 19], ["12-06", 24], ["12-07", "N6"], ["12-08", "N7"], ["12-09", 20], ["12-10", 15], ["12-11", 14], ["12-12", "N8"], ["12-13", "N9"], ["12-14", 16], ["12-15", 25], ["12-16", "N10"], ["12-17", "N11"], ["12-18", "N12"], ["12-19", "N13"], ["12-20", "N14"], ["12-21", "N15"], ["12-22", "N16"], ["12-23", "N17"], ["12-24", "N18"], ["12-25", "N19"], ["12-26", 27], ["12-27", "N20"], ["12-28", "N21"], ["12-29", 28], ["12-30", 26], ["12-31", "N22"]];
+  var MARIAS_DIA = [
+    "Virgen del Milagro, tu alma proclamó la grandeza del Señor y tu espíritu se alegró en Dios. Enséñame a dar gracias como tú: por lo grande y por lo pequeño. Que hoy reconozca los milagros sencillos de mi vida y los comparta con gratitud. Amén.",
+    "Madre del Milagro, Reina de la paz, tú guardabas todo en tu corazón y descansabas en Dios. Cubre mi casa y mi mente con tu manto. Que donde haya discusión yo lleve calma y donde haya miedo, confianza. Amén.",
+    "Virgen del Milagro, tú guardaste a la Sagrada Familia en la sencillez de Nazaret. Cuida a mi familia como cuidaste a la tuya: une a los que están distantes, sana las diferencias y bendice nuestra mesa. Amén.",
+    "Madre del Milagro, tú conoces el trabajo humilde de cada día en la casa de Nazaret. Bendice las manos que trabajan, protege a quienes buscan empleo y no permitas que a ninguna familia le falte el pan. Amén.",
+    "Virgen del Milagro, mujer de fe, dijiste «hágase» sin saberlo todo. Enséñame a confiar cuando no entiendo y a descansar en la providencia de tu Hijo. Amén.",
+    "Madre del Milagro, consuelo de los afligidos, toma mi mano cuando mi pecho se aprieta. Enséñame a respirar, a vivir el hoy y a recordar que tú me cuidas como a un niño pequeño. Amén.",
+    "Virgen del Milagro, salud de los enfermos, mira a quienes hoy sufren en una cama o en una sala de espera. Alivia su dolor, fortalece a sus familias y guía a quienes los cuidan. Amén.",
+    "Madre del Milagro, tú cuidaste a Jesús desde niño. Cuida a mis hijos: guárdalos del mal, ilumina su camino y enséñales a amar a Dios. Dame paciencia y buen ejemplo para guiarlos. Amén.",
+    "Virgen del Milagro, Madre de todos, bendice a nuestros abuelos y a nuestros padres. Dales salud, compañía y paz, y ayúdanos a honrarlos con cariño y con gestos concretos. Amén.",
+    "Madre del Milagro, tú te mantuviste de pie junto a la cruz. Cuando mi prueba me supere, sostenme como sostuviste a Jesús. Dame fuerza para no rendirme y fe para esperar la mañana. Amén.",
+    "Virgen del Milagro, desde niña te ofreciste a Dios por entero. Enséñame a presentar mi vida al Señor cada mañana, con mis planes y mis cansancios, para que él la use como quiera. Amén.",
+    "Madre del Milagro, tú nos entregas a Jesús como Rey de paz y de amor. Ayúdame a que él reine en mi casa, en mi trabajo y en mi corazón, y a servirle con humildad. Amén.",
+    "Virgen del Milagro, Madre de misericordia, tú estuviste junto a la cruz sin odiar a nadie. Enséñame a soltar el rencor y a pedir perdón con sencillez. Ablanda mi corazón y repara mis relaciones. Amén.",
+    "Virgen del Milagro, patrona de Tunja, mira a tu ciudad y a toda Boyacá. Bendice a nuestras familias, campos y calles, y sigue velando por tu pueblo como lo has hecho por generaciones. Amén.",
+    "Madre del Milagro, tú, joven de Nazaret, dijiste sí al plan de Dios. Acompaña a los jóvenes y estudiantes: dales claridad, constancia y buenos amigos, y ayúdalos a descubrir su vocación. Amén.",
+    "Virgen del Milagro, causa de nuestra alegría, tu Magníficat es un canto de gozo. Enséñame a alegrarme en Dios, a ver lo bueno de cada día y a contagiar alegría a los que me rodean. Amén.",
+    "Madre del Milagro, Virgen vencedora del mal, cúbreme con tu manto cuando me asalte la tentación. Dame fuerza para decir no al mal y sí a lo bueno, y líbrame de todo peligro del alma. Amén.",
+    "Virgen del Milagro, buena consejera, tú ponderabas todo en tu corazón antes de actuar. Ruega por mí para que decida con calma y rectitud, y para que mis pasos sigan lo que Dios quiere. Amén.",
+    "Madre del Milagro, tú esperaste a Jesús con amor. Comienza el Adviento: enséñame a esperar despierto, con el corazón preparado y las manos abiertas a los demás. Amén.",
+    "Virgen del Milagro, estrella de la esperanza, guía a quienes caminan en la oscuridad. Que no me rinda ni me amargue; que espere con confianza lo que Dios tiene preparado. Amén.",
+    "Virgen del Milagro, tú preparaste tu corazón para recibir al Señor. Ayúdame a preparar mi vida en estos días: a ordenar lo que me ata y a hacer sitio para Jesús. Amén.",
+    "Madre del Milagro, esclava del Señor, enséñame tu sencillez. Líbrame del orgullo, enséñame a servir en silencio y a alegrarme del bien de los demás. Amén.",
+    "Virgen del Milagro, tú fuiste con prontitud a servir a tu prima Isabel. Hazme generoso con mi tiempo y con lo que tengo, y abre mis ojos al que necesita una mano. Amén.",
+    "Madre del Milagro, tú esperaste en silencio la hora de Dios. Enséñame paciencia con las personas, con los procesos que tardan y conmigo mismo. Amén.",
+    "Virgen del Milagro, tú conociste el camino del exilio. Acompaña a quienes viven lejos de su tierra y de los suyos: protégelos, dales trabajo justo y acorta distancias con tu ternura. Amén.",
+    "Madre del Milagro, esposa de José, bendice a los matrimonios. Que se escuchen, se perdonen y se elijan cada día; que Jesús sea el centro de su hogar. Amén.",
+    "Virgen del Milagro, esta noche encendemos una velita en tu honor. Que su luz sea oración: alumbra a mi familia, a mi ciudad y a todos los que hoy están en la oscuridad. Amén.",
+    "Virgen Inmaculada, llena de gracia desde tu concepción, enséñame a vivir con corazón limpio. Intercede para que yo pueda decir sí a Dios, como tú, y vivir con pureza de intención. Amén.",
+    "Madre del Milagro, tú que conoces el dolor, toma mis heridas en tu manto. Pide a Jesús que las sane y devuélveme la capacidad de confiar y de amar. Amén.",
+    "Virgen del Milagro, tú creíste que se cumpliría lo dicho por el Señor. Aumenta mi fe cuando dudo, sostén mi oración y hazme perseverante. Amén.",
+    "Madre dolorosa del Milagro, tú sostuviste a tu Hijo muerto y esperaste la resurrección. Acompaña a quienes lloran a un ser querido; consuélalos y dales esperanza. Amén.",
+    "Virgen de Guadalupe, Madre de los pueblos, tú te quedas junto a los sencillos. Cobija a América Latina y a Colombia con tu ternura y enséñanos a vivir como hermanos. Amén.",
+    "Virgen del Milagro, Madre de la luz, ilumina mis ojos y mi alma. Que vea con claridad lo que Dios me muestra y que mi vida sea luz para otros. Amén.",
+    "Virgen del Milagro, Madre de todos los colombianos, intercede por nuestra patria. Que cesen la violencia y el odio y crezcan la paz, la justicia y la reconciliación. Amén.",
+    "Madre del Milagro, tú nunca me dejas solo. Hazte presente en mi silencio, acompáñame con tu ternura y abre mi camino hacia personas buenas. Amén.",
+    "Virgen del Milagro, comienza la Novena de Aguinaldos. Contigo esperamos al Niño Dios: enséñame a prepararme con oración, alegría y buenas obras. Amén.",
+    "Madre del Milagro, un Niño nos ha nacido. Dame un corazón alegre y sencillo para recibirlo, y que mi casa sea un pesebre acogedor. Amén.",
+    "Virgen del Milagro, tú esperaste con amor la hora de dar a luz. Acompaña a las madres que esperan y a todos los que aguardan con esperanza. Amén.",
+    "Madre del Milagro, esposa del justo José, bendice a los padres de familia. Que sean fieles, trabajadores y tiernos como José, y cuiden a los suyos en silencio. Amén.",
+    "Virgen del Milagro, para ti no hubo lugar en la posada. Abre mi corazón y mi casa a quien no tiene techo ni lugar, y haz que nadie quede sin acogida. Amén.",
+    "Madre del Milagro, en un pesebre pobre acostaste al Rey del universo. Enséñame a amar la sencillez, a no depender de lo material y a descubrir a Dios en lo pequeño. Amén.",
+    "Virgen del Milagro, los pastores fueron los primeros en llegar. Ayúdame a ser sencillo para encontrar a Jesús y a anunciar con alegría lo que he visto y oído. Amén.",
+    "Madre del Milagro, una estrella guió a los Magos hasta tu Hijo. Sé tú la estrella de mi camino y guíame hasta Jesús cuando me sienta perdido. Amén.",
+    "Virgen del Milagro, esta noche pones en el pesebre al Niño Dios. Déjame llegar contigo a Belén y adorarlo; que la paz de esta noche habite todos los hogares. Amén.",
+    "Madre del Milagro, hoy tienes en tus brazos al Salvador del mundo. Preséntalo a mi corazón; que su paz y su alegría llenen mi casa y mi vida. Amén.",
+    "Virgen del Milagro, protectora de los hogares, ocupa un lugar en nuestra mesa. Que en nuestra casa haya perdón, alegría y oración después de la fiesta. Amén.",
+    "Madre del Milagro, Madre de la Sagrada Familia, haz de mi familia un pequeño Nazaret, donde se trabaja, se reza y se ama con sencillez. Amén.",
+    "Virgen del Milagro, dolorosa por los inocentes, cuida a los niños que sufren hambre, abandono o violencia. Protégelos y despierta nuestra conciencia para defenderlos. Amén.",
+    "Madre del Milagro, tu «hágase» cambió la historia. Enséñame a decir sí a lo que Dios me pida, con confianza y sin miedo. Amén.",
+    "Virgen del Milagro, al terminar este día me pongo bajo tu manto. Cuida mi sueño, perdona mis faltas y acompáñame hasta el amanecer. Amén.",
+    "Madre del Milagro, termina el año y te doy gracias contigo. Presenta a Jesús lo vivido, lo logrado y lo que no pude; y acompáñame en el año que viene con tu ternura. Amén."
+  ];
+  var PLANMAP = {};
+  PLAN.forEach(function (x, i) {
+    var o = typeof x[1] === "number" ? ORACIONES[x[1]] : NUEVAS[x[1]];
+    PLANMAP[x[0]] = { o: o, m: MARIAS_DIA[i] };
+  });
+  function two(n) { return (n < 10 ? "0" : "") + n; }
   function renderDia() {
     var d = new Date();
-    var n = dayNumber(d), o = ORACIONES[n % ORACIONES.length], mm = MARIAS[n % MARIAS.length], todas = [mm].concat(FIJAS), m = MOODS[n % MOODS.length];
+    var n = dayNumber(d), key = two(d.getMonth() + 1) + "-" + two(d.getDate());
+    var hoy = PLANMAP[key];
+    /* Fuera del calendario preparado: se repite el ciclo de temas con una oración mariana de la lista */
+    var o = hoy ? hoy.o : ORACIONES[n % ORACIONES.length];
+    var mm = hoy ? { t: "Oración a la Virgen del Milagro", p: hoy.m } : MARIAS[n % MARIAS.length];
+    var todas = [mm].concat(FIJAS), m = MOODS[n % MOODS.length];
     $("dia-fecha").textContent = DIAS[d.getDay()] + " " + d.getDate() + " de " + MESES[d.getMonth()];
     $("dia-titulo").textContent = o.t; $("dia-frase").textContent = o.f;
     $("dia-tema").textContent = "Tema de hoy: " + o.t; $("dia-texto").textContent = o.p;
