@@ -98,23 +98,26 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 /* La figura, libre sobre el cielo, con luz y rayos detrás */
 .niche { justify-self: center; width: min(100%, 380px); }
 .arch { position: relative; width: 100%; aspect-ratio: 380 / 780; }
-.arch .glow { position: absolute; z-index: 0; left: 50%; top: 17%; width: 170%; aspect-ratio: 1; transform: translate(-50%, -50%); background: radial-gradient(circle, var(--arch-glow) 0%, rgba(255, 243, 200, 0) 60%); }
-.arch .rays { position: absolute; z-index: 0; left: 50%; top: 17%; width: 190%; aspect-ratio: 1; transform: translate(-50%, -50%); background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255, 255, 255, 0) 0deg 7deg, var(--ray) 7deg 13deg); -webkit-mask-image: radial-gradient(circle, #000 0%, rgba(0, 0, 0, 0) 68%); mask-image: radial-gradient(circle, #000 0%, rgba(0, 0, 0, 0) 68%); }
+.arch .glow { position: absolute; z-index: 0; left: 50%; top: 30%; width: 150%; aspect-ratio: 1; transform: translate(-50%, -50%); background: radial-gradient(circle, rgba(255, 252, 235, 0.98) 0%, rgba(255, 233, 150, 0.85) 22%, rgba(255, 220, 120, 0.4) 42%, rgba(255, 243, 200, 0) 64%); animation: aura 6s ease-in-out infinite; }
+.arch .halo { position: absolute; z-index: 0; left: 50%; top: 44%; width: 78%; height: 62%; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(ellipse at center, rgba(255, 246, 205, 0.95) 0%, rgba(255, 224, 130, 0.55) 45%, rgba(255, 224, 130, 0) 72%); filter: blur(14px); animation: aura 6s ease-in-out infinite reverse; }
+.arch .rays { position: absolute; z-index: 0; left: 50%; top: 17%; width: 190%; aspect-ratio: 1; transform: translate(-50%, -50%) rotate(0deg); background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255, 255, 255, 0) 0deg 7deg, var(--ray) 7deg 13deg); -webkit-mask-image: radial-gradient(circle, #000 0%, rgba(0, 0, 0, 0) 68%); mask-image: radial-gradient(circle, #000 0%, rgba(0, 0, 0, 0) 68%); animation: spin 120s linear infinite; }
 .arch .cloud { position: absolute; z-index: 0; border-radius: 50%; background: radial-gradient(closest-side, var(--cloud), rgba(255, 255, 255, 0)); }
 .arch .c1 { left: -40%; bottom: 12%; width: 100%; height: 12%; }
 .arch .c2 { right: -44%; bottom: 22%; width: 100%; height: 11%; }
 .arch .c3 { left: -20%; bottom: -3%; width: 140%; height: 12%; }
 .arch .c4 { left: -50%; top: 40%; width: 80%; height: 8%; }
-.arch .fig { position: absolute; z-index: 1; left: 50%; bottom: 3%; height: 93%; width: auto; max-width: none; transform: translateX(-50%); filter: drop-shadow(0 22px 26px rgba(20, 48, 79, 0.26)); animation: float 7s ease-in-out infinite; }
+.arch .fig { position: absolute; z-index: 1; left: 50%; bottom: 3%; height: 93%; width: auto; max-width: none; transform: translateX(-50%); filter: drop-shadow(0 0 10px rgba(255, 236, 160, 0.95)) drop-shadow(0 0 28px rgba(255, 214, 110, 0.75)) drop-shadow(0 22px 26px rgba(20, 48, 79, 0.22)); animation: float 7s ease-in-out infinite; }
 .arch .spark { position: absolute; z-index: 2; width: 14px; height: 14px; background: var(--spark); clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); opacity: 0.9; animation: twinkle 3.6s ease-in-out infinite; }
 .arch .s1 { left: 14%; top: 22%; }
 .arch .s2 { right: 12%; top: 14%; width: 10px; height: 10px; animation-delay: 1.2s; }
 .arch .s3 { left: 20%; top: 52%; width: 9px; height: 9px; animation-delay: 2.2s; }
 .arch .s4 { right: 16%; top: 46%; animation-delay: 0.6s; }
 .arch .s5 { right: 24%; top: 70%; width: 9px; height: 9px; animation-delay: 1.8s; }
+@keyframes aura { 0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(0.96); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.06); } }
+@keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
 @keyframes float { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-8px); } }
 @keyframes twinkle { 0%, 100% { opacity: 0.25; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.15); } }
-@media (prefers-reduced-motion: reduce) { .arch .fig, .arch .spark { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .arch .fig, .arch .spark, .arch .glow, .arch .halo, .arch .rays { animation: none; } }
 
 /* Chat bíblico */
 .chat-sec { background: var(--chat-bg); padding-block: 96px; overflow-x: clip; }
@@ -290,6 +293,7 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
       <div class="niche">
         <div class="arch">
           <div class="glow"></div>
+          <div class="halo"></div>
           <div class="rays"></div>
           <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="cloud c4"></div>
           <img class="fig" src="virgen.webp" width="699" height="2120" alt="La Virgen del Milagro de pie sobre una luna creciente, con corona, halo de estrellas y manto azul con estrellas doradas, con las manos en oración.">
@@ -311,6 +315,7 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
       <div class="niche" aria-hidden="true">
         <div class="arch">
           <div class="glow"></div>
+          <div class="halo"></div>
           <div class="rays"></div>
           <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
           <img class="fig" src="virgen.webp" width="699" height="2120" alt="">
