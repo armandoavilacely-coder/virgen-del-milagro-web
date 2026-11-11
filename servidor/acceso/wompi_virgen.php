@@ -6,6 +6,10 @@ header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 function wp_out($d, $c = 200) { http_response_code($c); echo json_encode($d); exit; }
 
+// Esta cuenta de Wompi es compartida con Concursos del Estado: solo se registran los pagos de ESTOS links de pago.
+// El código es lo que va después de checkout.wompi.co/l/
+const VG_LINKS = ['hyEaOO' => 'aporte', 'smECiy' => 'suscripcion'];
+
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') wp_out(['ok' => false], 405);
 $kf = ce_dir() . '/wompi_eventos.key';
 $secret = is_file($kf) ? trim((string)file_get_contents($kf)) : '';
@@ -28,13 +32,19 @@ if (!hash_equals($calc, strtolower((string)$ev['signature']['checksum']))) wp_ou
 $tx = $ev['data']['transaction'] ?? null;
 if (($ev['event'] ?? '') !== 'transaction.updated' || !is_array($tx) || ($tx['status'] ?? '') !== 'APPROVED') wp_out(['ok' => true, 'ignorado' => true]);
 
+$link = (string)($tx['payment_link_id'] ?? '');
+if (!isset(VG_LINKS[$link])) {
+    // Pago de otro negocio de la cuenta (u otro formato de id): se ignora. Se anota solo el id del link para poder verificarlo.
+    @file_put_contents(ce_dir() . '/wompi_ignorados.log', date('c') . ' link=' . preg_replace('/[^A-Za-z0-9_-]/', '', $link) . ' monto=' . (int)round(((int)($tx['amount_in_cents'] ?? 0)) / 100) . "\n", FILE_APPEND);
+    wp_out(['ok' => true, 'ignorado' => true]);
+}
 $monto = (int)round(((int)($tx['amount_in_cents'] ?? 0)) / 100);
 $reg = [
     'id' => 'w_' . preg_replace('/[^A-Za-z0-9_-]/', '', (string)($tx['id'] ?? '')),
     'ts' => date('c'), 'fecha' => date('Y-m-d'),
     'nombre' => mb_substr((string)($tx['customer_data']['full_name'] ?? ''), 0, 80),
     'correo' => mb_substr((string)($tx['customer_email'] ?? ''), 0, 120),
-    'tipo' => $monto === 20000 ? 'suscripcion' : 'aporte',
+    'tipo' => VG_LINKS[$link],
     'monto' => $monto, 'medio' => 'Wompi',
     'ref' => mb_substr((string)($tx['reference'] ?? ''), 0, 80), 'nota' => '', 'src' => 'wompi',
 ];
