@@ -217,7 +217,7 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .prom .k { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-ink); }
 .prom .card h3 { font-style: italic; font-size: 25px; line-height: 1.25; }
 .prom .cita { font-weight: 700; color: var(--gold-ink); font-size: 15px; }
-.prom-cta { margin: -16px 0 40px; }
+.prom-cta { margin: -16px 0 24px; }
 .prom-cta .btn { cursor: pointer; }
 .prom-today { max-width: 40rem; margin: 0 auto 28px; padding: 34px 32px; text-align: center; border-radius: 26px; background: var(--card-solid); border: 1px solid var(--line); box-shadow: 0 0 0 6px rgba(242, 214, 138, 0.35), 0 20px 48px var(--shadow); }
 .prom-today .k { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-ink); }
@@ -253,6 +253,17 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .tour-list li { padding: 18px 22px; border-radius: 18px; background: var(--card-solid); border: 1px solid var(--line); }
 .tour-list strong { font-family: var(--font-serif); font-size: 24px; font-weight: 600; }
 .tour-list span { display: block; font-size: 15px; color: var(--soft); }
+
+/* Respuesta al mouse: botones y tarjetas reaccionan al pasar el cursor */
+.btn, .go, .chip, .more { transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, filter 0.15s ease; }
+.btn:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 16px 34px var(--shadow), 0 0 0 5px rgba(242, 214, 138, 0.45); filter: brightness(1.08); }
+.btn:active { transform: translateY(0) scale(0.98); }
+.chip:hover, .more:hover { transform: translateY(-2px); box-shadow: 0 8px 18px var(--shadow); }
+.card, .fact, .prayer-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.card:hover, .fact:hover, .prayer-card:hover { transform: translateY(-6px); box-shadow: 0 0 0 4px rgba(242, 214, 138, 0.4), 0 24px 44px var(--shadow); }
+.prom-today { animation: pop 0.45s ease; }
+@keyframes pop { from { opacity: 0; transform: translateY(14px) scale(0.97); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .btn:hover, .card:hover, .fact:hover, .prayer-card:hover, .chip:hover, .more:hover { transform: none; } .prom-today { animation: none; } }
 
 footer { background: var(--foot-bg); color: #CFE4F7; }
 .foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px; padding-block: 36px; }
@@ -400,11 +411,10 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
     <div class="sec-head">
       <p class="eyebrow">Palabra de esperanza</p>
       <h2 class="script">Promesas de Dios</h2>
-      <p class="lede">Lo que Dios ha prometido a quienes confían en Él. Toca una promesa para conversar sobre ella.</p>
+      <p class="lede">Lo que Dios ha prometido a quienes confían en Él. Toca el botón y recibe una promesa para hoy.</p>
     </div>
     <div class="prom-today" id="prom-today" hidden aria-live="polite"></div>
     <div class="cta-row prom-cta"><button class="btn" id="prom-random" type="button">Ver mi promesa de hoy</button></div>
-    <div class="cards prom" id="prom-list"></div>
     <p class="sources">Frases resumidas con nuestras palabras. Lee cada pasaje completo en tu Biblia.</p>
   </div>
 </section>
@@ -997,22 +1007,6 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
     { k: "Cuando te faltan fuerzas", t: "Quienes esperan en el Señor renuevan sus fuerzas y no se cansan.", c: "Isaías 40,31" },
     { k: "Cuando buscas paz", t: "Jesús deja su paz a los suyos, una paz distinta a la del mundo.", c: "Juan 14,27" }
   ];
-  PROMESAS.forEach(function (p) {
-    var c = el("div", "card");
-    c.appendChild(el("p", "k", p.k));
-    c.appendChild(el("h3", null, p.t));
-    c.appendChild(el("p", "cita", p.c));
-    var b = el("button", "more", "Conversar sobre esta promesa");
-    b.type = "button";
-    b.addEventListener("click", function () {
-      var ch = document.getElementById("chat");
-      if (ch) ch.scrollIntoView({ behavior: "smooth" });
-      ask("Quiero conversar sobre esta promesa de Dios: " + p.c + ". " + p.k + ".");
-    });
-    c.appendChild(b);
-    $("prom-list").appendChild(c);
-  });
-
   /* Mi promesa de hoy: al azar, sin repetir la anterior */
   var lastProm = -1;
   function talkAbout(p) {
