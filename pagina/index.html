@@ -418,9 +418,8 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
       <form id="subs" novalidate>
         <label class="f">Tu nombre (opcional)<input type="text" id="s-name" maxlength="60" autocomplete="given-name"></label>
         <label class="f">Correo electrónico<input type="email" id="s-email" maxlength="120" autocomplete="email" placeholder="tucorreo@ejemplo.com"></label>
-        <label class="f">WhatsApp (opcional)<input type="tel" id="s-wa" maxlength="20" autocomplete="tel" placeholder="57 300 123 4567"></label>
         <div class="hp" aria-hidden="true"><label>No llenes esto<input type="text" id="s-web" tabindex="-1" autocomplete="off"></label></div>
-        <label class="chk"><input type="checkbox" id="s-ok"><span>Autorizo que guarden mi correo y mi WhatsApp para enviarme la Palabra del día y avisos de la fiesta. Puedo pedir que me borren cuando quiera escribiendo a esta página. No compartimos tus datos con nadie.</span></label>
+        <label class="chk"><input type="checkbox" id="s-ok"><span>Autorizo que guarden mi correo para enviarme la Palabra del día y avisos de la fiesta. Puedo pedir que me borren cuando quiera escribiendo a esta página. No compartimos tus datos con nadie.</span></label>
         <p class="subs-msg" id="s-msg" role="status" hidden></p>
         <button class="btn" id="s-btn" type="submit">Quiero recibirla</button>
       </form>
@@ -637,8 +636,8 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
     function say(t, bad) { msg.textContent = t; msg.className = "subs-msg" + (bad ? " bad" : ""); msg.hidden = false; }
     f.addEventListener("submit", function (e) {
       e.preventDefault();
-      var email = $("s-email").value.trim(), wa = $("s-wa").value.trim();
-      if (!email && !wa) { say("Escribe tu correo o tu número de WhatsApp.", true); return; }
+      var email = $("s-email").value.trim(), wa = "";
+      if (!email) { say("Escribe tu correo.", true); return; }
       if (!$("s-ok").checked) { say("Marca la casilla para autorizar el uso de tus datos.", true); return; }
       btn.disabled = true;
       fetch(SUBS_ENDPOINT, {
