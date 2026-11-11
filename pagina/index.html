@@ -1,0 +1,794 @@
+<title>Virgen del Milagro</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Great+Vibes&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+/* Layout: la Virgen de pie, libre sobre el cielo, con rayos de luz y nubes, a la derecha de la portada.
+   Debajo, el chat bíblico (con ella al lado), las oraciones, la fiesta y la comunidad.
+   Un solo look claro: cielo de amanecer, crema y oro. */
+:root {
+  --font-script: "Great Vibes", "Snell Roundhand", cursive;
+  --font-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-ui: "Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --bg: #EEF5FC;
+  --hero-bg:
+    radial-gradient(60% 60% at 76% 42%, rgba(255, 243, 200, 0.95), rgba(255, 243, 200, 0) 70%),
+    radial-gradient(34% 12% at 8% 24%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 100%),
+    radial-gradient(30% 9% at 44% 12%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0) 100%),
+    radial-gradient(36% 11% at 92% 82%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0) 100%),
+    linear-gradient(180deg, #BBD9F5 0%, #DCEBFA 55%, #FFF3D6 100%);
+  --chat-bg: linear-gradient(180deg, #FFF3D6 0%, #E4F0FA 100%);
+  --band: #FFF8E8;
+  --prayer-bg: linear-gradient(180deg, #E4F0FA 0%, #CFE4F7 100%);
+  --comm-bg: linear-gradient(160deg, #14304F 0%, #1F4E79 60%, #2A5F94 100%);
+  --foot-bg: #0E2238;
+
+  --ink: #2B2110;
+  --soft: #5A3A12;
+  --gold-ink: #7A4E00;
+  --navy: #14304F;
+  --card: rgba(255, 255, 255, 0.82);
+  --card-solid: #FFFFFF;
+  --line: #D9C28A;
+  --field: #FFFFFF;
+  --shadow: rgba(20, 48, 79, 0.18);
+  --btn-bg: #1F4E79;
+  --btn-ink: #FFFFFF;
+  --focus: #1F4E79;
+  --title-a: #9A6A10;
+  --title-b: #C9962E;
+  --title-c: #7A4E00;
+  --user-bg: #1F4E79;
+  --user-ink: #FFFFFF;
+  --danger: #A33A2A;
+
+  --arch-sky: linear-gradient(180deg, #A9CFF2 0%, #D3E7F9 52%, #FFF1CC 100%);
+  --arch-glow: rgba(255, 243, 200, 0.95);
+  --ray: rgba(255, 236, 170, 0.42);
+  --cloud: rgba(255, 255, 255, 0.92);
+  --spark: #F2D68A;
+
+  --comm-ink: #FFFFFF;
+  --comm-soft: #CFE4F7;
+  --comm-gold: #F2D68A;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 17px;
+  line-height: 1.6;
+  padding-block: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: inherit; text-decoration: none; }
+button, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))) calc(-1 * max(16px, env(safe-area-inset-right, 0px))); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: clamp(4px, 3vw, 40px); }
+.eyebrow { margin: 0 0 6px; font-size: 13px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-ink); }
+.script { margin: -0.12em -0.22em -0.26em; padding: 0.12em 0.22em 0.26em; font-family: var(--font-script); font-weight: 400; line-height: 1.08; text-wrap: balance; background: linear-gradient(180deg, var(--title-a) 0%, var(--title-b) 52%, var(--title-c) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lede { margin: 12px 0 0; font-family: var(--font-serif); font-size: clamp(22px, 2.6vw, 28px); line-height: 1.3; color: var(--soft); text-wrap: balance; }
+.sec-head { text-align: center; max-width: 42rem; margin: 0 auto 48px; }
+.sec-head .script { font-size: clamp(48px, 6.4vw, 76px); }
+.btn { display: inline-block; padding: 15px 30px; border: 2px solid transparent; border-radius: 999px; background: var(--btn-bg); color: var(--btn-ink); font-weight: 700; font-size: 16px; box-shadow: 0 10px 26px var(--shadow); }
+.btn.alt { background: transparent; color: var(--gold-ink); border-color: var(--gold-ink); box-shadow: none; }
+
+/* Portada */
+.hero { background: var(--hero-bg); overflow-x: clip; }
+.top { position: relative; z-index: 3; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 28px; padding-block: 22px; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--navy); }
+.brand span { font-family: var(--font-serif); font-size: 26px; font-weight: 600; line-height: 1; }
+.menu { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 26px; font-size: 15px; font-weight: 600; color: var(--navy); }
+.menu a.pill { padding: 9px 20px; border-radius: 999px; background: var(--btn-bg); color: var(--btn-ink); }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 40px; align-items: center; padding-block: 24px 96px; }
+.hero h1 { font-size: clamp(60px, 8.6vw, 116px); }
+.hero-grid > div:first-child { position: relative; z-index: 2; padding-top: 80px; }
+.hero .eyebrow { margin-bottom: 18px; }
+.hero .tagline { margin: 22px 0 0; font-family: var(--font-serif); font-size: clamp(26px, 3vw, 34px); line-height: 1.25; font-weight: 500; color: var(--soft); max-width: 30rem; }
+.hero .sub { margin: 16px 0 0; max-width: 31rem; color: var(--soft); }
+.cta { margin-top: 34px; display: flex; flex-wrap: wrap; gap: 14px; }
+
+/* La figura, libre sobre el cielo, con luz y rayos detrás */
+.niche { justify-self: center; width: min(100%, 380px); }
+.arch { position: relative; width: 100%; aspect-ratio: 380 / 780; }
+.arch .glow { position: absolute; z-index: 0; left: 50%; top: 17%; width: 170%; aspect-ratio: 1; transform: translate(-50%, -50%); background: radial-gradient(circle, var(--arch-glow) 0%, rgba(255, 243, 200, 0) 60%); }
+.arch .rays { position: absolute; z-index: 0; left: 50%; top: 17%; width: 190%; aspect-ratio: 1; transform: translate(-50%, -50%); background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255, 255, 255, 0) 0deg 7deg, var(--ray) 7deg 13deg); -webkit-mask-image: radial-gradient(circle, #000 0%, rgba(0, 0, 0, 0) 68%); mask-image: radial-gradient(circle, #000 0%, rgba(0, 0, 0, 0) 68%); }
+.arch .cloud { position: absolute; z-index: 0; border-radius: 50%; background: radial-gradient(closest-side, var(--cloud), rgba(255, 255, 255, 0)); }
+.arch .c1 { left: -40%; bottom: 12%; width: 100%; height: 12%; }
+.arch .c2 { right: -44%; bottom: 22%; width: 100%; height: 11%; }
+.arch .c3 { left: -20%; bottom: -3%; width: 140%; height: 12%; }
+.arch .c4 { left: -50%; top: 40%; width: 80%; height: 8%; }
+.arch .fig { position: absolute; z-index: 1; left: 50%; bottom: 3%; height: 93%; width: auto; max-width: none; transform: translateX(-50%); filter: drop-shadow(0 22px 26px rgba(20, 48, 79, 0.26)); animation: float 7s ease-in-out infinite; }
+.arch .spark { position: absolute; z-index: 2; width: 14px; height: 14px; background: var(--spark); clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); opacity: 0.9; animation: twinkle 3.6s ease-in-out infinite; }
+.arch .s1 { left: 14%; top: 22%; }
+.arch .s2 { right: 12%; top: 14%; width: 10px; height: 10px; animation-delay: 1.2s; }
+.arch .s3 { left: 20%; top: 52%; width: 9px; height: 9px; animation-delay: 2.2s; }
+.arch .s4 { right: 16%; top: 46%; animation-delay: 0.6s; }
+.arch .s5 { right: 24%; top: 70%; width: 9px; height: 9px; animation-delay: 1.8s; }
+@keyframes float { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-8px); } }
+@keyframes twinkle { 0%, 100% { opacity: 0.25; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.15); } }
+@media (prefers-reduced-motion: reduce) { .arch .fig, .arch .spark { animation: none; } }
+
+/* Chat bíblico */
+.chat-sec { background: var(--chat-bg); padding-block: 96px; overflow-x: clip; }
+.chat-grid { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 48px; align-items: start; }
+.chat-grid .niche { width: 300px; position: sticky; top: 24px; }
+.chat { min-width: 0; display: flex; flex-direction: column; height: min(80vh, 760px); min-height: 520px; background: var(--card); border: 1px solid var(--line); border-radius: 28px; box-shadow: 0 26px 64px var(--shadow); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); overflow: hidden; }
+.chat-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 16px; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+.ver { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.ver label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-ink); }
+.ver select { max-width: 100%; background: var(--field); border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; font-size: 15px; }
+.ghost { background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 14px; color: var(--soft); }
+.ghost:hover { color: var(--ink); border-color: var(--gold-ink); }
+.feed { flex: 1; min-height: 0; overflow-y: auto; padding: 22px 20px; display: grid; align-content: start; gap: 26px; }
+.msg { min-width: 0; }
+.msg.user { justify-self: end; max-width: 88%; background: var(--user-bg); color: var(--user-ink); padding: 10px 16px; border-radius: 20px 20px 4px 20px; }
+.msg.user p { margin: 0; overflow-wrap: anywhere; }
+.answer { min-width: 0; overflow-wrap: anywhere; }
+.answer p { margin: 0; }
+.intro { white-space: pre-line; }
+.verse { margin: 14px 0 0; padding: 14px 18px 16px; background: var(--card-solid); border: 1px solid var(--line); border-radius: 18px; }
+.verse figcaption { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-ink); }
+.verse blockquote { margin: 4px 0 0; font-family: var(--font-serif); font-style: italic; font-size: 22px; line-height: 1.4; text-wrap: pretty; }
+.label { margin: 20px 0 4px; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--soft); }
+.reflect { white-space: pre-line; }
+.prayer { white-space: pre-line; font-family: var(--font-serif); font-style: italic; font-size: 20px; line-height: 1.5; }
+.hint { margin-top: 10px !important; font-size: 15px; color: var(--soft); }
+.hint.err { color: var(--danger); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.thinking { display: flex; align-items: center; gap: 10px; color: var(--soft); }
+.thinking i { width: 12px; height: 12px; border-radius: 50%; background: #E8A93A; box-shadow: 0 0 14px 3px rgba(255, 205, 100, 0.55); animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 0.45; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.1); } }
+@media (prefers-reduced-motion: reduce) { .thinking i { animation: none; } }
+.welcome h3 { margin: 0; font-family: var(--font-serif); font-weight: 500; font-size: clamp(28px, 3.4vw, 38px); line-height: 1.15; text-wrap: balance; }
+.welcome > p { margin: 10px 0 0; color: var(--soft); max-width: 34rem; }
+.eg { margin: 22px 0 10px; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--soft); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { background: var(--card-solid); border: 1px solid var(--line); border-radius: 999px; padding: 8px 15px; font-size: 15px; text-align: left; }
+.chip:hover { border-color: var(--gold-ink); }
+.chip:disabled { opacity: 0.5; cursor: default; }
+.notice { margin: 0 20px 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--card-solid); font-size: 15px; }
+.composer { padding: 12px 20px 14px; border-top: 1px solid var(--line); }
+.composer form { display: flex; align-items: flex-end; gap: 8px; }
+.composer textarea { flex: 1; min-width: 0; resize: none; max-height: 9rem; background: var(--field); border: 1px solid var(--line); border-radius: 18px; padding: 11px 15px; line-height: 1.4; }
+.composer textarea::placeholder { color: var(--soft); opacity: 0.85; }
+.go { flex: none; background: var(--btn-bg); color: var(--btn-ink); border: 0; border-radius: 18px; padding: 11px 20px; font-weight: 700; }
+.go.stop { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.fine { margin: 10px 0 0; font-size: 13px; line-height: 1.5; color: var(--soft); }
+
+/* Oración */
+.prayer-sec { background: var(--prayer-bg); padding-block: 96px; }
+.prayers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 28px; }
+.prayer-card { padding: 34px 32px; border-radius: 26px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 20px 48px var(--shadow); }
+.prayer-card h3 { margin: 0 0 12px; font-size: 13px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-ink); }
+.prayer-card p { margin: 0; font-family: var(--font-serif); font-style: italic; font-size: clamp(22px, 2.3vw, 26px); line-height: 1.42; }
+
+/* La fiesta */
+.fiesta-sec { background: var(--band); padding-block: 96px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 24px; }
+.fact { padding: 28px 26px; border-radius: 22px; background: var(--card-solid); border: 1px solid var(--line); box-shadow: 0 12px 30px var(--shadow); }
+.fact svg { display: block; }
+.fact .k { margin: 14px 0 0; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-ink); }
+.fact h3 { margin: 2px 0 8px; font-family: var(--font-serif); font-size: 28px; font-weight: 600; line-height: 1.15; }
+.fact p { margin: 0; font-size: 15px; color: var(--soft); }
+.sources { margin: 28px 0 0; text-align: center; font-size: 14px; color: var(--soft); }
+
+/* Comunidad */
+.comm-sec { background: var(--comm-bg); color: var(--comm-ink); padding-block: 96px; }
+.comm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 48px; align-items: center; }
+.comm-sec .eyebrow { color: var(--comm-gold); }
+.comm-sec .script { font-size: clamp(52px, 6.6vw, 82px); background: linear-gradient(180deg, #FBEBB5, #F2D68A 55%, #D9A93F); -webkit-background-clip: text; background-clip: text; }
+.comm-sec .lede { color: var(--comm-ink); max-width: 32rem; }
+.comm-sec .btn { margin-top: 30px; background: var(--comm-gold); color: #14304F; }
+.fb-note { margin: 30px 0 0; padding: 14px 18px; border: 1px solid rgba(242, 214, 138, 0.5); border-radius: 16px; color: var(--comm-ink); max-width: 30rem; }
+.gifts { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; }
+.gifts li { padding: 20px 22px; border-radius: 20px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(242, 214, 138, 0.35); }
+.gifts strong { display: block; font-family: var(--font-serif); font-size: 26px; font-weight: 600; line-height: 1.15; color: var(--comm-gold); }
+.gifts span { color: var(--comm-soft); font-size: 16px; }
+
+footer { background: var(--foot-bg); color: #CFE4F7; }
+.foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px; padding-block: 36px; }
+.foot b { display: block; font-family: var(--font-serif); font-size: 26px; font-weight: 600; color: #F2D68A; line-height: 1.1; }
+.foot small { font-size: 14px; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 15px; font-weight: 600; }
+
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); padding-bottom: 64px; }
+  .hero-grid > div:first-child { padding-top: 28px; }
+  .hero-grid .niche { order: 2; width: min(100%, 340px); }
+  .chat-grid { grid-template-columns: minmax(0, 1fr); }
+  .chat-grid .niche { display: none; }
+  .chat-sec, .prayer-sec, .fiesta-sec, .comm-sec { padding-block: 64px; }
+  .menu a.hide-s { display: none; }
+}
+@media (max-width: 480px) {
+  .chat { height: min(82vh, 720px); }
+  .chat-head, .feed, .composer { padding-left: 14px; padding-right: 14px; }
+  .notice { margin-inline: 14px; }
+  .prayer-card { padding: 26px 22px; }
+}
+</style>
+
+<header class="hero" id="inicio">
+  <div class="wrap">
+    <div class="top">
+      <a class="brand" href="#inicio" aria-label="Virgen del Milagro, inicio">
+        <svg width="38" height="38" viewBox="0 0 40 40" aria-hidden="true">
+          <circle cx="20" cy="20" r="15" fill="none" stroke="#B8841F" stroke-width="1.6" stroke-dasharray="2 3.2"/>
+          <path d="M12 22l2-7 3 4 3-6 3 6 3-4 2 7z" fill="#E8C06A" stroke="#7A4E00" stroke-width="1.2" stroke-linejoin="round"/>
+          <path d="M13 25h14" fill="none" stroke="#7A4E00" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>Virgen del Milagro</span>
+      </a>
+      <nav class="menu" aria-label="Principal">
+        <a class="hide-s" href="#oracion">Oración</a>
+        <a class="hide-s" href="#fiesta">La fiesta</a>
+        <a class="hide-s" href="#comunidad">Comunidad</a>
+        <a class="pill" href="#chat">Pregúntale a la Palabra</a>
+      </nav>
+    </div>
+
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">Tunja · Boyacá · Colombia</p>
+        <h1 class="script">Virgen del Milagro</h1>
+        <p class="tagline">Una mañana para agradecer. Que la alegría de Dios habite en tu corazón.</p>
+        <p class="sub">Cuéntale a la Palabra lo que llevas en el corazón y recibe versículos, una reflexión y una oración, bajo el amparo de la Virgen.</p>
+        <div class="cta">
+          <a class="btn" id="verse-today" href="#chat">Recibir mi versículo de hoy</a>
+          <a class="btn alt" href="#oracion">Rezar el Ave María</a>
+        </div>
+      </div>
+
+      <div class="niche">
+        <div class="arch">
+          <div class="glow"></div>
+          <div class="rays"></div>
+          <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="cloud c4"></div>
+          <img class="fig" src="virgen.webp" width="699" height="2120" alt="La Virgen del Milagro de pie sobre una luna creciente, con corona, halo de estrellas y manto azul con estrellas doradas, con las manos en oración.">
+          <span class="spark s1"></span><span class="spark s2"></span><span class="spark s3"></span><span class="spark s4"></span><span class="spark s5"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="chat-sec" id="chat">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Chat bíblico</p>
+      <h2 class="script">Pregúntale a la Palabra</h2>
+      <p class="lede">Escribe lo que estás viviendo, con tus palabras. Te respondo con versículos, una reflexión corta y una oración.</p>
+    </div>
+    <div class="chat-grid">
+      <div class="niche" aria-hidden="true">
+        <div class="arch">
+          <div class="glow"></div>
+          <div class="rays"></div>
+          <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+          <img class="fig" src="virgen.webp" width="699" height="2120" alt="">
+          <span class="spark s1"></span><span class="spark s2"></span><span class="spark s4"></span>
+        </div>
+      </div>
+
+      <div>
+        <div class="chat" role="region" aria-label="Chat bíblico">
+          <div class="chat-head">
+            <div class="ver">
+              <label for="ver">Versión de la Biblia</label>
+              <select id="ver"></select>
+            </div>
+            <button class="ghost" id="clear" type="button" hidden>Nueva conversación</button>
+          </div>
+          <div class="feed" id="feed" aria-live="polite">
+            <section class="welcome" id="welcome" style="margin: 0; padding: 0; background: none">
+              <h3>¿Qué llevas hoy en el corazón?</h3>
+              <p>Puedes escribir una duda, una preocupación o un agradecimiento.</p>
+              <p class="eg">Ejemplos para empezar</p>
+              <div class="chips" id="chips"></div>
+            </section>
+          </div>
+          <p class="notice" id="notice" hidden></p>
+          <div class="composer">
+            <form id="form" autocomplete="off">
+              <textarea id="box" rows="1" placeholder="Escribe tu pregunta o lo que sientes…" aria-label="Tu mensaje"></textarea>
+              <button class="go" id="send" type="submit">Enviar</button>
+              <button class="go stop" id="stop" type="button" hidden>Detener</button>
+            </form>
+          </div>
+        </div>
+        <p class="fine">Las respuestas las escribe una IA y pueden tener errores: confirma cada versículo en tu Biblia. Tu mensaje se envía a una IA para responderte: no escribas datos personales. Si estás pasando por un momento muy difícil, llama al 123 (emergencias) o a la Línea 192, opción 4, de salud mental.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="prayer-sec" id="oracion">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Un momento de calma</p>
+      <h2 class="script">Reza con nosotros</h2>
+      <p class="lede">Detente un momento, respira y reza con calma.</p>
+    </div>
+    <div class="prayers">
+      <article class="prayer-card">
+        <h3>Ave María</h3>
+        <p>Dios te salve, María, llena eres de gracia, el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.</p>
+      </article>
+      <article class="prayer-card">
+        <h3>Padre Nuestro</h3>
+        <p>Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="fiesta-sec" id="fiesta">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Tunja</p>
+      <h2 class="script">La fiesta de la Virgen</h2>
+      <p class="lede">Una celebración de más de un siglo que reúne a la ciudad en torno a su patrona.</p>
+    </div>
+    <div class="facts">
+      <div class="fact">
+        <svg width="40" height="40" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5" fill="none" stroke="#B8841F" stroke-width="1.6"/><path d="M3.5 10h17M8 3v4M16 3v4" fill="none" stroke="#B8841F" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <p class="k">Cuándo</p>
+        <h3>Primer fin de semana de junio</h3>
+        <p>Los días anteriores se reza una novena.</p>
+      </div>
+      <div class="fact">
+        <svg width="40" height="40" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-5.6 7-11a7 7 0 0 0-14 0c0 5.4 7 11 7 11z" fill="none" stroke="#B8841F" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.6" fill="none" stroke="#B8841F" stroke-width="1.6"/></svg>
+        <p class="k">Dónde</p>
+        <h3>Plaza de Bolívar y santuario</h3>
+        <p>Tunja, Boyacá, Colombia.</p>
+      </div>
+      <div class="fact">
+        <svg width="40" height="40" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M7 8h10" fill="none" stroke="#B8841F" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <p class="k">Qué se vive</p>
+        <h3>Eucaristía y revista militar</h3>
+        <p>La Fuerza Aérea rinde homenaje a la Virgen, patrona de Tunja y de la Fuerza Aérea.</p>
+      </div>
+      <div class="fact">
+        <svg width="40" height="40" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8.5" r="3" fill="none" stroke="#B8841F" stroke-width="1.6"/><circle cx="17" cy="9.5" r="2.4" fill="none" stroke="#B8841F" stroke-width="1.6"/><path d="M3.5 19c0-3.2 2.5-5.2 5.5-5.2s5.5 2 5.5 5.2M15.5 14.2c2.6-.3 5 1.3 5 4.3" fill="none" stroke="#B8841F" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <p class="k">Quiénes van</p>
+        <h3>Unas 50.000 personas</h3>
+        <p>Cifra de cada año antes de la pandemia, según Noticias RCN.</p>
+      </div>
+    </div>
+    <p class="sources">Datos: Noticias RCN (2020) y Policía Nacional (2018).</p>
+  </div>
+</section>
+
+<section class="comm-sec" id="comunidad">
+  <div class="wrap comm-grid">
+    <div>
+      <p class="eyebrow">Comunidad</p>
+      <h2 class="script">Camina con nosotros</h2>
+      <p class="lede">Cada día compartimos un mensaje, una oración y las noticias de la fiesta.</p>
+      <a class="btn" id="fb" href="#comunidad" hidden>Unirme en Facebook</a>
+      <p class="fb-note" id="fb-note">Búscanos en Facebook como «Virgen del Milagro».</p>
+    </div>
+    <ul class="gifts">
+      <li><strong>Mensaje de la mañana</strong><span>Una palabra para empezar el día con gratitud.</span></li>
+      <li><strong>Oración de la noche</strong><span>Un momento para entregar el día y descansar en paz.</span></li>
+      <li><strong>Noticias de la fiesta</strong><span>Fechas, horarios y transmisiones de la celebración en Tunja.</span></li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div><b>Virgen del Milagro</b><small>Tunja, Boyacá, Colombia</small></div>
+    <nav aria-label="Pie de página">
+      <a href="#chat">Chat bíblico</a>
+      <a href="#oracion">Oración</a>
+      <a href="#fiesta">La fiesta</a>
+      <a href="#comunidad">Comunidad</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* Pon aquí el enlace de la página de Facebook para activar el botón. */
+  var FACEBOOK_URL = "";
+  /* Chat en tu servidor (Claude Haiku). Dentro de Claude la página usa Claude directamente. */
+  var ENDPOINT = "https://www.concursosdelestado.com/acceso/chat_virgen.php";
+
+  var VERSIONS = [
+    { id: "BLA", name: "Biblia Latinoamericana" },
+    { id: "BJ", name: "Biblia de Jerusalén" },
+    { id: "DHH", name: "Dios Habla Hoy (DHH)" },
+    { id: "NVI", name: "Nueva Versión Internacional (NVI)" },
+    { id: "RVR1960", name: "Reina-Valera 1960" }
+  ];
+  var EXAMPLES = [
+    "Estoy ansioso por el futuro",
+    "Me cuesta perdonar a alguien de mi familia",
+    "Estoy sin trabajo y preocupado por la plata",
+    "Siento que Dios está en silencio",
+    "Quiero dar gracias por mi familia",
+    "Un versículo para empezar el día"
+  ];
+  var TODAY = "Un versículo para empezar el día";
+  var KEY = "virgen-del-milagro-chat";
+
+  function $(id) { return document.getElementById(id); }
+  var feed = $("feed"), welcome = $("welcome"), form = $("form"), box = $("box"),
+      sendBtn = $("send"), stopBtn = $("stop"), verSel = $("ver"), notice = $("notice"),
+      clearBtn = $("clear"), chipsBox = $("chips");
+
+  var sample = null, ctl = null, busy = false, stick = true, hist = [];
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  /* Facebook */
+  if (FACEBOOK_URL) {
+    var fb = $("fb");
+    fb.href = FACEBOOK_URL;
+    fb.target = "_blank";
+    fb.rel = "noopener";
+    fb.hidden = false;
+    $("fb-note").hidden = true;
+  }
+
+  /* Almacenamiento: solo comodidad de quien visita */
+  function loadState() {
+    try {
+      var r = JSON.parse(localStorage.getItem(KEY) || "null");
+      return r && typeof r === "object" ? r : {};
+    } catch (e) { return {}; }
+  }
+  function saveState() {
+    try { localStorage.setItem(KEY, JSON.stringify({ version: verSel.value, hist: hist.slice(-20) })); } catch (e) { /* sin almacenamiento */ }
+  }
+
+  /* Instrucciones para Claude */
+  function currentVersion() {
+    for (var i = 0; i < VERSIONS.length; i++) if (VERSIONS[i].id === verSel.value) return VERSIONS[i];
+    return VERSIONS[0];
+  }
+  function rules(v) {
+    return [
+      "Eres «Palabra para hoy», el acompañante de lectura bíblica de la página de la Virgen del Milagro de Tunja (Boyacá, Colombia). Hablas con personas cristianas, en su mayoría católicas. Responde siempre en español.",
+      "",
+      "TONO: cercano y cálido, de tú, con palabras sencillas. No sermonees ni juzgues. Respeta a católicos y evangélicos y no entres en polémicas entre denominaciones; si la pregunta es doctrinal y discutida, presenta las posturas con respeto y sugiere hablar con su párroco, pastor o líder de confianza.",
+      "CONTEXTO: piensa en la vida cotidiana en Colombia (familia, empleo informal y el rebusque, deudas, duelo y violencia, desplazamiento, campo, migración) sin politizar y sin forzar regionalismos.",
+      "VERSIÓN: " + v.name + ". Da la cita exacta (libro capítulo:versículo) y no inventes citas. Transcribe el texto en esa versión solo si lo recuerdas con seguridad; si no, resume el versículo en una frase y escribe «(paráfrasis)» al final. Máximo 3 versículos, cortos, que respondan de verdad a lo que la persona vive.",
+      "MARÍA: si encaja de forma natural con lo que la persona cuenta, puedes incluir un pasaje sobre María (por ejemplo Lucas 1,46-55; Juan 2,1-11; Juan 19,25-27) y cerrar la oración con «Santa María, Virgen del Milagro, ruega por nosotros». No lo fuerces en cada respuesta.",
+      "LÍMITES: no prometas sanidades, prosperidad ni resultados, y no uses la Biblia para culpar. No sustituyas la atención médica o psicológica: si el tema lo pide, recomienda buscarla con calma. Si la persona expresa deseos de hacerse daño o de morir, responde solo con INTRO (y un VERSO de consuelo si encaja): con calidez, anímala a hablar ahora mismo con alguien de confianza y a llamar a la Línea 192, opción 4 (salud mental, Colombia), o al 123 si hay peligro inmediato.",
+      "",
+      "FORMATO EXACTO (texto plano, sin markdown ni asteriscos; cada etiqueta empieza en una línea nueva):",
+      "INTRO: una o dos frases que reconozcan lo que la persona vive.",
+      "VERSO: Cita | texto del versículo   (una línea por versículo)",
+      "REFLEXION: dos a cuatro frases que conecten los versículos con su situación.",
+      "ORACION: dos o tres frases, en primera persona, para que la persona la haga suya.",
+      "Si el mensaje es un saludo, un agradecimiento o una aclaración, responde solo con INTRO (1 a 3 frases) y, si ayuda, una pregunta corta."
+    ].join("\n");
+  }
+
+  /* Lectura de la respuesta */
+  var FIELD = { INTRO: "intro", REFLEXION: "reflexion", ORACION: "oracion" };
+  function parse(text) {
+    var out = { intro: "", verses: [], reflexion: "", oracion: "" };
+    var cur = null;
+    text.split("\n").forEach(function (raw) {
+      var line = raw.replace(/\*\*/g, "").replace(/^\s*[-•]\s+/, "");
+      var m = line.match(/^\s*(INTRO|VERSO|REFLEXI[OÓ]N|ORACI[OÓ]N)\s*:\s*(.*)$/i);
+      if (m) {
+        var k = m[1].toUpperCase().replace("Ó", "O");
+        if (k === "VERSO") { out.verses.push(m[2].trim()); cur = "VERSO"; }
+        else { cur = k; out[FIELD[k]] = m[2].trim(); }
+      } else if (line.trim()) {
+        if (cur === "VERSO") out.verses[out.verses.length - 1] += " " + line.trim();
+        else {
+          var f = cur ? FIELD[cur] : "intro";
+          out[f] += (out[f] ? "\n" : "") + line.trim();
+        }
+      }
+    });
+    return out;
+  }
+  function renderAnswer(root, raw) {
+    var p = parse(raw);
+    root.textContent = "";
+    if (p.intro) root.appendChild(el("p", "intro", p.intro));
+    p.verses.forEach(function (v) {
+      var i = v.indexOf("|");
+      var f = el("figure", "verse");
+      if (i > -1) {
+        f.appendChild(el("figcaption", null, v.slice(0, i).trim()));
+        f.appendChild(el("blockquote", null, v.slice(i + 1).trim()));
+      } else {
+        f.appendChild(el("figcaption", null, v));
+      }
+      root.appendChild(f);
+    });
+    if (p.reflexion) {
+      root.appendChild(el("h3", "label", "Para reflexionar"));
+      root.appendChild(el("p", "reflect", p.reflexion));
+    }
+    if (p.oracion) {
+      root.appendChild(el("h3", "label", "Oración"));
+      root.appendChild(el("p", "prayer", p.oracion));
+    }
+  }
+  function plainText(raw) {
+    var p = parse(raw), parts = [];
+    p.verses.forEach(function (v) {
+      var i = v.indexOf("|");
+      parts.push(i > -1 ? v.slice(i + 1).trim() + " (" + v.slice(0, i).trim() + ")" : v);
+    });
+    if (p.reflexion) parts.push(p.reflexion);
+    if (p.oracion) parts.push("Oración: " + p.oracion);
+    return parts.length ? parts.join("\n\n") : p.intro;
+  }
+
+  /* Mensajes */
+  function addUser(q) {
+    var d = el("div", "msg user");
+    d.appendChild(el("p", null, q));
+    feed.appendChild(d);
+    return d;
+  }
+  function addBot() {
+    var a = el("article", "msg bot");
+    var body = el("div", "answer");
+    a.appendChild(body);
+    feed.appendChild(a);
+    return { a: a, body: body };
+  }
+  function thinking(body) {
+    body.textContent = "";
+    var t = el("p", "thinking");
+    t.appendChild(el("i"));
+    t.appendChild(el("span", null, "Buscando en las Escrituras…"));
+    body.appendChild(t);
+  }
+  function addActions(b, raw) {
+    var row = el("div", "actions");
+    var copy = el("button", "ghost", "Copiar");
+    copy.type = "button";
+    copy.addEventListener("click", function () {
+      var txt = plainText(raw);
+      function ok() { copy.textContent = "Copiado"; setTimeout(function () { copy.textContent = "Copiar"; }, 1800); }
+      function fallback() {
+        try {
+          var r = document.createRange();
+          r.selectNodeContents(b.body);
+          var s = window.getSelection();
+          s.removeAllRanges();
+          s.addRange(r);
+          copy.textContent = "Texto seleccionado, cópialo";
+        } catch (e) { copy.textContent = "No se pudo copiar"; }
+      }
+      try { navigator.clipboard.writeText(txt).then(ok, fallback); } catch (e) { fallback(); }
+    });
+    row.appendChild(copy);
+    b.a.appendChild(row);
+  }
+
+  /* Estado de la interfaz */
+  function setBusy(on) {
+    busy = on;
+    sendBtn.hidden = on;
+    stopBtn.hidden = !on;
+    Array.prototype.forEach.call(chipsBox.children, function (c) { c.disabled = on; });
+  }
+  function showNotice(text) { notice.textContent = text; notice.hidden = false; }
+  function clearNotice() { notice.hidden = true; notice.textContent = ""; }
+  function lockComposer(text) { showNotice(text); form.hidden = true; }
+  function refreshChrome() {
+    var has = feed.children.length > 1;
+    welcome.hidden = has;
+    clearBtn.hidden = !has;
+  }
+  function feedBottom() { feed.scrollTop = feed.scrollHeight; }
+  feed.addEventListener("scroll", function () {
+    stick = feed.scrollTop + feed.clientHeight > feed.scrollHeight - 80;
+  }, { passive: true });
+
+  /* Chat en el servidor: manda la conversación corta y recibe la respuesta ya armada */
+  async function hosted(q, signal) {
+    var m = [];
+    hist.slice(-4).forEach(function (h) { m.push({ r: "u", t: h.q }, { r: "a", t: h.a }); });
+    m.push({ r: "u", t: q });
+    var res;
+    try {
+      res = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ v: verSel.value, m: m }),
+        signal: signal
+      });
+    } catch (e) {
+      if (e && e.name === "AbortError") throw { code: "cancelled" };
+      throw { code: "upstream_error" };
+    }
+    var j = null;
+    try { j = await res.json(); } catch (e) { /* respuesta sin formato */ }
+    if (!j || typeof j.r !== "string" || !j.r) throw { code: res.status === 429 ? "rate_limited" : "upstream_error" };
+    if (j.lim) throw { code: "rate_limited", msg: j.r };
+    return { text: j.r, truncated: j.sr === "max_tokens" };
+  }
+
+  /* Preguntar */
+  var COPY = {
+    rate_limited: "Hiciste muchas preguntas seguidas. Espera un momento y vuelve a intentarlo.",
+    session_expired: "Tu sesión venció. Inicia sesión de nuevo y vuelve a escribir tu pregunta.",
+    prompt_too_large: "La conversación se hizo muy larga. Toca «Nueva conversación» para empezar de nuevo.",
+    upstream_error: "No pude completar la respuesta por un problema de conexión."
+  };
+  var LOCK = ["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"];
+
+  async function ask(q) {
+    q = (q || "").trim();
+    if (busy || !q) return;
+    setBusy(true);
+    clearNotice();
+    var user = addUser(q);
+    var b = addBot();
+    thinking(b.body);
+    refreshChrome();
+    stick = true;
+    feedBottom();
+
+    if (!sample) sample = await samplePromise;
+    if (!sample && !ENDPOINT) {
+      user.remove(); b.a.remove();
+      lockComposer("El chat funciona al abrir esta página desde Claude. Aquí no está disponible.");
+      setBusy(false); refreshChrome();
+      return;
+    }
+
+    ctl = new AbortController();
+    var turns = [{ role: "user", content: rules(currentVersion()) }];
+    hist.slice(-4).forEach(function (h) {
+      turns.push({ role: "user", content: h.q }, { role: "assistant", content: h.a });
+    });
+    turns.push({ role: "user", content: q });
+
+    try {
+      var r = sample
+        ? await sample(turns, {
+            cache: false,
+            signal: ctl.signal,
+            onText: function (u) { renderAnswer(b.body, u.text); if (stick) feedBottom(); }
+          })
+        : await hosted(q, ctl.signal);
+      renderAnswer(b.body, r.text);
+      if (r.truncated) b.body.appendChild(el("p", "hint", "La respuesta se cortó. Pregunta de nuevo con algo más breve."));
+      hist.push({ q: q, a: r.text });
+      saveState();
+      addActions(b, r.text);
+    } catch (e) {
+      fail(e || {}, b, user, q);
+    } finally {
+      ctl = null;
+      setBusy(false);
+      refreshChrome();
+      if (stick) feedBottom();
+    }
+  }
+
+  function fail(e, b, user, q) {
+    var code = e.code || "upstream_error";
+    if (code === "cancelled") {
+      if (e.text) { renderAnswer(b.body, e.text); b.body.appendChild(el("p", "hint", "Respuesta detenida.")); }
+      else b.a.remove();
+      return;
+    }
+    if (code === "refused") {
+      b.body.textContent = "";
+      b.body.appendChild(el("p", "hint", "No puedo responder a eso. Prueba con otra pregunta."));
+      return;
+    }
+    if (LOCK.indexOf(code) > -1) {
+      user.remove(); b.a.remove();
+      lockComposer("Para responder, esta página necesita permiso para usar Claude. Vuelve a abrirla y acepta cuando te lo pida.");
+      return;
+    }
+    if (e.text) renderAnswer(b.body, e.text); else b.body.textContent = "";
+    var msg = e.msg || COPY[code] || (code === "invalid_json" || code === "empty_completion" ? "No pude armar la respuesta esta vez." : COPY.upstream_error);
+    b.body.appendChild(el("p", "hint err", msg));
+    if (code === "upstream_error" || code === "empty_completion" || code === "invalid_json") {
+      var row = el("div", "actions");
+      var retry = el("button", "ghost", "Intentar de nuevo");
+      retry.type = "button";
+      retry.addEventListener("click", function () { b.a.remove(); user.remove(); ask(q); });
+      row.appendChild(retry);
+      b.a.appendChild(row);
+    }
+  }
+
+  /* Eventos */
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var q = box.value;
+    if (!q.trim() || busy) return;
+    box.value = "";
+    autosize();
+    ask(q);
+  });
+  box.addEventListener("keydown", function (ev) {
+    if (ev.key === "Enter" && !ev.shiftKey && !ev.isComposing) { ev.preventDefault(); form.requestSubmit(); }
+  });
+  function autosize() {
+    box.style.height = "auto";
+    box.style.height = Math.min(box.scrollHeight, 144) + "px";
+  }
+  box.addEventListener("input", autosize);
+  stopBtn.addEventListener("click", function () { if (ctl) ctl.abort(); });
+  verSel.addEventListener("change", saveState);
+  $("verse-today").addEventListener("click", function () { ask(TODAY); });
+
+  var armed = null;
+  clearBtn.addEventListener("click", function () {
+    if (!armed) {
+      clearBtn.textContent = "¿Borrar todo? Toca otra vez";
+      armed = setTimeout(function () { armed = null; clearBtn.textContent = "Nueva conversación"; }, 3500);
+      return;
+    }
+    clearTimeout(armed); armed = null;
+    clearBtn.textContent = "Nueva conversación";
+    if (ctl) ctl.abort();
+    Array.prototype.slice.call(feed.children).forEach(function (c) { if (c !== welcome) c.remove(); });
+    hist = [];
+    saveState();
+    clearNotice();
+    form.hidden = false;
+    refreshChrome();
+    feed.scrollTop = 0;
+  });
+
+  /* Arranque */
+  VERSIONS.forEach(function (v) {
+    var o = el("option", null, v.name);
+    o.value = v.id;
+    verSel.appendChild(o);
+  });
+  EXAMPLES.forEach(function (t) {
+    var c = el("button", "chip", t);
+    c.type = "button";
+    c.addEventListener("click", function () { ask(t); });
+    chipsBox.appendChild(c);
+  });
+
+  var saved = loadState();
+  if (saved.version) verSel.value = saved.version;
+  if (Array.isArray(saved.hist)) {
+    hist = saved.hist.filter(function (h) { return h && typeof h.q === "string" && typeof h.a === "string"; });
+    hist.forEach(function (h) {
+      addUser(h.q);
+      var b = addBot();
+      renderAnswer(b.body, h.a);
+      addActions(b, h.a);
+    });
+  }
+  refreshChrome();
+  feedBottom();
+
+  var samplePromise = (window.claude && window.claude.use)
+    ? window.claude.use("sample").catch(function () { return null; })
+    : Promise.resolve(null);
+  samplePromise.then(function (s) {
+    sample = s;
+    if (!s && !ENDPOINT) lockComposer("El chat funciona al abrir esta página desde Claude. Aquí no está disponible.");
+  });
+})();
+</script>
