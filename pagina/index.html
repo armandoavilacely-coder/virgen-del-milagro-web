@@ -217,6 +217,16 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .prom .k { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-ink); }
 .prom .card h3 { font-style: italic; font-size: 25px; line-height: 1.25; }
 .prom .cita { font-weight: 700; color: var(--gold-ink); font-size: 15px; }
+.prom-cta { margin: -16px 0 40px; }
+.prom-cta .btn { cursor: pointer; }
+.prom-today { max-width: 40rem; margin: 0 auto 28px; padding: 34px 32px; text-align: center; border-radius: 26px; background: var(--card-solid); border: 1px solid var(--line); box-shadow: 0 0 0 6px rgba(242, 214, 138, 0.35), 0 20px 48px var(--shadow); }
+.prom-today .k { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-ink); }
+.prom-today h3 { margin: 10px 0 8px; font-family: var(--font-serif); font-style: italic; font-weight: 600; font-size: clamp(28px, 3.4vw, 36px); line-height: 1.2; text-wrap: balance; }
+.prom-today .cita { margin: 0 0 18px; font-weight: 700; color: var(--gold-ink); }
+.prom-today .row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.prom-today .btn { cursor: pointer; padding: 11px 22px; font-size: 15px; box-shadow: none; }
+.prom-today .more { background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 10px 18px; font-size: 14px; font-weight: 600; }
+.prom-today .more:hover { border-color: var(--gold-ink); }
 .prom .more { margin-top: auto; align-self: flex-start; background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 8px 15px; font-size: 14px; font-weight: 600; }
 .prom .more:hover { border-color: var(--gold-ink); }
 
@@ -392,6 +402,8 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
       <h2 class="script">Promesas de Dios</h2>
       <p class="lede">Lo que Dios ha prometido a quienes confían en Él. Toca una promesa para conversar sobre ella.</p>
     </div>
+    <div class="prom-today" id="prom-today" hidden aria-live="polite"></div>
+    <div class="cta-row prom-cta"><button class="btn" id="prom-random" type="button">Ver mi promesa de hoy</button></div>
     <div class="cards prom" id="prom-list"></div>
     <p class="sources">Frases resumidas con nuestras palabras. Lee cada pasaje completo en tu Biblia.</p>
   </div>
@@ -979,7 +991,11 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
     { k: "Cuando no ves el futuro", t: "Dios tiene planes de bienestar y esperanza para ti.", c: "Jeremías 29,11" },
     { k: "Cuando te falta valor", t: "Sé valiente: el Señor tu Dios te acompaña a donde vayas.", c: "Josué 1,9" },
     { k: "Cuando necesitas protección", t: "El Señor te cuida al salir y al volver, ahora y siempre.", c: "Salmo 121,7-8" },
-    { k: "Cuando todo parece perdido", t: "Dios hace que todo coopere para el bien de quienes lo aman.", c: "Romanos 8,28" }
+    { k: "Cuando todo parece perdido", t: "Dios hace que todo coopere para el bien de quienes lo aman.", c: "Romanos 8,28" },
+    { k: "Cuando necesitas un refugio", t: "Dios es nuestro refugio y fortaleza, una ayuda siempre cercana en la angustia.", c: "Salmo 46,1" },
+    { k: "Cuando debes decidir", t: "Confía en el Señor de todo corazón y Él enderezará tus caminos.", c: "Proverbios 3,5-6" },
+    { k: "Cuando te faltan fuerzas", t: "Quienes esperan en el Señor renuevan sus fuerzas y no se cansan.", c: "Isaías 40,31" },
+    { k: "Cuando buscas paz", t: "Jesús deja su paz a los suyos, una paz distinta a la del mundo.", c: "Juan 14,27" }
   ];
   PROMESAS.forEach(function (p) {
     var c = el("div", "card");
@@ -996,6 +1012,32 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
     c.appendChild(b);
     $("prom-list").appendChild(c);
   });
+
+  /* Mi promesa de hoy: al azar, sin repetir la anterior */
+  var lastProm = -1;
+  function talkAbout(p) {
+    var ch = document.getElementById("chat");
+    if (ch) ch.scrollIntoView({ behavior: "smooth" });
+    ask("Quiero conversar sobre esta promesa de Dios: " + p.c + ". " + p.k + ".");
+  }
+  function showRandomPromise() {
+    var i;
+    do { i = Math.floor(Math.random() * PROMESAS.length); } while (i === lastProm && PROMESAS.length > 1);
+    lastProm = i;
+    var p = PROMESAS[i], box = $("prom-today");
+    box.textContent = "";
+    box.appendChild(el("p", "k", "Tu promesa de hoy · " + p.k));
+    box.appendChild(el("h3", null, p.t));
+    box.appendChild(el("p", "cita", p.c));
+    var row = el("div", "row");
+    var a = el("button", "btn", "Conversar sobre esta promesa");
+    a.type = "button"; a.addEventListener("click", function () { talkAbout(p); });
+    row.appendChild(a);
+    box.appendChild(row);
+    box.hidden = false;
+    $("prom-random").textContent = "Ver otra promesa";
+  }
+  $("prom-random").addEventListener("click", showRandomPromise);
 
   $("verse-today").addEventListener("click", function () { ask(TODAY); });
 
