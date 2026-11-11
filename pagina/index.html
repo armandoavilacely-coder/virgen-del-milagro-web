@@ -224,7 +224,7 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .postal .p-sign { margin: 2cqw 0 0; font-family: var(--font-serif); font-style: italic; font-size: 4.4cqw; color: var(--gold-ink); }
 .dia-prayer .k { margin: 0 0 10px; font-size: 13px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-ink); }
 .dia-text { margin: 0 0 22px; font-family: var(--font-serif); font-style: italic; font-size: clamp(22px, 2.3vw, 27px); line-height: 1.45; }
-.dia-maria { margin: 0 0 24px; padding: 20px 22px; border-radius: 20px; background: var(--card); border: 1px solid var(--line); }
+.dia-maria { margin: 0 0 16px; padding: 20px 22px; border-radius: 20px; background: var(--card); border: 1px solid var(--line); }
 .dia-text.maria { margin: 0; font-size: clamp(20px, 2vw, 23px); }
 .dia-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .dia-actions .btn { cursor: pointer; padding: 11px 22px; font-size: 15px; box-shadow: none; }
@@ -432,7 +432,7 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
     <div class="sec-head">
       <p class="eyebrow" id="dia-fecha">Hoy</p>
       <h2 class="script">Oración del día</h2>
-      <p class="lede">Una oración distinta cada día, con un tema para tu corazón y una oración a la Virgen María.</p>
+      <p class="lede">Una oración distinta cada día, con un tema para tu corazón y siempre al final el Ave María y la Salve.</p>
     </div>
     <div class="dia-grid">
       <div class="postal" id="postal">
@@ -448,10 +448,7 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
       <div class="dia-prayer">
         <p class="k" id="dia-tema"></p>
         <p class="dia-text" id="dia-texto"></p>
-        <div class="dia-maria">
-          <p class="k" id="dia-maria-titulo"></p>
-          <p class="dia-text maria" id="dia-maria-texto"></p>
-        </div>
+        <div id="dia-marias"></div>
         <div class="dia-actions">
           <button class="btn" id="dia-copy" type="button">Copiar oración</button>
         </div>
@@ -1110,21 +1107,30 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
   /* Oraciones a la Virgen María (textos tradicionales) y una propia; una distinta cada día */
   var MARIAS = [
     { t: "Oración a la Virgen del Milagro", p: "Virgen del Milagro, Madre de Dios y Madre nuestra, patrona de Tunja: hoy vengo a ponerme bajo tu manto. Tú conoces mis alegrías y mis penas, lo que digo y lo que callo. Preséntale a Jesús mis necesidades y las de mi familia, y alcánzame la gracia de confiar, de perdonar y de amar. Cuida nuestra ciudad, nuestros hogares y a todos los que sufren. Que cada día de mi vida sea un pequeño milagro de tu Hijo. Amén." },
-    { t: "Ave María", p: "Dios te salve, María, llena eres de gracia, el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén." },
     { t: "Bajo tu amparo", p: "Bajo tu amparo nos acogemos, santa Madre de Dios; no desprecies las súplicas que te dirigimos en nuestras necesidades, antes bien líbranos de todo peligro, oh Virgen gloriosa y bendita. Amén." },
-    { t: "Acordaos", p: "Acordaos, oh piadosísima Virgen María, que jamás se ha oído decir que ninguno de los que han acudido a vuestra protección, implorando vuestra asistencia y reclamando vuestro socorro, haya sido abandonado de vos. Animado por esta confianza, a vos acudo, oh Madre, Virgen entre las vírgenes; a vos vengo, y gimiendo bajo el peso de mis pecados me atrevo a comparecer ante vuestra presencia soberana. No desechéis mis súplicas, oh Madre del Verbo divino; antes bien, escuchadlas y acogedlas benignamente. Amén." },
-    { t: "Salve", p: "Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra; Dios te salve. A ti llamamos los desterrados hijos de Eva; a ti suspiramos, gimiendo y llorando en este valle de lágrimas. Ea, pues, Señora, abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y después de este destierro, muéstranos a Jesús, fruto bendito de tu vientre. ¡Oh clemente, oh piadosa, oh dulce Virgen María! Ruega por nosotros, santa Madre de Dios, para que seamos dignos de alcanzar las promesas de nuestro Señor Jesucristo. Amén." }
+    { t: "Acordaos", p: "Acordaos, oh piadosísima Virgen María, que jamás se ha oído decir que ninguno de los que han acudido a vuestra protección, implorando vuestra asistencia y reclamando vuestro socorro, haya sido abandonado de vos. Animado por esta confianza, a vos acudo, oh Madre, Virgen entre las vírgenes; a vos vengo, y gimiendo bajo el peso de mis pecados me atrevo a comparecer ante vuestra presencia soberana. No desechéis mis súplicas, oh Madre del Verbo divino; antes bien, escuchadlas y acogedlas benignamente. Amén." }
+  ];
+  /* Siempre al final, completas: Ave María y Salve */
+  var FIJAS = [
+    { t: "Dios te salve, María (Ave María)", p: "Dios te salve, María, llena eres de gracia, el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén." },
+    { t: "Dios te salve, Reina y Madre (Salve)", p: "Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra; Dios te salve. A ti llamamos los desterrados hijos de Eva; a ti suspiramos, gimiendo y llorando en este valle de lágrimas. Ea, pues, Señora, abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y después de este destierro, muéstranos a Jesús, fruto bendito de tu vientre. ¡Oh clemente, oh piadosa, oh dulce Virgen María! Ruega por nosotros, santa Madre de Dios, para que seamos dignos de alcanzar las promesas de nuestro Señor Jesucristo. Amén." }
   ];
   function renderDia() {
     var d = new Date();
-    var n = dayNumber(d), o = ORACIONES[n % ORACIONES.length], mm = MARIAS[n % MARIAS.length], m = MOODS[n % MOODS.length];
+    var n = dayNumber(d), o = ORACIONES[n % ORACIONES.length], mm = MARIAS[n % MARIAS.length], todas = [mm].concat(FIJAS), m = MOODS[n % MOODS.length];
     $("dia-fecha").textContent = DIAS[d.getDay()] + " " + d.getDate() + " de " + MESES[d.getMonth()];
     $("dia-titulo").textContent = o.t; $("dia-frase").textContent = o.f;
     $("dia-tema").textContent = "Tema de hoy: " + o.t; $("dia-texto").textContent = o.p;
-    $("dia-maria-titulo").textContent = mm.t; $("dia-maria-texto").textContent = mm.p;
+    var box = $("dia-marias"); box.textContent = "";
+    todas.forEach(function (x) {
+      var w = el("div", "dia-maria");
+      w.appendChild(el("p", "k", x.t));
+      w.appendChild(el("p", "dia-text maria", x.p));
+      box.appendChild(w);
+    });
     var pc = $("postal"); pc.style.setProperty("--pa", m[0]); pc.style.setProperty("--pb", m[1]); pc.style.setProperty("--pc", m[2]);
     $("dia-copy").onclick = function () {
-      var txt = o.t + "\n\n" + o.p + "\n\n" + mm.t + "\n\n" + mm.p + "\n\n— Virgen del Milagro de Tunja";
+      var txt = o.t + "\n\n" + o.p + "\n\n" + todas.map(function (x) { return x.t + "\n\n" + x.p; }).join("\n\n") + "\n\n— Virgen del Milagro de Tunja";
       var ok = function () { $("dia-msg").textContent = "Oración copiada."; };
       var fail = function () { $("dia-msg").textContent = "No se pudo copiar: selecciona el texto y cópialo."; };
       try { navigator.clipboard.writeText(txt).then(ok, fail); } catch (e) { fail(); }
