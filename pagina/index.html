@@ -1,3 +1,6 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Virgen del Milagro</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Great+Vibes&family=Nunito+Sans:wght@400;600;700&display=swap">
@@ -231,6 +234,41 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .dia-actions .more { background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 10px 16px; font-size: 14px; font-weight: 600; }
 @media (max-width: 900px) { .dia-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; } .postal { max-width: 440px; margin-inline: auto; width: 100%; } }
 
+/* Santo Rosario */
+.ros-sec { background: var(--chat-bg); padding-block: 96px; }
+.ros-card { max-width: 46rem; margin: 0 auto; padding: 30px 30px 26px; border-radius: 26px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 20px 48px var(--shadow); }
+.ros-tabs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 14px; }
+.ros-tabs button { cursor: pointer; border: 1px solid var(--line); background: var(--card-solid); color: var(--soft); border-radius: 999px; padding: 8px 16px; font: inherit; font-size: 14px; font-weight: 700; }
+.ros-tabs button.on { background: var(--btn-bg); color: var(--btn-ink); border-color: transparent; }
+.ros-tabs button small { font-weight: 600; opacity: 0.85; }
+.ros-sub { margin: 0 0 14px; text-align: center; font-size: 14px; color: var(--soft); }
+.ros-prog { height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; margin-bottom: 22px; }
+.ros-prog div { height: 100%; width: 0; background: var(--btn-bg); border-radius: 99px; transition: width 0.4s ease; }
+.ros-step { min-height: 15rem; display: flex; flex-direction: column; gap: 10px; }
+.ros-step .k { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-ink); }
+.ros-step h3 { margin: 0; font-family: var(--font-serif); font-size: clamp(26px, 3.2vw, 34px); line-height: 1.15; }
+.ros-med { margin: 0; font-size: 16px; color: var(--soft); line-height: 1.5; }
+.ros-txt { margin: 0; font-family: var(--font-serif); font-style: italic; font-size: clamp(20px, 2.2vw, 24px); line-height: 1.5; }
+.ros-beads { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.ros-beads i { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--gold-ink); background: transparent; transition: background 0.2s, transform 0.2s; }
+.ros-beads i.on { background: radial-gradient(circle at 35% 30%, #FFF1B8, #C9962E); transform: scale(1.08); }
+.ros-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-top: 20px; }
+.ros-actions .btn { cursor: pointer; padding: 12px 26px; font-size: 16px; box-shadow: none; }
+.ros-actions .btn:disabled { opacity: 0.5; cursor: default; }
+.ros-actions .more { cursor: pointer; background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 10px 16px; font: inherit; font-size: 14px; font-weight: 600; color: var(--soft); }
+
+/* Testimonios */
+.test-sec { background: var(--band); padding-block: 96px; }
+.test-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto 48px; }
+.t-card { margin: 0; padding: 24px 24px 20px; border-radius: 22px; background: var(--card-solid); border: 1px solid var(--line); box-shadow: 0 12px 30px var(--shadow); display: flex; flex-direction: column; gap: 12px; }
+.t-card p { margin: 0; font-family: var(--font-serif); font-style: italic; font-size: 21px; line-height: 1.45; white-space: pre-line; overflow-wrap: anywhere; }
+.t-card cite { font-style: normal; font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-ink); }
+.test-empty { grid-column: 1 / -1; text-align: center; color: var(--soft); font-size: 17px; }
+.subs-card textarea { width: 100%; min-height: 150px; resize: vertical; background: var(--field); border: 1px solid var(--line); border-radius: 14px; padding: 12px 15px; font: inherit; line-height: 1.5; color: var(--ink); }
+.t-who { display: flex; flex-wrap: wrap; gap: 16px; font-size: 15px; font-weight: 600; color: var(--soft); }
+.t-who label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+.t-count { font-size: 12px; font-weight: 600; color: var(--soft); text-align: right; }
+
 /* Promesas de Dios */
 .prom-sec { background: var(--chat-bg); padding-block: 96px; }
 .prom { gap: 22px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); }
@@ -310,6 +348,7 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
   .subs-card { padding: 26px 20px; }
 }
 </style>
+</head><body>
 
 <header class="hero" id="inicio">
   <div class="wrap">
@@ -324,7 +363,9 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
       </a>
       <nav class="menu" aria-label="Principal">
         <a class="hide-s" href="#oracion-dia">Oración del día</a>
+        <a class="hide-s" href="#rosario">Rosario</a>
         <a class="hide-s" href="#fiesta">La fiesta</a>
+        <a class="hide-s" href="#testimonios">Testimonios</a>
         <a class="hide-s" href="#palabra">Palabra del día</a>
         <a class="hide-s" href="#comunidad">Comunidad</a>
         <a class="pill" href="#chat">Pregúntale a la Palabra</a>
@@ -459,6 +500,32 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
   </div>
 </section>
 
+<section class="ros-sec" id="rosario">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow" id="ros-dia">Hoy</p>
+      <h2 class="script">Santo Rosario</h2>
+      <p class="lede">Reza el Rosario cada día, paso a paso, con los misterios que corresponden a hoy.</p>
+    </div>
+    <div class="ros-card">
+      <div class="ros-tabs" id="ros-tabs" role="group" aria-label="Misterios"></div>
+      <p class="ros-sub" id="ros-sub"></p>
+      <div class="ros-prog" aria-hidden="true"><div id="ros-bar"></div></div>
+      <div class="ros-step" aria-live="polite">
+        <p class="k" id="ros-k"></p>
+        <h3 id="ros-t"></h3>
+        <p class="ros-med" id="ros-med"></p>
+        <p class="ros-txt" id="ros-txt"></p>
+        <div class="ros-beads" id="ros-beads" aria-hidden="true"></div>
+      </div>
+      <div class="ros-actions">
+        <button class="more" id="ros-prev" type="button">← Atrás</button>
+        <button class="btn" id="ros-next" type="button">Comenzar</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="prom-sec" id="promesas">
   <div class="wrap">
     <div class="sec-head">
@@ -506,6 +573,33 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
       </div>
     </div>
     <p class="sources">Datos: Noticias RCN (2020) y Policía Nacional (2018).</p>
+  </div>
+</section>
+
+<section class="test-sec" id="testimonios">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Fe viva</p>
+      <h2 class="script">Testimonios de fe</h2>
+      <p class="lede">Cuéntanos lo que Dios y la Virgen han hecho en tu vida. Puedes enviarlo con tu nombre o de forma anónima.</p>
+    </div>
+    <div class="test-list" id="test-list" aria-live="polite"></div>
+    <div class="subs-card">
+      <form id="tst" novalidate>
+        <label class="f">Tu testimonio<textarea id="t-text" maxlength="900" placeholder="Escribe aquí cómo la fe te sostuvo, qué gracia recibiste…"></textarea></label>
+        <div class="t-count" id="t-count">0 / 900</div>
+        <div class="t-who" role="radiogroup" aria-label="Cómo quieres publicarlo">
+          <label><input type="radio" name="t-who" value="anon" checked> Publicar como anónimo</label>
+          <label><input type="radio" name="t-who" value="name"> Con mi nombre</label>
+        </div>
+        <label class="f" id="t-name-w" hidden>Tu nombre (como quieres que aparezca)<input type="text" id="t-name" maxlength="40" autocomplete="given-name"></label>
+        <div class="hp" aria-hidden="true"><label>No llenes esto<input type="text" id="t-web" tabindex="-1" autocomplete="off"></label></div>
+        <label class="chk"><input type="checkbox" id="t-ok"><span>Autorizo que mi testimonio se publique en esta página y en las redes de la Virgen del Milagro, con mi nombre o como anónimo según lo que elegí.</span></label>
+        <p class="fine" style="margin:0">Cada testimonio se revisa antes de publicarse. No escribas teléfonos, direcciones, enlaces ni datos de salud de otras personas.</p>
+        <p class="subs-msg" id="t-msg" role="status" hidden></p>
+        <button class="btn" id="t-btn" type="submit">Enviar mi testimonio</button>
+      </form>
+    </div>
   </div>
 </section>
 
@@ -609,7 +703,9 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
       <a href="#chat">Chat bíblico</a>
       <a href="#oracion-dia">Oración del día</a>
       <a href="#oracion">Rezar</a>
+      <a href="#rosario">Santo Rosario</a>
       <a href="#promesas">Promesas</a>
+      <a href="#testimonios">Testimonios</a>
       <a href="#fiesta">La fiesta</a>
       <a href="#palabra">Palabra del día</a>
       <a href="#visita">Visita Tunja</a>
@@ -675,6 +771,7 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
   /* WhatsApp con indicativo y sin signos, por ejemplo "573001234567". */
   var WHATSAPP = "";
   var SUBS_ENDPOINT = "https://www.concursosdelestado.com/acceso/suscribir_virgen.php";
+  var TESTI_ENDPOINT = "https://www.concursosdelestado.com/acceso/testimonios_virgen.php";
   /* Recuerdos: { name: "Estampita dorada", desc: "Tamaño bolsillo", price: "$3.000" } */
   var PRODUCTS = [];
   /* Patrocinadores: { name: "Hotel X", desc: "Frente a la plaza", url: "https://..." } */
@@ -764,6 +861,135 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
         .then(function (d) {
           if (d && d.ok) { say("¡Listo! Quedaste inscrito. Que la Virgen te acompañe."); f.reset(); }
           else say((d && d.r) || "No pudimos guardar tus datos. Intenta de nuevo en un momento.", true);
+        })
+        .catch(function () { say("No hay conexión en este momento. Intenta de nuevo.", true); })
+        .then(function () { btn.disabled = false; });
+    });
+  })();
+
+  /* Santo Rosario: misterios del día y guía paso a paso */
+  (function () {
+    var FJ = (window.VG && window.VG.FIJAS) || [], AVE = FJ[0] ? FJ[0].p : "", SALVE = FJ[1] ? FJ[1].p : "";
+    var SENAL = "Por la señal de la santa cruz, de nuestros enemigos líbranos, Señor, Dios nuestro. En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.";
+    var CREDO = "Creo en Dios, Padre todopoderoso, Creador del cielo y de la tierra. Creo en Jesucristo, su único Hijo, nuestro Señor, que fue concebido por obra y gracia del Espíritu Santo, nació de santa María Virgen, padeció bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendió a los infiernos, al tercer día resucitó de entre los muertos, subió a los cielos y está sentado a la derecha de Dios, Padre todopoderoso. Desde allí ha de venir a juzgar a vivos y muertos. Creo en el Espíritu Santo, la santa Iglesia católica, la comunión de los santos, el perdón de los pecados, la resurrección de la carne y la vida eterna. Amén.";
+    var PADRE = "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.";
+    var GLORIA = "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.";
+    var FATIMA = "Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia. Amén.";
+    var FINAL = "Oh Dios, cuyo Hijo único, por su vida, muerte y resurrección, nos ha conseguido el premio de la salvación eterna, concédenos, te rogamos, que, meditando estos misterios del santísimo Rosario de la bienaventurada Virgen María, imitemos lo que contienen y alcancemos lo que prometen. Por el mismo Cristo nuestro Señor. Amén.";
+    var SETS = {
+      gozosos: { n: "Gozosos", dias: "lunes y sábado", m: [
+        ["La Anunciación del ángel a María", "Lc 1,26-38 · Fruto: la humildad"],
+        ["La Visitación de María a su prima Isabel", "Lc 1,39-56 · Fruto: el amor al prójimo"],
+        ["El Nacimiento de Jesús en Belén", "Lc 2,1-20 · Fruto: el desapego y la pobreza de espíritu"],
+        ["La Presentación del Niño Jesús en el templo", "Lc 2,22-38 · Fruto: la obediencia"],
+        ["El Niño Jesús perdido y hallado en el templo", "Lc 2,41-50 · Fruto: buscar a Jesús en todo"] ] },
+      luminosos: { n: "Luminosos", dias: "jueves", m: [
+        ["El Bautismo de Jesús en el Jordán", "Mt 3,13-17 · Fruto: ser hijos amados de Dios"],
+        ["Las bodas de Caná", "Jn 2,1-12 · Fruto: acudir a María con confianza"],
+        ["El anuncio del Reino y el llamado a la conversión", "Mc 1,14-15 · Fruto: el arrepentimiento y la confianza en Dios"],
+        ["La Transfiguración del Señor", "Lc 9,28-36 · Fruto: el deseo de santidad"],
+        ["La institución de la Eucaristía", "Lc 22,14-20 · Fruto: el amor a la Eucaristía"] ] },
+      dolorosos: { n: "Dolorosos", dias: "martes y viernes", m: [
+        ["La oración de Jesús en el huerto", "Lc 22,39-46 · Fruto: aceptar la voluntad de Dios"],
+        ["La flagelación de Jesús", "Jn 19,1 · Fruto: la mortificación y la paciencia"],
+        ["La coronación de espinas", "Mt 27,27-31 · Fruto: la humildad y el valor ante el desprecio"],
+        ["Jesús con la cruz a cuestas", "Jn 19,17 · Fruto: llevar con paciencia nuestras cruces"],
+        ["La crucifixión y muerte de Jesús", "Lc 23,33-46 · Fruto: el perdón y la entrega"] ] },
+      gloriosos: { n: "Gloriosos", dias: "miércoles y domingo", m: [
+        ["La Resurrección del Señor", "Mt 28,1-10 · Fruto: la fe"],
+        ["La Ascensión de Jesús al cielo", "Hch 1,6-11 · Fruto: la esperanza y el deseo del cielo"],
+        ["La venida del Espíritu Santo", "Hch 2,1-13 · Fruto: el amor a Dios y el celo por las almas"],
+        ["La Asunción de María al cielo", "Ap 12,1 · Fruto: la gracia de una buena muerte"],
+        ["La coronación de María como Reina del cielo y de la tierra", "Ap 12,1 · Fruto: la confianza en su intercesión"] ] }
+    };
+    var ORDEN = ["gozosos", "luminosos", "dolorosos", "gloriosos"], ORD = ["Primer", "Segundo", "Tercer", "Cuarto", "Quinto"];
+    var DEL_DIA = ["gloriosos", "gozosos", "dolorosos", "gloriosos", "luminosos", "dolorosos", "gozosos"];
+    var hoyD = new Date().getDay(), hoyKey = DEL_DIA[hoyD], cur = hoyKey, steps = [], idx = 0, cnt = 0;
+    var DIAS_N = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+    $("ros-dia").textContent = "Hoy es " + DIAS_N[hoyD] + " · Misterios " + SETS[hoyKey].n.toLowerCase();
+
+    function build(key) {
+      var S = SETS[key], a = [];
+      a.push({ k: "Inicio", t: "Señal de la cruz", x: SENAL });
+      a.push({ k: "Inicio", t: "Credo", x: CREDO });
+      a.push({ k: "Cuenta grande", t: "Padre Nuestro", x: PADRE });
+      a.push({ k: "Tres cuentas pequeñas", t: "Tres Ave Marías", med: "Por el aumento de la fe, de la esperanza y de la caridad.", x: AVE, n: 3 });
+      a.push({ k: "Inicio", t: "Gloria", x: GLORIA });
+      S.m.forEach(function (m, i) {
+        var k = ORD[i] + " misterio " + S.n.toLowerCase().replace(/s$/, "");
+        a.push({ k: k + " · " + (i + 1) + " de 5", t: m[0], med: m[1] + ". Haz un momento de silencio y medita este misterio.", x: "", mist: true });
+        a.push({ k: "Misterio " + (i + 1), t: "Padre Nuestro", x: PADRE });
+        a.push({ k: "Misterio " + (i + 1), t: "Diez Ave Marías", med: m[0], x: AVE, n: 10 });
+        a.push({ k: "Misterio " + (i + 1), t: "Gloria", x: GLORIA });
+        a.push({ k: "Misterio " + (i + 1), t: "Oración de Fátima", x: FATIMA });
+      });
+      a.push({ k: "Final", t: "Dios te salve, Reina y Madre", x: SALVE });
+      a.push({ k: "Final", t: "Oración final", x: FINAL });
+      a.push({ k: "Final", t: "Señal de la cruz", med: "Has terminado el Santo Rosario. Que la Virgen del Milagro te acompañe hoy.", x: "En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén." });
+      return a;
+    }
+    function draw() {
+      var st = steps[idx], bar = $("ros-bar");
+      bar.style.width = Math.round(idx / (steps.length - 1) * 100) + "%";
+      $("ros-k").textContent = st.k; $("ros-t").textContent = st.t; $("ros-med").textContent = st.med || ""; $("ros-txt").textContent = st.x || "";
+      var b = $("ros-beads"); b.textContent = "";
+      if (st.n) for (var i = 0; i < st.n; i++) b.appendChild(el("i", i < cnt ? "on" : ""));
+      var nx = $("ros-next"), done = idx === steps.length - 1;
+      $("ros-prev").style.visibility = idx === 0 ? "hidden" : "visible";
+      if (st.n && cnt < st.n) { nx.textContent = "Recé un Ave María (" + cnt + "/" + st.n + ")"; }
+      else if (done) nx.textContent = "Volver a empezar";
+      else nx.textContent = idx === 0 ? "Comenzar" : (st.n ? "Continuar" : "Amén, siguiente");
+    }
+    function setKey(k) {
+      cur = k; steps = build(k); idx = 0; cnt = 0;
+      var t = $("ros-tabs"); t.textContent = "";
+      ORDEN.forEach(function (o) {
+        var b = el("button", o === k ? "on" : "", "Misterios " + SETS[o].n.toLowerCase()); b.type = "button"; b.setAttribute("aria-pressed", o === k ? "true" : "false");
+        if (o === hoyKey) { var sm = el("small", null, " · hoy"); b.appendChild(sm); }
+        b.onclick = function () { setKey(o); };
+        t.appendChild(b);
+      });
+      $("ros-sub").textContent = "Se rezan los " + SETS[k].dias + (k === hoyKey ? " (y hoy)." : ".") + " Recuerda: el Rosario completo son cinco misterios.";
+      draw();
+    }
+    $("ros-next").addEventListener("click", function () {
+      var st = steps[idx];
+      if (st.n && cnt < st.n) { cnt++; draw(); return; }
+      if (idx === steps.length - 1) { setKey(cur); return; }
+      idx++; cnt = 0; draw();
+      var c = $("rosario"); if (c.getBoundingClientRect().top < 0) c.scrollIntoView({ block: "start" });
+    });
+    $("ros-prev").addEventListener("click", function () { if (idx > 0) { idx--; cnt = steps[idx].n || 0; draw(); } });
+    setKey(cur);
+  })();
+
+  /* Testimonios de fe */
+  (function () {
+    var list = $("test-list"), f = $("tst"), msg = $("t-msg"), btn = $("t-btn"), ta = $("t-text");
+    function empty() { list.textContent = ""; list.appendChild(el("p", "test-empty", "Aún no hay testimonios publicados. ¡Sé la primera persona en compartir el tuyo!")); }
+    fetch(TESTI_ENDPOINT).then(function (r) { return r.json(); }).then(function (d) {
+      if (!d || !d.ok || !d.items || !d.items.length) { empty(); return; }
+      list.textContent = "";
+      d.items.forEach(function (t) {
+        var c = el("figure", "t-card"); c.appendChild(el("p", null, "“" + t.t + "”")); c.appendChild(el("cite", null, t.n || "Anónimo")); list.appendChild(c);
+      });
+    }).catch(empty);
+    function who() { return f.querySelector("input[name=t-who]:checked").value; }
+    Array.prototype.forEach.call(f.querySelectorAll("input[name=t-who]"), function (r) { r.addEventListener("change", function () { $("t-name-w").hidden = who() !== "name"; }); });
+    ta.addEventListener("input", function () { $("t-count").textContent = ta.value.length + " / 900"; });
+    function say(t, bad) { msg.textContent = t; msg.className = "subs-msg" + (bad ? " bad" : ""); msg.hidden = false; }
+    f.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var text = ta.value.trim(), anon = who() === "anon", name = $("t-name").value.trim();
+      if (text.length < 40) { say("Cuéntanos un poco más (al menos 40 letras).", true); return; }
+      if (!anon && !name) { say("Escribe tu nombre o elige publicarlo como anónimo.", true); return; }
+      if (!$("t-ok").checked) { say("Marca la casilla para autorizar la publicación.", true); return; }
+      btn.disabled = true;
+      fetch(TESTI_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: text, anon: anon, name: anon ? "" : name, web: $("t-web").value, consent: true }) })
+        .then(function (r) { return r.json().catch(function () { return {}; }); })
+        .then(function (d) {
+          if (d && d.ok) { say("¡Gracias por compartir tu fe! Revisaremos tu testimonio y lo publicaremos pronto."); f.reset(); $("t-name-w").hidden = true; $("t-count").textContent = "0 / 900"; }
+          else say((d && d.r) || "No pudimos guardar tu testimonio. Intenta de nuevo en un momento.", true);
         })
         .catch(function () { say("No hay conexión en este momento. Intenta de nuevo.", true); })
         .then(function () { btn.disabled = false; });
@@ -1194,3 +1420,4 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
   });
 })();
 </script>
+</body></html>

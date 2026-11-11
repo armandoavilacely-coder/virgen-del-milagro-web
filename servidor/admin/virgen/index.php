@@ -12,6 +12,7 @@ if (!$S || ($S['role'] ?? '') !== 'admin') { header('Location: /admin/'); exit; 
 
 $subsF = ce_dir() . '/virgen_suscriptores.jsonl';
 $pagosF = ce_dir() . '/virgen_pagos.jsonl';
+$testF = ce_dir() . '/virgen_testimonios.jsonl';
 
 function vg_read($f) {
     $out = [];
@@ -35,7 +36,7 @@ if ($act !== '') {
     if (($_SERVER['HTTP_X_VG'] ?? '') !== '1' || ($og && $og !== preg_replace('/:\d+$/', '', $host))) vg_json(['ok' => false, 'e' => 'csrf'], 403);
     $in = json_decode(file_get_contents('php://input'), true) ?: [];
     if ($act === 'datos') {
-        vg_json(['ok' => true, 'subs' => vg_read($subsF), 'pagos' => vg_read($pagosF)]);
+        vg_json(['ok' => true, 'subs' => vg_read($subsF), 'pagos' => vg_read($pagosF), 'tests' => vg_read($testF)]);
     }
     if ($act === 'pago_add') {
         $monto = (int)preg_replace('/\D/', '', (string)($in['monto'] ?? ''));
@@ -62,6 +63,22 @@ if ($act !== '') {
         $k = strtolower((string)($in['k'] ?? ''));
         $rows = array_values(array_filter(vg_read($subsF), fn($r) => ($r['email'] ?? '') . '|' . ($r['wa'] ?? '') !== $k));
         vg_write($subsF, $rows); vg_json(['ok' => true, 'subs' => $rows]);
+    }
+    if ($act === 'test_set') {   // aprobar / ocultar / editar el texto
+        $id = (string)($in['id'] ?? ''); $rows = vg_read($testF);
+        foreach ($rows as &$r) {
+            if (($r['id'] ?? '') !== $id) continue;
+            if (isset($in['estado']) && in_array($in['estado'], ['aprobado', 'pendiente'], true)) { $r['estado'] = $in['estado']; if ($in['estado'] === 'aprobado' && empty($r['pub'])) $r['pub'] = date('c'); }
+            if (isset($in['text'])) { $t = trim(mb_substr(strip_tags((string)$in['text']), 0, 900)); if ($t !== '') $r['text'] = $t; }
+            if (isset($in['anon'])) { $r['anon'] = (bool)$in['anon']; }
+        }
+        unset($r);
+        vg_write($testF, $rows); vg_json(['ok' => true, 'tests' => $rows]);
+    }
+    if ($act === 'test_del') {
+        $id = (string)($in['id'] ?? '');
+        $rows = array_values(array_filter(vg_read($testF), fn($r) => ($r['id'] ?? '') !== $id));
+        vg_write($testF, $rows); vg_json(['ok' => true, 'tests' => $rows]);
     }
     vg_json(['ok' => false], 404);
 }
@@ -111,7 +128,7 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
 <script>
 (function () {
   "use strict";
-  var VG = window.VG, D = { subs: [], pagos: [] }, tab = "resumen";
+  var VG = window.VG, D = { subs: [], pagos: [], tests: [] }, tab = "resumen";
   function $(id) { return document.getElementById(id); }
   function el(t, c, x) { var n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; }
   function money(n) { return "$" + Number(n || 0).toLocaleString("es-CO"); }
@@ -119,13 +136,13 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
     return fetch("?a=" + a, { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-VG": "1" }, body: JSON.stringify(body || {}) })
       .then(function (r) { return r.json(); });
   }
-  function load() { return api("datos").then(function (d) { if (d.ok) { D.subs = d.subs; D.pagos = d.pagos; } render(); }); }
-  var TABS = [["resumen", "Resumen"], ["usuarios", "Suscriptores"], ["pagos", "Pagos"], ["publicidad", "Publicidad"]];
+  function load() { return api("datos").then(function (d) { if (d.ok) { D.subs = d.subs; D.pagos = d.pagos; D.tests = d.tests || []; } render(); }); }
+  var TABS = [["resumen", "Resumen"], ["usuarios", "Suscriptores"], ["pagos", "Pagos"], ["publicidad", "Publicidad"], ["testimonios", "Testimonios"]];
   function drawTabs() {
     var n = $("tabs"); n.textContent = "";
     TABS.forEach(function (t) { var b = el("button", t[0] === tab ? "on" : "", t[1]); b.onclick = function () { tab = t[0]; render(); }; n.appendChild(b); });
   }
-  function render() { drawTabs(); var m = $("main"); m.textContent = ""; ({ resumen: vResumen, usuarios: vUsuarios, pagos: vPagos, publicidad: vPub })[tab](m); }
+  function render() { drawTabs(); var m = $("main"); m.textContent = ""; ({ resumen: vResumen, usuarios: vUsuarios, pagos: vPagos, publicidad: vPub, testimonios: vTest })[tab](m); }
 
   /* ---------- helpers de pagos ---------- */
   function mesActual() { return new Date().toISOString().slice(0, 7); }
@@ -218,6 +235,36 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
     var help = el("div", "muted");
     help.innerHTML = "<p><b>Para que Wompi registre los pagos solo:</b> en Wompi, Desarrolladores → URL de eventos, pega <code>https://www.concursosdelestado.com/acceso/wompi_virgen.php</code>. Luego copia el «Secreto de eventos» y guárdalo tú mismo en un archivo llamado <code>wompi_eventos.key</code> dentro de la carpeta <code>ce_data</code> del servidor (el secreto no debe pasar por el chat ni por git).</p>";
     m.appendChild(help);
+  }
+
+  /* ---------- Testimonios (moderación) ---------- */
+  function vTest(m) {
+    m.appendChild(el("h2", null, "Testimonios de fe"));
+    var pend = D.tests.filter(function (t) { return t.estado !== "aprobado"; }).length;
+    m.appendChild(el("p", "muted", "Nada se publica hasta que lo apruebas aquí. Pendientes: " + pend + " · Publicados: " + (D.tests.length - pend) + ". Puedes corregir ortografía antes de aprobar."));
+    if (!D.tests.length) { m.appendChild(el("p", "muted", "Todavía no hay testimonios enviados.")); return; }
+    var list = el("div", "posts");
+    D.tests.slice().reverse().forEach(function (t) {
+      var ap = t.estado === "aprobado", box = el("div", "post");
+      var quien = t.anon ? "Anónimo" : (t.name || "Anónimo");
+      box.appendChild(el("h3", null, quien + " · " + (t.ts || "").slice(0, 10)));
+      box.appendChild(el("span", ap ? "ok" : "bad", ap ? "Publicado en la página" : "Pendiente de revisión"));
+      var ta = el("textarea"); ta.style.minHeight = "130px"; ta.value = t.text || ""; box.appendChild(ta);
+      var r = el("div", "row2");
+      var b1 = el("button", "b", ap ? "Dejar de publicar" : "Aprobar y publicar");
+      b1.onclick = function () { api("test_set", { id: t.id, estado: ap ? "pendiente" : "aprobado", text: ta.value }).then(function (d) { if (d.ok) { D.tests = d.tests; render(); } }); };
+      var b2 = el("button", "g", "Guardar texto"); b2.onclick = function () { api("test_set", { id: t.id, text: ta.value }).then(function (d) { if (d.ok) { D.tests = d.tests; b2.textContent = "¡Guardado!"; setTimeout(function () { b2.textContent = "Guardar texto"; }, 1200); } }); };
+      var b3 = el("button", "g", t.anon ? "Mostrar nombre" : "Hacer anónimo");
+      if (t.anon && !t.name) b3.disabled = true;
+      b3.onclick = function () { api("test_set", { id: t.id, anon: !t.anon }).then(function (d) { if (d.ok) { D.tests = d.tests; render(); } }); };
+      var b4 = el("button", "g", "Copiar para Facebook");
+      b4.onclick = function () { copy("🙏 Testimonio de fe\n\n“" + ta.value + "”\n\n— " + quien + "\n\n❤️ Virgen del Milagro ❤️\n\n#VirgenDelMilagro #Tunja #TestimonioDeFe #Fe @seguidores", b4); };
+      var b5 = el("button", "x", "Borrar");
+      b5.onclick = function () { if (b5.dataset.s) { api("test_del", { id: t.id }).then(function (d) { if (d.ok) { D.tests = d.tests; render(); } }); } else { b5.dataset.s = "1"; b5.textContent = "¿Seguro? Toca otra vez"; } };
+      [b1, b2, b3, b4, b5].forEach(function (b) { r.appendChild(b); });
+      box.appendChild(r); list.appendChild(box);
+    });
+    m.appendChild(list);
   }
 
   /* ---------- Publicidad ---------- */

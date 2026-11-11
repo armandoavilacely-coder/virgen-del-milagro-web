@@ -18,3 +18,8 @@ Sitio: www.virgendelmilagro.co (HostGator, cPanel de concursosdelestado.com, dom
 - Panel: `servidor/admin/virgen/index.php` (en `/admin/virgen/` de concursosdelestado.com; usa el mismo inicio de sesión de `/admin/`). Pestañas: resumen, suscriptores, pagos (solo Wompi) y publicidad por día (imagen + 4 textos por publicación, 3 al día).
 - `wompi_virgen.php` recibe los eventos de Wompi y registra los pagos aprobados; necesita el secreto de eventos en `ce_data/wompi_eventos.key` (lo guarda el dueño en el servidor, nunca en git).
 - `pagina/contenido.js` tiene las oraciones, tarde y noche hasta el 31 de diciembre; lo usan la página y el panel.
+
+## Testimonios y Rosario
+- `servidor/acceso/testimonios_virgen.php`: recibe testimonios (anónimos o con nombre) como *pendientes*; el GET público solo devuelve los aprobados. Se aprueban en el panel, pestaña Testimonios.
+- Sección `#rosario` en la página: misterios del día (lun/sáb gozosos, mar/vie dolorosos, mié/dom gloriosos, jue luminosos) con guía paso a paso.
+- `pagina/index.html` es un documento completo (doctype, charset, viewport). Para el artifact se quita ese esqueleto.
