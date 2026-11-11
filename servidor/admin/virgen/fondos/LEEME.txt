@@ -1,0 +1,1 @@
+Aquí van los fondos: manana-1.jpg, tarde-1.jpg, noche-1.jpg (1080x1350). Luego ajusta FONDOS en index.php.

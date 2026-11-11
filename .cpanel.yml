@@ -14,3 +14,5 @@ deployment:
     - /bin/cp -f servidor/acceso/suscribir_virgen.php $H/concursosdelestado.com/acceso/suscribir_virgen.php
     - /bin/cp -f servidor/acceso/actualizar_virgen.php $H/concursosdelestado.com/acceso/actualizar_virgen.php
     - /bin/cp -f servidor/ce_data/virgen_origins.txt $H/ce_data/virgen_origins.txt
+    - /bin/mkdir -p $H/concursosdelestado.com/admin/virgen/fondos
+    - /bin/cp -f servidor/admin/virgen/fondos/* $H/concursosdelestado.com/admin/virgen/fondos/

@@ -254,6 +254,9 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
   var FIG = null;
   function loadFig() { return FIG || (FIG = new Promise(function (ok, no) { var i = new Image(); i.onload = function () { ok(i); }; i.onerror = no; i.src = "virgen.webp"; })); }
   var MOOD = VG.MOODS;
+  /* Fondos hechos a mano (Manus, Midjourney…): archivos fondos/manana-1.jpg, tarde-1.jpg, noche-1.jpg… Pon aquí cuántos hay de cada uno; 0 = usa el diseño con código. */
+  var FONDOS = { m: 0, t: 0, n: 0 }, FONDO_NOM = { m: "manana", t: "tarde", n: "noche" };
+  function loadBg(p, dayIdx) { var n = FONDOS[p.id] || 0; if (!n) return Promise.resolve(null); return new Promise(function (ok) { var i = new Image(); i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = "fondos/" + FONDO_NOM[p.id] + "-" + (1 + dayIdx % n) + ".jpg"; }); }
   function rng(seed) { var s = (seed >>> 0) || 1; return function () { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; }; }
   /* paletas de flor: [claro, medio, oscuro] */
   var FLOR = [
@@ -335,13 +338,15 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
   function nube(c, x, y, s, al) {
     for (var i = 0; i < 6; i++) { var px = x + (i - 2.5) * 70 * s, py = y + (i % 2 ? -18 : 10) * s, g = c.createRadialGradient(px, py, 0, px, py, 90 * s); g.addColorStop(0, "rgba(255,255,255," + al + ")"); g.addColorStop(1, "rgba(255,255,255,0)"); c.fillStyle = g; c.fillRect(px - 100 * s, py - 100 * s, 200 * s, 200 * s); }
   }
-  function drawPost(cv, p, dayIdx) {
+  function drawPost(cv, p, dayIdx) { return loadBg(p, dayIdx).then(function (bg) { return drawPostBase(cv, p, dayIdx, bg); }); }
+  function drawPostBase(cv, p, dayIdx, BG) {
     var W = 1080, H = 1350; cv.width = W; cv.height = H; var c = cv.getContext("2d");
     var night = p.id === "n", mood = MOOD[(dayIdx + p.bg * 2) % MOOD.length], R = rng(dayIdx * 97 + p.bg * 13 + 7);
     var g = c.createLinearGradient(0, 0, 0, H);
     if (night) { g.addColorStop(0, "#B9C8F0"); g.addColorStop(0.5, "#E3DDF6"); g.addColorStop(1, "#FBEFE9"); } else { g.addColorStop(0, mood[0]); g.addColorStop(0.7, mood[1]); g.addColorStop(1, "#FFFAEC"); }
     c.fillStyle = g; c.fillRect(0, 0, W, H);
-    if (!night) { nube(c, 250, 300, 1.4, 0.55); nube(c, 900, 190, 1.1, 0.5); nube(c, 160, 760, 1.2, 0.35); }
+    if (BG) { var sc = Math.max(W / BG.width, H / BG.height); c.drawImage(BG, (W - BG.width * sc) / 2, (H - BG.height * sc) / 2, BG.width * sc, BG.height * sc); }
+    if (!night && !BG) { nube(c, 250, 300, 1.4, 0.55); nube(c, 900, 190, 1.1, 0.5); nube(c, 160, 760, 1.2, 0.35); }
     var cx = 760, cy = 520;
     if (c.createConicGradient) {
       var cg = c.createConicGradient(0, cx, cy - 150); for (var k = 0; k < 24; k++) { var a0 = k / 24; cg.addColorStop(a0, "rgba(255,240,180,0)"); cg.addColorStop(a0 + 0.5 / 24, night ? "rgba(255,244,200,0.32)" : "rgba(255,240,180,0.55)"); cg.addColorStop(Math.min(1, a0 + 1 / 24 - 0.001), "rgba(255,240,180,0)"); }
@@ -349,20 +354,21 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
     }
     var rg = c.createRadialGradient(cx, cy, 0, cx, cy, 640);
     rg.addColorStop(0, "rgba(255,253,240,1)"); rg.addColorStop(0.3, "rgba(255,236,160,0.85)"); rg.addColorStop(1, "rgba(255,243,200,0)");
+    if (BG) { rg = c.createRadialGradient(cx, cy, 0, cx, cy, 560); rg.addColorStop(0, "rgba(255,248,215,0.75)"); rg.addColorStop(1, "rgba(255,243,200,0)"); }
     c.fillStyle = rg; c.fillRect(0, 0, W, H);
     var i, bk;
-    if (night) { for (i = 0; i < 40; i++) estrella(c, R() * W, R() * 650, 5 + R() * 11, "rgba(255,246,206," + (0.55 + R() * 0.4) + ")"); c.save(); c.shadowColor = "rgba(255,240,180,0.95)"; c.shadowBlur = 30; c.fillStyle = "#FFF6D2"; c.beginPath(); c.arc(990, 150, 40, 0, 7); c.arc(1012, 138, 34, 0, 7, true); c.fill("evenodd"); c.restore(); } 
+    if (night && !BG) { for (i = 0; i < 40; i++) estrella(c, R() * W, R() * 650, 5 + R() * 11, "rgba(255,246,206," + (0.55 + R() * 0.4) + ")"); c.save(); c.shadowColor = "rgba(255,240,180,0.95)"; c.shadowBlur = 30; c.fillStyle = "#FFF6D2"; c.beginPath(); c.arc(990, 150, 40, 0, 7); c.arc(1012, 138, 34, 0, 7, true); c.fill("evenodd"); c.restore(); } 
     for (i = 0; i < 22; i++) { bk = c.createRadialGradient(0, 0, 0, 0, 0, 1); var bx = R() * W, by = R() * H, br = 14 + R() * 38; bk = c.createRadialGradient(bx, by, 0, bx, by, br); bk.addColorStop(0, "rgba(255,255,255,0.55)"); bk.addColorStop(1, "rgba(255,240,190,0)"); c.fillStyle = bk; c.fillRect(bx - br, by - br, br * 2, br * 2); }
     var pi = (dayIdx * 2 + p.bg * 3) % FLOR.length, pals = [FLOR[pi], FLOR[(pi + 1) % FLOR.length], FLOR[1], FLOR[(pi + 3) % FLOR.length]];
     // flores del fondo (arriba a la izquierda, detrás de todo)
-    ramillete(c, 0, 10, 300, 230, 7, pals, R, 0.7);
+    if (!BG) ramillete(c, 0, 10, 300, 230, 7, pals, R, 0.7);
     function fin(img) {
       if (img) { var h = 1230, w = h * img.width / img.height; c.save(); c.shadowColor = "rgba(255,226,140,0.95)"; c.shadowBlur = 40; c.drawImage(img, W - w - 40, H - h - 40, w, h); c.restore(); c.drawImage(img, W - w - 40, H - h - 40, w, h); }
       // ramilletes del frente: a los pies de la Virgen y abajo a la izquierda
-      ramillete(c, 830, 1300, 560, 210, 17, pals, R, -1.2);
-      ramillete(c, 250, 1290, 600, 230, 17, [pals[1], pals[0], pals[2], pals[3]], R, -1.8);
+      if (!BG) { ramillete(c, 830, 1300, 560, 210, 17, pals, R, -1.2);
+      ramillete(c, 250, 1290, 600, 230, 17, [pals[1], pals[0], pals[2], pals[3]], R, -1.8); }
       // pétalos y destellos cayendo
-      for (var q = 0; q < 26; q++) { var pp = pals[q % pals.length]; c.save(); c.globalAlpha = 0.85; petal(c, R() * W, 120 + R() * 1000, 9 + R() * 9, 5 + R() * 5, R() * 6.28, pp[0], pp[1], pp[2]); c.restore(); }
+      for (var q = 0; q < (BG ? 0 : 26); q++) { var pp = pals[q % pals.length]; c.save(); c.globalAlpha = 0.85; petal(c, R() * W, 120 + R() * 1000, 9 + R() * 9, 5 + R() * 5, R() * 6.28, pp[0], pp[1], pp[2]); c.restore(); }
       for (q = 0; q < 14; q++) estrella(c, R() * W, R() * 1100, 6 + R() * 12, "rgba(255,214,110,0.9)");
       var x0 = 70, maxW = 490;
       c.textBaseline = "alphabetic"; c.textAlign = "left";
