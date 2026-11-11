@@ -210,6 +210,16 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .subs-msg.bad { border-color: var(--danger); color: var(--danger); }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
+/* Promesas de Dios */
+.prom-sec { background: var(--chat-bg); padding-block: 96px; }
+.prom { gap: 22px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); }
+.prom .card { gap: 8px; }
+.prom .k { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-ink); }
+.prom .card h3 { font-style: italic; font-size: 25px; line-height: 1.25; }
+.prom .cita { font-weight: 700; color: var(--gold-ink); font-size: 15px; }
+.prom .more { margin-top: auto; align-self: flex-start; background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 8px 15px; font-size: 14px; font-weight: 600; }
+.prom .more:hover { border-color: var(--gold-ink); }
+
 /* Recuerdos, patrocinadores, apoyo, turismo */
 .shop-sec { background: var(--band); padding-block: 96px; }
 .spons-sec { background: var(--prayer-bg); padding-block: 96px; }
@@ -246,7 +256,7 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
   .hero-grid .niche { order: 2; width: min(100%, 340px); }
   .chat-grid { grid-template-columns: minmax(0, 1fr); }
   .chat-grid .niche { display: none; }
-  .chat-sec, .prayer-sec, .fiesta-sec, .comm-sec, .subs-sec, .shop-sec, .spons-sec, .apoyo-sec, .tour-sec { padding-block: 64px; }
+  .chat-sec, .prayer-sec, .fiesta-sec, .comm-sec, .prom-sec, .subs-sec, .shop-sec, .spons-sec, .apoyo-sec, .tour-sec { padding-block: 64px; }
   .menu a.hide-s { display: none; }
 }
 @media (max-width: 480px) {
@@ -372,6 +382,18 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
         <p>Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.</p>
       </article>
     </div>
+  </div>
+</section>
+
+<section class="prom-sec" id="promesas">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Palabra de esperanza</p>
+      <h2 class="script">Promesas de Dios</h2>
+      <p class="lede">Lo que Dios ha prometido a quienes confían en Él. Toca una promesa para conversar sobre ella.</p>
+    </div>
+    <div class="cards prom" id="prom-list"></div>
+    <p class="sources">Frases resumidas con nuestras palabras. Lee cada pasaje completo en tu Biblia.</p>
   </div>
 </section>
 
@@ -511,6 +533,7 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
     <nav aria-label="Pie de página">
       <a href="#chat">Chat bíblico</a>
       <a href="#oracion">Oración</a>
+      <a href="#promesas">Promesas</a>
       <a href="#fiesta">La fiesta</a>
       <a href="#palabra">Palabra del día</a>
       <a href="#visita">Visita Tunja</a>
@@ -947,6 +970,33 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
   box.addEventListener("input", autosize);
   stopBtn.addEventListener("click", function () { if (ctl) ctl.abort(); });
   verSel.addEventListener("change", saveState);
+  /* Promesas de Dios: frases resumidas (no se copia ninguna traducción) */
+  var PROMESAS = [
+    { k: "Cuando tienes miedo", t: "No temas: Dios está contigo, te fortalece y te sostiene.", c: "Isaías 41,10" },
+    { k: "Cuando estás ansioso", t: "Presenta todo a Dios en oración y su paz guardará tu corazón.", c: "Filipenses 4,6-7" },
+    { k: "Cuando algo te falta", t: "El Señor es mi pastor: nada me faltará.", c: "Salmo 23,1" },
+    { k: "Cuando estás cansado", t: "Jesús invita a los agobiados a venir a Él para descansar.", c: "Mateo 11,28" },
+    { k: "Cuando no ves el futuro", t: "Dios tiene planes de bienestar y esperanza para ti.", c: "Jeremías 29,11" },
+    { k: "Cuando te falta valor", t: "Sé valiente: el Señor tu Dios te acompaña a donde vayas.", c: "Josué 1,9" },
+    { k: "Cuando necesitas protección", t: "El Señor te cuida al salir y al volver, ahora y siempre.", c: "Salmo 121,7-8" },
+    { k: "Cuando todo parece perdido", t: "Dios hace que todo coopere para el bien de quienes lo aman.", c: "Romanos 8,28" }
+  ];
+  PROMESAS.forEach(function (p) {
+    var c = el("div", "card");
+    c.appendChild(el("p", "k", p.k));
+    c.appendChild(el("h3", null, p.t));
+    c.appendChild(el("p", "cita", p.c));
+    var b = el("button", "more", "Conversar sobre esta promesa");
+    b.type = "button";
+    b.addEventListener("click", function () {
+      var ch = document.getElementById("chat");
+      if (ch) ch.scrollIntoView({ behavior: "smooth" });
+      ask("Quiero conversar sobre esta promesa de Dios: " + p.c + ". " + p.k + ".");
+    });
+    c.appendChild(b);
+    $("prom-list").appendChild(c);
+  });
+
   $("verse-today").addEventListener("click", function () { ask(TODAY); });
 
   var armed = null;
