@@ -193,6 +193,44 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .gifts strong { display: block; font-family: var(--font-serif); font-size: 26px; font-weight: 600; line-height: 1.15; color: var(--comm-gold); }
 .gifts span { color: var(--comm-soft); font-size: 16px; }
 
+/* Palabra del día (suscripción) */
+.subs-sec { background: var(--chat-bg); padding-block: 96px; }
+.subs-card { max-width: 40rem; margin: 0 auto; padding: 34px 32px; border-radius: 26px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 20px 48px var(--shadow); }
+.subs-card form { display: grid; gap: 14px; }
+.subs-card label.f { display: grid; gap: 4px; font-size: 14px; font-weight: 700; color: var(--soft); }
+.subs-card input[type=text], .subs-card input[type=email], .subs-card input[type=tel] { width: 100%; background: var(--field); border: 1px solid var(--line); border-radius: 14px; padding: 12px 15px; font: inherit; color: var(--ink); }
+.subs-card .chk { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.5; color: var(--soft); }
+.subs-card .chk input { margin-top: 4px; flex: none; width: 18px; height: 18px; }
+.subs-card .btn { justify-self: start; cursor: pointer; }
+.subs-card .btn:disabled { opacity: 0.6; cursor: default; }
+.subs-msg { margin: 0; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--card-solid); font-size: 15px; }
+.subs-msg.bad { border-color: var(--danger); color: var(--danger); }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* Recuerdos, patrocinadores, apoyo, turismo */
+.shop-sec { background: var(--band); padding-block: 96px; }
+.spons-sec { background: var(--prayer-bg); padding-block: 96px; }
+.apoyo-sec { background: var(--band); padding-block: 96px; }
+.tour-sec { background: var(--chat-bg); padding-block: 96px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 24px; }
+.card { padding: 26px 24px; border-radius: 22px; background: var(--card-solid); border: 1px solid var(--line); box-shadow: 0 12px 30px var(--shadow); display: flex; flex-direction: column; gap: 6px; }
+.card h3 { margin: 0; font-family: var(--font-serif); font-size: 28px; font-weight: 600; line-height: 1.15; }
+.card p { margin: 0; font-size: 15px; color: var(--soft); }
+.card .price { font-weight: 700; color: var(--gold-ink); }
+.card .btn { margin-top: auto; align-self: flex-start; padding: 11px 22px; font-size: 15px; box-shadow: none; }
+.card .btn-wrap { margin-top: 12px; }
+.cta-row { text-align: center; margin-top: 36px; }
+.cta-row p { margin: 0 0 14px; color: var(--soft); }
+.pay { max-width: 36rem; margin: 0 auto; display: grid; gap: 12px; }
+.pay li { list-style: none; padding: 16px 20px; border-radius: 18px; background: var(--card-solid); border: 1px solid var(--line); }
+.pay ul { margin: 0; padding: 0; display: grid; gap: 12px; }
+.pay b { display: block; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-ink); }
+.pay span { font-size: 18px; word-break: break-word; }
+.tour-list { max-width: 44rem; margin: 0 auto; display: grid; gap: 14px; padding: 0; list-style: none; }
+.tour-list li { padding: 18px 22px; border-radius: 18px; background: var(--card-solid); border: 1px solid var(--line); }
+.tour-list strong { font-family: var(--font-serif); font-size: 24px; font-weight: 600; }
+.tour-list span { display: block; font-size: 15px; color: var(--soft); }
+
 footer { background: var(--foot-bg); color: #CFE4F7; }
 .foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px; padding-block: 36px; }
 .foot b { display: block; font-family: var(--font-serif); font-size: 26px; font-weight: 600; color: #F2D68A; line-height: 1.1; }
@@ -205,7 +243,7 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
   .hero-grid .niche { order: 2; width: min(100%, 340px); }
   .chat-grid { grid-template-columns: minmax(0, 1fr); }
   .chat-grid .niche { display: none; }
-  .chat-sec, .prayer-sec, .fiesta-sec, .comm-sec { padding-block: 64px; }
+  .chat-sec, .prayer-sec, .fiesta-sec, .comm-sec, .subs-sec, .shop-sec, .spons-sec, .apoyo-sec, .tour-sec { padding-block: 64px; }
   .menu a.hide-s { display: none; }
 }
 @media (max-width: 480px) {
@@ -213,6 +251,7 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
   .chat-head, .feed, .composer { padding-left: 14px; padding-right: 14px; }
   .notice { margin-inline: 14px; }
   .prayer-card { padding: 26px 22px; }
+  .subs-card { padding: 26px 20px; }
 }
 </style>
 
@@ -230,6 +269,7 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
       <nav class="menu" aria-label="Principal">
         <a class="hide-s" href="#oracion">Oración</a>
         <a class="hide-s" href="#fiesta">La fiesta</a>
+        <a class="hide-s" href="#palabra">Palabra del día</a>
         <a class="hide-s" href="#comunidad">Comunidad</a>
         <a class="pill" href="#chat">Pregúntale a la Palabra</a>
       </nav>
@@ -367,6 +407,27 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
   </div>
 </section>
 
+<section class="subs-sec" id="palabra">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Gratis</p>
+      <h2 class="script">Palabra del día</h2>
+      <p class="lede">Recibe cada mañana un versículo, una reflexión corta y una oración.</p>
+    </div>
+    <div class="subs-card">
+      <form id="subs" novalidate>
+        <label class="f">Tu nombre (opcional)<input type="text" id="s-name" maxlength="60" autocomplete="given-name"></label>
+        <label class="f">Correo electrónico<input type="email" id="s-email" maxlength="120" autocomplete="email" placeholder="tucorreo@ejemplo.com"></label>
+        <label class="f">WhatsApp (opcional)<input type="tel" id="s-wa" maxlength="20" autocomplete="tel" placeholder="57 300 123 4567"></label>
+        <div class="hp" aria-hidden="true"><label>No llenes esto<input type="text" id="s-web" tabindex="-1" autocomplete="off"></label></div>
+        <label class="chk"><input type="checkbox" id="s-ok"><span>Autorizo que guarden mi correo y mi WhatsApp para enviarme la Palabra del día y avisos de la fiesta. Puedo pedir que me borren cuando quiera escribiendo a esta página. No compartimos tus datos con nadie.</span></label>
+        <p class="subs-msg" id="s-msg" role="status" hidden></p>
+        <button class="btn" id="s-btn" type="submit">Quiero recibirla</button>
+      </form>
+    </div>
+  </div>
+</section>
+
 <section class="comm-sec" id="comunidad">
   <div class="wrap comm-grid">
     <div>
@@ -384,6 +445,62 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
   </div>
 </section>
 
+<section class="shop-sec" id="recuerdos" hidden>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Recuerdos</p>
+      <h2 class="script">Estampitas y recuerdos</h2>
+      <p class="lede">Lleva contigo a la Virgen. Pide el tuyo por WhatsApp.</p>
+    </div>
+    <div class="cards" id="products"></div>
+  </div>
+</section>
+
+<section class="spons-sec" id="patrocinadores" hidden>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Tunja en fiestas</p>
+      <h2 class="script">Negocios que nos acompañan</h2>
+      <p class="lede">Lugares de Tunja que apoyan esta página y la fiesta de la Virgen.</p>
+    </div>
+    <div class="cards" id="sponsors"></div>
+    <div class="cta-row" id="spons-cta" hidden>
+      <p>¿Tienes un negocio en Tunja? Preséntalo a quienes visitan esta página en las fiestas.</p>
+      <a class="btn" id="spons-wa" href="#patrocinadores">Quiero anunciarme</a>
+    </div>
+  </div>
+</section>
+
+<section class="apoyo-sec" id="apoyo" hidden>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Apoya esta página</p>
+      <h2 class="script">Un aporte voluntario</h2>
+      <p class="lede">La página es gratuita. Si te ayuda, puedes colaborar con su sostenimiento.</p>
+    </div>
+    <div class="pay"><ul id="pay-list"></ul></div>
+    <p class="sources" id="pay-note"></p>
+  </div>
+</section>
+
+<section class="tour-sec" id="visita">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Visita Tunja</p>
+      <h2 class="script">Ven a la fiesta</h2>
+      <p class="lede">Si piensas viajar a Tunja para la fiesta de la Virgen, aquí encontrarás ayuda.</p>
+    </div>
+    <ul class="tour-list" id="tour-list">
+      <li><strong>Dónde es</strong><span>La celebración se vive en la Plaza de Bolívar y el santuario, en el centro de Tunja, Boyacá.</span></li>
+      <li><strong>Cuándo ir</strong><span>El primer fin de semana de junio, con la novena los días anteriores. Confirma fechas y horarios cada año.</span></li>
+    </ul>
+    <div class="cta-row" id="tour-cta" hidden>
+      <p>¿Alojamiento, transporte o guías? Escríbenos y te orientamos.</p>
+      <a class="btn" id="tour-wa" href="#visita">Pedir orientación</a>
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="wrap foot">
     <div><b>Virgen del Milagro</b><small>Tunja, Boyacá, Colombia</small></div>
@@ -391,6 +508,8 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
       <a href="#chat">Chat bíblico</a>
       <a href="#oracion">Oración</a>
       <a href="#fiesta">La fiesta</a>
+      <a href="#palabra">Palabra del día</a>
+      <a href="#visita">Visita Tunja</a>
       <a href="#comunidad">Comunidad</a>
     </nav>
   </div>
@@ -446,6 +565,95 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
     fb.hidden = false;
     $("fb-note").hidden = true;
   }
+
+
+  /* ---- Monetización: todo se llena aquí. Lo que quede vacío, no se muestra. ---- */
+  /* WhatsApp con indicativo y sin signos, por ejemplo "573001234567". */
+  var WHATSAPP = "";
+  var SUBS_ENDPOINT = "https://www.concursosdelestado.com/acceso/suscribir_virgen.php";
+  /* Recuerdos: { name: "Estampita dorada", desc: "Tamaño bolsillo", price: "$3.000" } */
+  var PRODUCTS = [];
+  /* Patrocinadores: { name: "Hotel X", desc: "Frente a la plaza", url: "https://..." } */
+  var SPONSORS = [];
+  /* Apoyo voluntario: { label: "Nequi", value: "300 123 4567" }. Pon quién recibe en PAY_NOTE. */
+  var PAY = [];
+  var PAY_NOTE = "";
+  /* Más ayuda para visitantes: { name: "Guía X", desc: "Recorridos por Tunja" } */
+  var TOUR = [];
+
+  function waLink(msg) { return "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(msg); }
+  function setWa(id, msg) { var a = $(id); a.href = waLink(msg); a.target = "_blank"; a.rel = "noopener"; }
+
+  if (WHATSAPP && PRODUCTS.length) {
+    PRODUCTS.forEach(function (p) {
+      var c = el("div", "card");
+      c.appendChild(el("h3", null, p.name));
+      if (p.desc) c.appendChild(el("p", null, p.desc));
+      if (p.price) c.appendChild(el("p", "price", p.price));
+      var a = el("a", "btn", "Pedir por WhatsApp");
+      a.href = waLink("Hola, quiero pedir: " + p.name + " (página Virgen del Milagro)");
+      a.target = "_blank"; a.rel = "noopener";
+      c.appendChild(a);
+      $("products").appendChild(c);
+    });
+    $("recuerdos").hidden = false;
+  }
+  if (SPONSORS.length || WHATSAPP) {
+    SPONSORS.forEach(function (p) {
+      var c = el("div", "card");
+      c.appendChild(el("h3", null, p.name));
+      if (p.desc) c.appendChild(el("p", null, p.desc));
+      if (p.url && /^https:\/\//.test(p.url)) {
+        var a = el("a", "btn", "Conocer");
+        a.href = p.url; a.target = "_blank"; a.rel = "noopener sponsored";
+        c.appendChild(a);
+      }
+      $("sponsors").appendChild(c);
+    });
+    if (WHATSAPP) { setWa("spons-wa", "Hola, quiero anunciar mi negocio en la página Virgen del Milagro de Tunja."); $("spons-cta").hidden = false; }
+    if (SPONSORS.length) $("patrocinadores").hidden = false;
+  }
+  if (PAY.length) {
+    PAY.forEach(function (p) {
+      var li = el("li");
+      li.appendChild(el("b", null, p.label));
+      li.appendChild(el("span", null, p.value));
+      $("pay-list").appendChild(li);
+    });
+    $("pay-note").textContent = PAY_NOTE;
+    $("apoyo").hidden = false;
+  }
+  TOUR.forEach(function (p) {
+    var li = el("li");
+    li.appendChild(el("strong", null, p.name));
+    if (p.desc) li.appendChild(el("span", null, p.desc));
+    $("tour-list").appendChild(li);
+  });
+  if (WHATSAPP) { setWa("tour-wa", "Hola, voy a visitar Tunja para la fiesta de la Virgen del Milagro y quisiera orientación."); $("tour-cta").hidden = false; }
+
+  /* Suscripción a la Palabra del día */
+  (function () {
+    var f = $("subs"), msg = $("s-msg"), btn = $("s-btn");
+    function say(t, bad) { msg.textContent = t; msg.className = "subs-msg" + (bad ? " bad" : ""); msg.hidden = false; }
+    f.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var email = $("s-email").value.trim(), wa = $("s-wa").value.trim();
+      if (!email && !wa) { say("Escribe tu correo o tu número de WhatsApp.", true); return; }
+      if (!$("s-ok").checked) { say("Marca la casilla para autorizar el uso de tus datos.", true); return; }
+      btn.disabled = true;
+      fetch(SUBS_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: $("s-name").value, email: email, wa: wa, web: $("s-web").value, consent: true })
+      }).then(function (r) { return r.json().catch(function () { return {}; }); })
+        .then(function (d) {
+          if (d && d.ok) { say("¡Listo! Quedaste inscrito. Que la Virgen te acompañe."); f.reset(); }
+          else say((d && d.r) || "No pudimos guardar tus datos. Intenta de nuevo en un momento.", true);
+        })
+        .catch(function () { say("No hay conexión en este momento. Intenta de nuevo.", true); })
+        .then(function () { btn.disabled = false; });
+    });
+  })();
 
   /* Almacenamiento: solo comodidad de quien visita */
   function loadState() {

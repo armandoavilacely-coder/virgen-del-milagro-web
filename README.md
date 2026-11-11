@@ -6,10 +6,12 @@ Sitio: www.virgendelmilagro.co (HostGator, cPanel de concursosdelestado.com, dom
 | En este repo | En el servidor |
 |---|---|
 | `pagina/index.html`, `pagina/virgen.webp` | `/virgendelmilagro.co/` |
-| `servidor/acceso/chat_virgen.php` | `/concursosdelestado.com/acceso/` |
+| `servidor/acceso/chat_virgen.php`, `servidor/acceso/suscribir_virgen.php` | `/concursosdelestado.com/acceso/` |
 | `servidor/ce_data/virgen_origins.txt` | `/ce_data/` |
 
 ## Notas
 - El chat usa la IA Haiku de Rocky: reutiliza `ce_data/chat.key` y `chat_core.php` del servidor. La llave NO está en este repo.
 - `virgen_origins.txt` lista los dominios autorizados a llamar al chat (CORS).
 - Git no despliega solo: tras cada cambio hay que subir los archivos al cPanel.
+- `suscribir_virgen.php` guarda suscriptores en `ce_data/virgen_suscriptores.jsonl` (fuera de la web pública).
+- Monetización: en el `<script>` de `pagina/index.html` están WHATSAPP, PRODUCTS, SPONSORS, PAY y TOUR; lo que está vacío no se muestra.
