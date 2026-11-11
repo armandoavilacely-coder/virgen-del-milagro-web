@@ -19,6 +19,7 @@ $MAP = [   // archivo en el repo => destino en el servidor
     'pagina/virgen.webp#admin' => $H . '/concursosdelestado.com/admin/virgen/virgen.webp',
     'servidor/acceso/wompi_virgen.php' => $H . '/concursosdelestado.com/acceso/wompi_virgen.php',
     'servidor/acceso/chat_virgen.php' => $H . '/concursosdelestado.com/acceso/chat_virgen.php',
+    'servidor/acceso/virgen_hook.php' => $H . '/concursosdelestado.com/acceso/virgen_hook.php',
     'servidor/acceso/testimonios_virgen.php' => $H . '/concursosdelestado.com/acceso/testimonios_virgen.php',
     'servidor/acceso/suscribir_virgen.php' => $H . '/concursosdelestado.com/acceso/suscribir_virgen.php',
     'servidor/acceso/actualizar_virgen.php' => $H . '/concursosdelestado.com/acceso/actualizar_virgen.php',
