@@ -117,7 +117,7 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
 @keyframes float { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-8px); } }
 @keyframes twinkle { 0%, 100% { opacity: 0.25; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.15); } }
-@media (prefers-reduced-motion: reduce) { .arch .fig, .arch .spark, .arch .glow, .arch .halo, .arch .rays { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .arch .fig, .arch .spark, .arch .glow, .arch .halo, .arch .rays, .postal .p-glow, .postal .p-rays { animation: none; } }
 
 /* Chat bíblico */
 .chat-sec { background: var(--chat-bg); padding-block: 96px; overflow-x: clip; }
@@ -210,6 +210,25 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .subs-msg.bad { border-color: var(--danger); color: var(--danger); }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
+/* Oración del día */
+.dia-sec { background: var(--band); padding-block: 96px; }
+.dia-grid { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 48px; align-items: center; justify-content: center; max-width: 1000px; margin: 0 auto; }
+.postal { --pa: #BBD9F5; --pb: #FFF3D6; --pc: #FFF1B8; position: relative; container-type: inline-size; aspect-ratio: 4 / 5; border-radius: 26px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 24px 54px var(--shadow); background: linear-gradient(180deg, var(--pa) 0%, var(--pb) 100%); }
+.postal .p-glow { position: absolute; left: 70%; top: 40%; width: 110%; aspect-ratio: 1; transform: translate(-50%, -50%); background: radial-gradient(circle, rgba(255, 252, 235, 0.95) 0%, var(--pc) 28%, rgba(255, 243, 200, 0) 62%); animation: aura 6s ease-in-out infinite; }
+.postal .p-rays { position: absolute; left: 70%; top: 30%; width: 150%; aspect-ratio: 1; transform: translate(-50%, -50%); background: repeating-conic-gradient(from 0deg, rgba(255, 255, 255, 0) 0deg 7deg, rgba(255, 236, 170, 0.45) 7deg 13deg); -webkit-mask-image: radial-gradient(circle, #000 0%, rgba(0, 0, 0, 0) 65%); mask-image: radial-gradient(circle, #000 0%, rgba(0, 0, 0, 0) 65%); animation: spin 120s linear infinite; }
+.postal .p-fig { position: absolute; right: 4%; bottom: 2%; height: 90%; width: auto; max-width: none; filter: drop-shadow(0 0 8px rgba(255, 236, 160, 0.95)) drop-shadow(0 0 22px rgba(255, 214, 110, 0.7)) drop-shadow(0 14px 18px rgba(20, 48, 79, 0.22)); }
+.postal .p-text { position: absolute; left: 6%; top: 8%; width: 50%; display: flex; flex-direction: column; gap: 2.6cqw; }
+.postal .p-orn { width: 62%; height: auto; }
+.postal .p-title { margin: 0; font-family: var(--font-script); font-weight: 400; font-size: 12.5cqw; line-height: 1.02; background: linear-gradient(180deg, var(--title-a) 0%, var(--title-b) 52%, var(--title-c) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; padding: 0.1em 0.12em 0.2em; margin: -0.1em -0.12em -0.2em; text-wrap: balance; }
+.postal .p-phrase { margin: 0; font-family: var(--font-serif); font-weight: 600; font-size: 5.4cqw; line-height: 1.2; color: var(--soft); }
+.postal .p-sign { margin: 2cqw 0 0; font-family: var(--font-serif); font-style: italic; font-size: 4.4cqw; color: var(--gold-ink); }
+.dia-prayer .k { margin: 0 0 10px; font-size: 13px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-ink); }
+.dia-text { margin: 0 0 22px; font-family: var(--font-serif); font-style: italic; font-size: clamp(22px, 2.3vw, 27px); line-height: 1.45; }
+.dia-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.dia-actions .btn { cursor: pointer; padding: 11px 22px; font-size: 15px; box-shadow: none; }
+.dia-actions .more { background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 10px 16px; font-size: 14px; font-weight: 600; }
+@media (max-width: 900px) { .dia-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; } .postal { max-width: 440px; margin-inline: auto; width: 100%; } }
+
 /* Promesas de Dios */
 .prom-sec { background: var(--chat-bg); padding-block: 96px; }
 .prom { gap: 22px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); }
@@ -277,7 +296,7 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
   .hero-grid .niche { order: 2; width: min(100%, 340px); }
   .chat-grid { grid-template-columns: minmax(0, 1fr); }
   .chat-grid .niche { display: none; }
-  .chat-sec, .prayer-sec, .fiesta-sec, .comm-sec, .prom-sec, .subs-sec, .shop-sec, .spons-sec, .apoyo-sec, .tour-sec { padding-block: 64px; }
+  .chat-sec, .prayer-sec, .fiesta-sec, .comm-sec, .dia-sec, .prom-sec, .subs-sec, .shop-sec, .spons-sec, .apoyo-sec, .tour-sec { padding-block: 64px; }
   .menu a.hide-s { display: none; }
 }
 @media (max-width: 480px) {
@@ -301,7 +320,7 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
         <span>Virgen del Milagro</span>
       </a>
       <nav class="menu" aria-label="Principal">
-        <a class="hide-s" href="#oracion">Oración</a>
+        <a class="hide-s" href="#oracion-dia">Oración del día</a>
         <a class="hide-s" href="#fiesta">La fiesta</a>
         <a class="hide-s" href="#palabra">Palabra del día</a>
         <a class="hide-s" href="#comunidad">Comunidad</a>
@@ -402,6 +421,38 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
         <h3>Padre Nuestro</h3>
         <p>Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.</p>
       </article>
+    </div>
+  </div>
+</section>
+
+<section class="dia-sec" id="oracion-dia">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow" id="dia-fecha">Hoy</p>
+      <h2 class="script">Oración del día</h2>
+      <p class="lede">Una oración distinta cada día, con un tema para tu corazón.</p>
+    </div>
+    <div class="dia-grid">
+      <div class="postal" id="postal">
+        <div class="p-glow"></div><div class="p-rays"></div>
+        <img class="p-fig" src="virgen.webp" width="699" height="2120" alt="La Virgen del Milagro">
+        <div class="p-text">
+          <svg class="p-orn" viewBox="0 0 120 20" aria-hidden="true"><path d="M4 12c14 0 20-8 32-8 6 0 8 4 8 4M116 12c-14 0-20-8-32-8-6 0-8 4-8 4" fill="none" stroke="#B8841F" stroke-width="1.6" stroke-linecap="round"/><path d="M60 16c-6-4-9-7-9-10a4.6 4.6 0 0 1 9-1 4.6 4.6 0 0 1 9 1c0 3-3 6-9 10z" fill="#D9A93F" stroke="#7A4E00" stroke-width="1"/></svg>
+          <h3 class="p-title" id="dia-titulo"></h3>
+          <p class="p-phrase" id="dia-frase"></p>
+          <p class="p-sign">Virgen del milagro</p>
+        </div>
+      </div>
+      <div class="dia-prayer">
+        <p class="k" id="dia-tema"></p>
+        <p class="dia-text" id="dia-texto"></p>
+        <div class="dia-actions">
+          <button class="btn" id="dia-copy" type="button">Copiar oración</button>
+          <button class="more" id="dia-prev" type="button">← Día anterior</button>
+          <button class="more" id="dia-next" type="button">Día siguiente →</button>
+        </div>
+        <p class="fine" id="dia-msg" role="status"></p>
+      </div>
     </div>
   </div>
 </section>
@@ -554,7 +605,8 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
     <div><b>Virgen del Milagro</b><small>Tunja, Boyacá, Colombia</small></div>
     <nav aria-label="Pie de página">
       <a href="#chat">Chat bíblico</a>
-      <a href="#oracion">Oración</a>
+      <a href="#oracion-dia">Oración del día</a>
+      <a href="#oracion">Rezar</a>
       <a href="#promesas">Promesas</a>
       <a href="#fiesta">La fiesta</a>
       <a href="#palabra">Palabra del día</a>
@@ -1007,6 +1059,72 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
     { k: "Cuando te faltan fuerzas", t: "Quienes esperan en el Señor renuevan sus fuerzas y no se cansan.", c: "Isaías 40,31" },
     { k: "Cuando buscas paz", t: "Jesús deja su paz a los suyos, una paz distinta a la del mundo.", c: "Juan 14,27" }
   ];
+  /* Oración del día: 29 temas; la fecha elige una cada día (se repite al terminar el ciclo). */
+  var ORACIONES = [
+    { t: "Gracias por la vida", f: "Cada día es un regalo de Dios.", p: "Señor, Padre bueno, te doy gracias por este nuevo día, por el aire que respiro y por las personas que me acompañan. Gracias por lo que tengo y también por lo que me falta, porque en todo me enseñas a confiar. Santa María, Virgen del Milagro, enséñame a agradecer con el corazón abierto. Que hoy mis manos sirvan, mis palabras consuelen y mi vida sea una alabanza para ti. Amén." },
+    { t: "Paz en el corazón", f: "Que Dios calme lo que te inquieta.", p: "Señor Jesús, tú calmaste la tormenta con una sola palabra. Calma hoy la tormenta de mi corazón. Quita de mí la prisa, el rencor y el miedo, y dame esa paz que nadie puede quitarme. Que en mi casa, en mi trabajo y en mi calle yo sea instrumento de tu paz. Madre del Milagro, cúbreme con tu manto y enséñame a descansar en la voluntad de Dios. Amén." },
+    { t: "Protege a mi familia", f: "Bajo tu manto, Madre, está mi hogar.", p: "Dios de amor, te entrego a mi familia: a los que viven conmigo y a los que están lejos. Cuida su salud, bendice su trabajo y guárdalos de todo peligro. Haz que en mi casa reinen el respeto, la paciencia y el perdón. Virgen del Milagro, tú que cuidaste a la Sagrada Familia en Nazaret, cuida también a la mía y mantennos unidos en la fe y en el cariño. Amén." },
+    { t: "Fuerza en la prueba", f: "No estás solo en este momento difícil.", p: "Señor, hoy me pesa lo que vivo y siento que mis fuerzas se acaban. Tú conoces mi cansancio y mis lágrimas. Dame valor para dar el siguiente paso, aunque sea pequeño, y no permitas que pierda la esperanza. Recuérdame que ninguna prueba dura para siempre y que tú caminas a mi lado. Madre del Milagro, que estuviste firme junto a la cruz, sostenme cuando yo no pueda más. Amén." },
+    { t: "Esperanza que no se apaga", f: "Dios sigue obrando aunque no lo veas.", p: "Dios fiel, a veces el camino se vuelve oscuro y me cuesta ver la salida. Enciende en mí la luz de la esperanza. Ayúdame a creer que tus promesas se cumplen a su tiempo y que nada de lo que sufro es en vano. Que no me rinda, que no me amargue y que sepa esperar con confianza. Virgen del Milagro, estrella de los que caminan, guíame hasta el amanecer. Amén." },
+    { t: "Perdón y reconciliación", f: "Perdonar también te sana a ti.", p: "Señor, tú me has perdonado tanto y a mí me cuesta perdonar. Toca mi corazón herido y ablanda lo que se endureció. Dame la gracia de soltar el rencor, de pedir perdón a quien ofendí y de perdonar a quien me hizo daño, aunque no me lo pida. No quiero cargar más con esta herida. Madre del Milagro, enséñame a mirar a los demás con tus ojos de ternura. Amén." },
+    { t: "Bendice mi trabajo", f: "Que no falte el pan en tu mesa.", p: "Padre providente, bendice el trabajo de mis manos. Ayúdame a hacerlo con honradez y alegría, y no permitas que falte el pan en mi mesa ni en la de mis hermanos. Por quienes buscan empleo, por quienes trabajan en el campo y en las calles, por quienes tienen deudas y preocupaciones: abre puertas, da sabiduría y paciencia. Virgen del Milagro, tú que conoces la vida sencilla, acompaña nuestro esfuerzo de cada día. Amén." },
+    { t: "Por los enfermos", f: "Que Dios consuele y sane.", p: "Señor Jesús, médico de los cuerpos y de las almas, te presento a los enfermos, a los que esperan un diagnóstico y a los que cuidan de ellos con tanto amor. Dales alivio en el dolor, fuerza en la espera y paz en el corazón. Bendice las manos de médicos y enfermeras. Si es tu voluntad, devuélveles la salud; y en todo caso, acompáñalos de cerca. Virgen del Milagro, salud de los enfermos, ruega por ellos. Amén." },
+    { t: "Por mis hijos", f: "Confía a Dios a quienes más amas.", p: "Señor, te encomiendo a mis hijos, que son tu regalo. Cuídalos cuando no puedo hacerlo, protégelos de los peligros del camino y de las malas compañías. Dales un corazón limpio, ganas de estudiar y valor para ser buenas personas. Y a mí dame paciencia para guiarlos con amor y buen ejemplo. Madre del Milagro, tú que también cuidaste a tu Hijo, cuida de los míos todos los días de su vida. Amén." },
+    { t: "Por mis padres y abuelos", f: "Gracias por quienes nos dieron la vida.", p: "Dios de bondad, gracias por mis padres y mis abuelos, por su sacrificio y por todo lo que me enseñaron. Bendice su vejez, cuida su salud y llena sus días de compañía y de paz. Si ya partieron, recíbelos en tu casa y dales el descanso eterno. Ayúdame a honrarlos con mi vida y a no dejar para mañana el abrazo que hoy puedo dar. Virgen del Milagro, acompaña a nuestros mayores. Amén." },
+    { t: "Confío en ti, Señor", f: "Entrega hoy lo que no puedes controlar.", p: "Señor, hay cosas que no puedo resolver ni controlar, y por eso las pongo en tus manos. Te entrego mis planes, mis dudas y mis preocupaciones. Enséñame a hacer lo que me toca y a confiar en que tú harás lo demás. Que mi corazón descanse sabiendo que tu amor nunca me abandona. Santa María, Virgen del Milagro, tú que dijiste «hágase» con confianza, enséñame a decir lo mismo. Amén." },
+    { t: "Un corazón humilde", f: "La grandeza empieza por servir.", p: "Jesús, manso y humilde de corazón, líbrame del orgullo y de la necesidad de tener siempre la razón. Enséñame a escuchar, a reconocer mis errores y a servir sin esperar aplausos. Que no me compare con nadie ni busque ser más que los demás, sino ser fiel a lo que tú me pides. Madre del Milagro, esclava del Señor, enséñame la sencillez con que viviste y confiaste en Dios. Amén." },
+    { t: "Calma para la ansiedad", f: "Respira: Dios sostiene tu día.", p: "Señor, mi mente da vueltas y mi pecho está apretado por lo que podría pasar. Ayúdame a respirar, a vivir un solo día a la vez y a recordar que tú ya estás en mi mañana. Aleja los pensamientos que me roban la paz y dame serenidad para hacer lo que está en mis manos. Si necesito ayuda, dame humildad para buscarla. Virgen del Milagro, consuelo de los afligidos, quédate conmigo. Amén." },
+    { t: "Por Tunja y Boyacá", f: "Bendice, Madre, a tu pueblo.", p: "Dios de todos, bendice a Tunja y a toda Boyacá: a sus familias, a sus campesinos, a sus estudiantes, a sus comerciantes y a sus gobernantes. Que en nuestras calles y veredas haya trabajo digno, respeto y solidaridad. Protege nuestras montañas, nuestras aguas y nuestra gente. Virgen del Milagro, patrona de esta tierra, sigue velando por nosotros como lo has hecho durante tantos años y mantén viva nuestra fe. Amén." },
+    { t: "Consuelo en el duelo", f: "Dios acompaña a quien llora.", p: "Señor de la vida, hoy lloro por quien ya no está. Tú conoces mi dolor y no me pides que lo esconda. Consuélame con tu cercanía, abraza a mi familia y recibe en tu paz a nuestro ser querido. Dame fuerza para seguir y esperanza para volver a sonreír sin sentirme culpable. Creo que el amor es más fuerte que la muerte. Virgen del Milagro, Madre dolorosa, acompáñame en este camino. Amén." },
+    { t: "Una fe que no se apaga", f: "Aunque dudes, Dios te sostiene.", p: "Señor, creo; ayuda mi poca fe. Hay días en que dudo y siento que mi oración no llega. Aun así, vuelvo a ti, porque no tengo a quién más acudir. Aumenta mi confianza, mantén encendida mi lámpara y hazme perseverante en la oración, en los sacramentos y en el amor al prójimo. Que mi fe se note en lo que hago. Madre del Milagro, tú que creíste sin ver, intercede por mí. Amén." },
+    { t: "Por Colombia", f: "Que reine la paz en nuestra patria.", p: "Dios de la paz, mira con compasión a Colombia. Sana las heridas de la violencia, consuela a las víctimas y convierte el corazón de quienes hacen daño. Que haya justicia sin venganza, trabajo para todos y oportunidades para los jóvenes. Enséñanos a dialogar, a cuidarnos y a construir juntos un país reconciliado. Virgen del Milagro, Madre de todos los colombianos, ruega por nuestra patria y por quienes la gobiernan. Amén." },
+    { t: "Alegría de vivir", f: "La alegría de Dios es tu fuerza.", p: "Señor, gracias por las pequeñas alegrías: un café, una risa, una conversación, el sol de la mañana. Ayúdame a verlas y a no vivir solo esperando lo que falta. Que mi alegría sea sencilla y contagiosa, y que sepa compartirla con quien hoy está triste. Líbrame de la queja constante y enséñame a cantar por dentro, aun en medio de las dificultades. Virgen del Milagro, causa de nuestra alegría, acompáñame hoy. Amén." },
+    { t: "Luz para decidir", f: "Pide sabiduría antes de dar el paso.", p: "Espíritu Santo, estoy frente a una decisión importante y no sé qué camino tomar. Ilumina mi mente, calma mis emociones y muéstrame con claridad lo que es bueno ante ti. Dame valor para elegir lo correcto aunque cueste, y humildad para pedir consejo a quien sabe. Que no me dejen llevar la prisa ni el miedo. Haz que, decida lo que decida, permanezca en tu voluntad. Madre del Milagro, buena consejera, guíame. Amén." },
+    { t: "Por los que están lejos", f: "Dios cuida a quien vive en tierra extraña.", p: "Señor, te pido por los que están lejos de casa: migrantes, trabajadores y estudiantes que extrañan a su familia y su tierra. Protégelos en el camino, dales trabajo justo y gente buena a su lado. Alivia la nostalgia, cuida a los que dejaron atrás y acorta las distancias con tu amor. Que un día puedan abrazarse de nuevo. Virgen del Milagro, tú que conoces el camino del exilio, acompaña a todos los que viven lejos. Amén." },
+    { t: "Sana mi corazón", f: "Dios cura las heridas que nadie ve.", p: "Jesús, tú que curaste a tantos enfermos, sana también mi corazón. Hay heridas del pasado que todavía duelen: palabras que me lastimaron, abandonos y fracasos. Pasa tu mano sobre ellas y devuélveme la paz. Enséñame a no vivir atado a lo que ya fue y a abrirme de nuevo al amor y a la confianza. Dame la gracia de comenzar de nuevo hoy mismo. Madre del Milagro, ternura de Dios, abrázame. Amén." },
+    { t: "Un corazón generoso", f: "Dar es la mejor manera de recibir.", p: "Padre bueno, tú nos lo has dado todo. Hazme generoso con mi tiempo, mi atención y lo poco o mucho que tengo. Abre mis ojos para ver al que necesita ayuda y mis manos para dar sin humillar. Líbrame de la avaricia y del miedo a que me falte. Que mi vida sea un pan compartido para otros. Virgen del Milagro, que fuiste a servir a tu prima Isabel sin demora, enséñame a servir con alegría. Amén." },
+    { t: "Paciencia", f: "Todo llega a su tiempo.", p: "Señor, hoy me pides paciencia y a mí me cuesta esperar. Paciencia con las personas que me desesperan, con los procesos que se demoran y conmigo mismo cuando tropiezo de nuevo. Enséñame que tú trabajas en silencio y que lo bueno se construye despacio. Quita de mi boca la palabra dura y de mi corazón la irritación. Dame la calma de quien sabe que está en tus manos. Virgen del Milagro, Madre paciente, ruega por mí. Amén." },
+    { t: "Por los jóvenes y estudiantes", f: "Que Dios bendiga sus sueños.", p: "Dios de la sabiduría, bendice a los jóvenes y a quienes estudian. Dales claridad para aprender, constancia para no rendirse y ánimo cuando el cansancio aprieta. Ayúdalos a elegir buenas amistades, a cuidar su cuerpo y su corazón, y a descubrir para qué estás llamándolos. Que sus sueños se hagan realidad y sirvan para el bien de todos. Virgen del Milagro, madre y maestra, acompaña cada examen, cada decisión y cada paso de su futuro. Amén." },
+    { t: "Por los matrimonios", f: "El amor se cuida cada día.", p: "Señor, bendice a los esposos y a las parejas. Ayúdalos a escucharse, a pedirse perdón y a elegirse de nuevo cada día, también cuando hay cansancio y dificultades. Protege su amor de la rutina, del orgullo y de lo que quiere dividirlos. Que sepan reír juntos, rezar juntos y sostenerse en los momentos duros. Que sus hijos vean en ellos un reflejo de tu amor. Virgen del Milagro, Madre del amor hermoso, cuida cada hogar. Amén." },
+    { t: "Cuando me siento solo", f: "Dios está más cerca de lo que piensas.", p: "Señor, hoy me siento solo, aunque haya gente a mi alrededor. Tú que conoces cada rincón de mi corazón, hazte presente. Que sienta tu compañía en el silencio y que encuentre personas buenas con quienes compartir la vida. Dame también ánimo para acercarme, llamar y tender la mano a otro que esté igual. Que mi soledad se convierta en un lugar de encuentro contigo. Madre del Milagro, tú nunca me dejas, quédate a mi lado. Amén." },
+    { t: "Oración de la noche", f: "Entrega el día y descansa en paz.", p: "Señor, termina el día y te doy gracias por todo lo vivido: lo bueno y lo difícil. Perdona mis faltas, mis palabras duras y lo que dejé de hacer. Pongo en tus manos a mi familia, a mis amigos y a quienes sufren esta noche. Cuida mi sueño y que mañana despierte con nuevas fuerzas. Bajo el manto de la Virgen del Milagro me acuesto en paz, porque tú velas por mí. Dios te salve, María. Amén." },
+    { t: "Bendice mi hogar", f: "Que Dios habite en tu casa.", p: "Dios de amor, bendice esta casa y a todos los que viven en ella. Que no falten el pan, la alegría ni la paz. Aleja de aquí las discusiones, la envidia y todo mal. Haz de nuestro hogar una pequeña iglesia, donde se ora, se perdona y se ama. Que quien llegue a nuestra puerta encuentre acogida y descanso. Virgen del Milagro, protectora de los hogares, ocupa un lugar en nuestra mesa y en nuestro corazón. Amén." },
+    { t: "Hágase tu voluntad", f: "Entrégate a Dios sin miedo.", p: "Señor, aquí estoy. Quiero hacer tu voluntad aunque no la entienda del todo. Toma mi vida con sus luces y sombras y úsala como tú quieras. Que mis planes se alineen con los tuyos y que mi vida diga a otros que eres bueno. Dame la sencillez de María para decir «sí» y la confianza para dar cada paso. Virgen del Milagro, muéstranos a Jesús y enséñanos a hacer lo que él nos diga. Amén." }
+  ];
+  var MOODS = [
+    ["#BBD9F5", "#FFF3D6", "#FFF1B8"],
+    ["#F6D3DC", "#FFF2E2", "#FFE2C2"],
+    ["#FBE5AC", "#FFF8E4", "#FFEFB0"],
+    ["#A9CFF2", "#E8F2FB", "#FFF4CC"],
+    ["#D9D0F0", "#FDEFF6", "#FFEFD2"],
+    ["#CBE6D2", "#FFF7DF", "#FFF3BE"]
+  ];
+
+  var MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+  var DIAS = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+  function dayNumber(d) { return Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(d.getFullYear(), 0, 0)) / 86400000); }
+  var diaOffset = 0;
+  function renderDia() {
+    var d = new Date(); d.setDate(d.getDate() + diaOffset);
+    var n = dayNumber(d), o = ORACIONES[((n % ORACIONES.length) + ORACIONES.length) % ORACIONES.length], m = MOODS[n % MOODS.length];
+    var cap = DIAS[d.getDay()] + " " + d.getDate() + " de " + MESES[d.getMonth()];
+    $("dia-fecha").textContent = (diaOffset === 0 ? "Hoy · " : "") + cap;
+    $("dia-titulo").textContent = o.t; $("dia-frase").textContent = o.f;
+    $("dia-tema").textContent = "Tema: " + o.t; $("dia-texto").textContent = o.p;
+    var pc = $("postal"); pc.style.setProperty("--pa", m[0]); pc.style.setProperty("--pb", m[1]); pc.style.setProperty("--pc", m[2]);
+    $("dia-msg").textContent = "";
+    $("dia-next").disabled = diaOffset >= 0;
+    $("dia-copy").onclick = function () {
+      var txt = o.t + "\n\n" + o.p + "\n\n— Virgen del Milagro de Tunja";
+      var ok = function () { $("dia-msg").textContent = "Oración copiada."; };
+      var fail = function () { $("dia-msg").textContent = "No se pudo copiar: selecciona el texto y cópialo."; };
+      try { navigator.clipboard.writeText(txt).then(ok, fail); } catch (e) { fail(); }
+    };
+  }
+  $("dia-prev").addEventListener("click", function () { diaOffset -= 1; renderDia(); });
+  $("dia-next").addEventListener("click", function () { if (diaOffset < 0) { diaOffset += 1; renderDia(); } });
+  renderDia();
+
   /* Mi promesa de hoy: al azar, sin repetir la anterior */
   var lastProm = -1;
   function talkAbout(p) {
