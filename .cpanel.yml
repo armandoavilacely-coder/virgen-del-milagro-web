@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    - export H=/home2/arielar1
+    - /bin/cp -f pagina/index.html $H/virgendelmilagro.co/index.html
+    - /bin/cp -f pagina/virgen.webp $H/virgendelmilagro.co/virgen.webp
+    - /bin/cp -f servidor/acceso/chat_virgen.php $H/concursosdelestado.com/acceso/chat_virgen.php
+    - /bin/cp -f servidor/ce_data/virgen_origins.txt $H/ce_data/virgen_origins.txt
