@@ -15,3 +15,6 @@ Sitio: www.virgendelmilagro.co (HostGator, cPanel de concursosdelestado.com, dom
 - Git no despliega solo: tras cada cambio hay que subir los archivos al cPanel.
 - `suscribir_virgen.php` guarda suscriptores en `ce_data/virgen_suscriptores.jsonl` (fuera de la web pública).
 - Monetización: en el `<script>` de `pagina/index.html` están WHATSAPP, PRODUCTS, SPONSORS, PAY y TOUR; lo que está vacío no se muestra.
+- Panel: `servidor/admin/virgen/index.php` (en `/admin/virgen/` de concursosdelestado.com; usa el mismo inicio de sesión de `/admin/`). Pestañas: resumen, suscriptores, pagos (solo Wompi) y publicidad por día (imagen + 4 textos por publicación, 3 al día).
+- `wompi_virgen.php` recibe los eventos de Wompi y registra los pagos aprobados; necesita el secreto de eventos en `ce_data/wompi_eventos.key` (lo guarda el dueño en el servidor, nunca en git).
+- `pagina/contenido.js` tiene las oraciones, tarde y noche hasta el 31 de diciembre; lo usan la página y el panel.
