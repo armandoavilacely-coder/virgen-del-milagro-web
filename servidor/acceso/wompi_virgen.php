@@ -1,23 +1,28 @@
 <?php
 // Virgen del Milagro - aviso (webhook) de Wompi. Registra solo los pagos APROBADOS en ce_data/virgen_pagos.jsonl.
 // Wompi firma cada evento: se valida con el «secreto de eventos», que se guarda SOLO en el servidor: ce_data/wompi_eventos.key
-require __DIR__ . '/lib.php';
+require_once __DIR__ . '/lib.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
-function wp_out($d, $c = 200) { http_response_code($c); echo json_encode($d); exit; }
+function vg_wp_out($d, $c = 200) { http_response_code($c); echo json_encode($d); exit; }
 
 // Esta cuenta de Wompi es compartida con Concursos del Estado: solo se registran los pagos de ESTOS links de pago.
 // El código es lo que va después de checkout.wompi.co/l/
 const VG_LINKS = ['hyEaOO' => 'aporte', 'smECiy' => 'suscripcion'];
 
-if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') wp_out(['ok' => false], 405);
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') vg_wp_out(['ok' => false], 405);
 $kf = ce_dir() . '/wompi_eventos.key';
 $secret = is_file($kf) ? trim((string)file_get_contents($kf)) : '';
-if ($secret === '') wp_out(['ok' => false, 'e' => 'sin_secreto'], 503);
+if ($secret === '') {   // misma cuenta de Wompi que Concursos del Estado: reutiliza el secreto de eventos que ya está guardado ahí
+    $wj = ce_dir() . '/wompi.json';
+    $c = is_file($wj) ? json_decode((string)@file_get_contents($wj), true) : null;
+    if (is_array($c) && !empty($c['events'])) $secret = trim((string)$c['events'], " \t\r\n\"'");
+}
+if ($secret === '') vg_wp_out(['ok' => false, 'e' => 'sin_secreto'], 503);
 
 $raw = file_get_contents('php://input');
 $ev = json_decode($raw, true);
-if (!is_array($ev) || !isset($ev['data'], $ev['signature']['properties'], $ev['signature']['checksum'], $ev['timestamp'])) wp_out(['ok' => false, 'e' => 'datos'], 400);
+if (!is_array($ev) || !isset($ev['data'], $ev['signature']['properties'], $ev['signature']['checksum'], $ev['timestamp'])) vg_wp_out(['ok' => false, 'e' => 'datos'], 400);
 
 // Checksum de Wompi: SHA256( valores de las propiedades indicadas + timestamp + secreto )
 $cat = '';
@@ -27,16 +32,16 @@ foreach ($ev['signature']['properties'] as $path) {
     $cat .= is_scalar($v) ? (string)$v : '';
 }
 $calc = hash('sha256', $cat . $ev['timestamp'] . $secret);
-if (!hash_equals($calc, strtolower((string)$ev['signature']['checksum']))) wp_out(['ok' => false, 'e' => 'firma'], 401);
+if (!hash_equals($calc, strtolower((string)$ev['signature']['checksum']))) vg_wp_out(['ok' => false, 'e' => 'firma'], 401);
 
 $tx = $ev['data']['transaction'] ?? null;
-if (($ev['event'] ?? '') !== 'transaction.updated' || !is_array($tx) || ($tx['status'] ?? '') !== 'APPROVED') wp_out(['ok' => true, 'ignorado' => true]);
+if (($ev['event'] ?? '') !== 'transaction.updated' || !is_array($tx) || ($tx['status'] ?? '') !== 'APPROVED') vg_wp_out(['ok' => true, 'ignorado' => true]);
 
 $link = (string)($tx['payment_link_id'] ?? '');
 if (!isset(VG_LINKS[$link])) {
     // Pago de otro negocio de la cuenta (u otro formato de id): se ignora. Se anota solo el id del link para poder verificarlo.
     @file_put_contents(ce_dir() . '/wompi_ignorados.log', date('c') . ' link=' . preg_replace('/[^A-Za-z0-9_-]/', '', $link) . ' monto=' . (int)round(((int)($tx['amount_in_cents'] ?? 0)) / 100) . "\n", FILE_APPEND);
-    wp_out(['ok' => true, 'ignorado' => true]);
+    vg_wp_out(['ok' => true, 'ignorado' => true]);
 }
 $monto = (int)round(((int)($tx['amount_in_cents'] ?? 0)) / 100);
 $reg = [
@@ -50,10 +55,10 @@ $reg = [
 ];
 $pf = ce_dir() . '/virgen_pagos.jsonl';
 $fh = fopen($pf, 'c+');
-if (!$fh) wp_out(['ok' => false, 'e' => 'config'], 503);
+if (!$fh) vg_wp_out(['ok' => false, 'e' => 'config'], 503);
 flock($fh, LOCK_EX);
 $dup = false;
 while (($l = fgets($fh)) !== false) { $r = json_decode($l, true); if (is_array($r) && ($r['id'] ?? '') === $reg['id']) { $dup = true; break; } }
 if (!$dup) { fseek($fh, 0, SEEK_END); fwrite($fh, json_encode($reg, JSON_UNESCAPED_UNICODE) . "\n"); }
 flock($fh, LOCK_UN); fclose($fh);
-wp_out(['ok' => true, 'nuevo' => !$dup]);
+vg_wp_out(['ok' => true, 'nuevo' => !$dup]);
