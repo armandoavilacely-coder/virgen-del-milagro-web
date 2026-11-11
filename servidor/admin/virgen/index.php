@@ -250,42 +250,138 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
     return [maña, tarde, noche];
   }
 
-  /* Imagen 1080x1350 con título del día: cielo, rayos, la Virgen a la derecha y texto dorado a la izquierda */
+  /* Imagen 1080x1350 con título del día: cielo luminoso, rayos, flores pintadas, la Virgen a la derecha y texto dorado a la izquierda */
   var FIG = null;
   function loadFig() { return FIG || (FIG = new Promise(function (ok, no) { var i = new Image(); i.onload = function () { ok(i); }; i.onerror = no; i.src = "virgen.webp"; })); }
   var MOOD = VG.MOODS;
+  function rng(seed) { var s = (seed >>> 0) || 1; return function () { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; }; }
+  /* paletas de flor: [claro, medio, oscuro] */
+  var FLOR = [
+    ["#FFE6EE", "#F6A3C0", "#D2517B"], ["#FFFFFF", "#FCF0E2", "#E3C79E"], ["#FFDCD3", "#F27A6D", "#B8323C"],
+    ["#FFF7C9", "#FFD561", "#DFA11E"], ["#F5E9FF", "#CBA9F2", "#8D5EC6"], ["#FFEAD6", "#FFB58C", "#E0725A"]
+  ];
+  function petal(c, x, y, rx, ry, rot, a, b, d) {
+    c.save(); c.translate(x, y); c.rotate(rot);
+    var g = c.createRadialGradient(0, -ry * 0.2, 0, 0, 0, Math.max(rx, ry));
+    g.addColorStop(0, a); g.addColorStop(0.7, b); g.addColorStop(1, d);
+    c.fillStyle = g; c.beginPath(); c.ellipse(0, 0, rx, ry, 0, 0, 7); c.fill();
+    c.strokeStyle = "rgba(120,40,60,0.22)"; c.lineWidth = Math.max(1, rx * 0.04); c.stroke();
+    c.restore();
+  }
+  function rosa(c, x, y, r, p, R) {
+    c.save(); c.shadowColor = "rgba(90,50,40,0.28)"; c.shadowBlur = r * 0.35; c.shadowOffsetY = r * 0.12;
+    c.fillStyle = p[1]; c.beginPath(); c.arc(x, y, r * 0.9, 0, 7); c.fill(); c.restore();
+    var o = R() * 6;
+    for (var i = 0; i < 6; i++) { var a = o + i * 1.047; petal(c, x + Math.cos(a) * r * 0.42, y + Math.sin(a) * r * 0.42, r * 0.6, r * 0.5, a, p[0], p[1], p[2]); }
+    for (i = 0; i < 5; i++) { a = o + 0.5 + i * 1.257; petal(c, x + Math.cos(a) * r * 0.24, y + Math.sin(a) * r * 0.24, r * 0.42, r * 0.34, a + 1.2, p[0], p[1], p[2]); }
+    for (i = 0; i < 3; i++) { a = o + i * 2.1; petal(c, x + Math.cos(a) * r * 0.1, y + Math.sin(a) * r * 0.1, r * 0.26, r * 0.2, a, p[1], p[2], p[2]); }
+    c.strokeStyle = "rgba(110,30,50,0.45)"; c.lineWidth = Math.max(1.2, r * 0.03);
+    c.beginPath(); c.arc(x, y, r * 0.17, o, o + 4.5); c.stroke(); c.beginPath(); c.arc(x + r * 0.03, y, r * 0.3, o + 2, o + 6); c.stroke();
+    c.fillStyle = "rgba(255,255,255,0.35)"; c.beginPath(); c.ellipse(x - r * 0.35, y - r * 0.45, r * 0.22, r * 0.1, -0.6, 0, 7); c.fill();
+  }
+  function azucena(c, x, y, r, R) {
+    var rot = R() * 6.28; c.save(); c.shadowColor = "rgba(90,70,50,0.25)"; c.shadowBlur = r * 0.3; c.shadowOffsetY = r * 0.1;
+    c.translate(x, y); c.rotate(rot);
+    for (var i = 0; i < 6; i++) {
+      c.save(); c.rotate(i * 1.047);
+      var g = c.createLinearGradient(0, 0, 0, -r); g.addColorStop(0, "#F8E7A8"); g.addColorStop(0.35, "#FFFFFF"); g.addColorStop(1, "#F4ECF4");
+      c.fillStyle = g; c.beginPath(); c.moveTo(0, 0); c.bezierCurveTo(r * 0.5, -r * 0.35, r * 0.34, -r * 0.85, 0, -r); c.bezierCurveTo(-r * 0.34, -r * 0.85, -r * 0.5, -r * 0.35, 0, 0); c.fill();
+      c.strokeStyle = "rgba(150,130,110,0.35)"; c.lineWidth = 1.4; c.stroke();
+      c.strokeStyle = "rgba(210,190,120,0.55)"; c.beginPath(); c.moveTo(0, -r * 0.06); c.lineTo(0, -r * 0.7); c.stroke();
+      c.restore();
+    }
+    c.shadowColor = "transparent"; c.fillStyle = "#D98A1E";
+    for (i = 0; i < 6; i++) { var a = i * 1.047 + 0.3; c.strokeStyle = "#E8C57A"; c.lineWidth = 2; c.beginPath(); c.moveTo(0, 0); c.lineTo(Math.cos(a) * r * 0.4, Math.sin(a) * r * 0.4); c.stroke(); c.beginPath(); c.ellipse(Math.cos(a) * r * 0.42, Math.sin(a) * r * 0.42, r * 0.05, r * 0.09, a, 0, 7); c.fill(); }
+    c.restore();
+  }
+  function margarita(c, x, y, r, p, R) {
+    var n = 12, o = R() * 6; c.save(); c.shadowColor = "rgba(90,70,50,0.22)"; c.shadowBlur = r * 0.25; c.shadowOffsetY = r * 0.08;
+    for (var i = 0; i < n; i++) { var a = o + i * 6.283 / n; petal(c, x + Math.cos(a) * r * 0.62, y + Math.sin(a) * r * 0.62, r * 0.4, r * 0.15, a, "#FFFFFF", "#FFFFFF", p[0]); }
+    c.restore();
+    var g = c.createRadialGradient(x - r * 0.1, y - r * 0.1, 0, x, y, r * 0.3); g.addColorStop(0, "#FFE680"); g.addColorStop(1, "#E3A21C");
+    c.fillStyle = g; c.beginPath(); c.arc(x, y, r * 0.3, 0, 7); c.fill();
+  }
+  function hoja(c, x, y, len, w, rot, R) {
+    c.save(); c.translate(x, y); c.rotate(rot);
+    var g = c.createLinearGradient(0, 0, len, 0); g.addColorStop(0, "#4E9A58"); g.addColorStop(0.6, "#86C77F"); g.addColorStop(1, "#B6E0A0");
+    c.fillStyle = g; c.shadowColor = "rgba(30,70,40,0.25)"; c.shadowBlur = 8;
+    c.beginPath(); c.moveTo(0, 0); c.bezierCurveTo(len * 0.3, -w, len * 0.75, -w * 0.8, len, 0); c.bezierCurveTo(len * 0.75, w * 0.8, len * 0.3, w, 0, 0); c.fill();
+    c.shadowColor = "transparent"; c.strokeStyle = "rgba(255,255,255,0.45)"; c.lineWidth = 2; c.beginPath(); c.moveTo(len * 0.04, 0); c.lineTo(len * 0.92, 0); c.stroke();
+    c.restore();
+  }
+  function ramo(c, x, y, len, rot, R) {
+    c.save(); c.translate(x, y); c.rotate(rot); c.strokeStyle = "#5FA06A"; c.lineWidth = 3; c.beginPath(); c.moveTo(0, 0); c.quadraticCurveTo(len * 0.5, -len * 0.18, len, 0); c.stroke();
+    for (var i = 1; i < 6; i++) { var t = i / 6, px = len * t, py = -len * 0.18 * 2 * t * (1 - t); c.fillStyle = "#FFFFFF"; c.shadowColor = "rgba(0,0,0,0.12)"; c.shadowBlur = 4; c.beginPath(); c.arc(px, py - 8, 7 + R() * 4, 0, 7); c.fill(); c.beginPath(); c.arc(px + 10, py + 9, 5 + R() * 3, 0, 7); c.fill(); }
+    c.restore();
+  }
+  /* ramo de flores: se pinta de atrás hacia adelante dentro de una elipse (cx, cy, ancho, alto) */
+  function ramillete(c, cx, cy, w, h, n, pals, R, rotBase) {
+    var i, items = [];
+    for (i = 0; i < 9; i++) { var a = R() * 6.283; items.push({ k: "h", x: cx + Math.cos(a) * w * 0.5, y: cy + Math.sin(a) * h * 0.5, a: a + (R() - 0.5) * 0.6 + (rotBase || 0), len: 160 + R() * 110, w: 38 + R() * 20, z: -1 }); }
+    for (i = 0; i < 3; i++) { a = R() * 6.283; items.push({ k: "r", x: cx + Math.cos(a) * w * 0.45, y: cy + Math.sin(a) * h * 0.45, a: a, len: 150 + R() * 100, z: -0.5 }); }
+    for (i = 0; i < n; i++) { var aa = R() * 6.283, rr = Math.sqrt(R()); items.push({ k: "f", x: cx + Math.cos(aa) * w * 0.5 * rr, y: cy + Math.sin(aa) * h * 0.5 * rr, r: 66 + R() * 62 - rr * 14, t: R(), p: pals[Math.floor(R() * pals.length)], z: rr * 0 }); }
+    items.sort(function (u, v) { return (u.k === "f" && v.k === "f") ? u.y - v.y : u.z - v.z; });
+    items.forEach(function (it) {
+      if (it.k === "h") hoja(c, it.x, it.y, it.len, it.w, it.a, R);
+      else if (it.k === "r") ramo(c, it.x, it.y, it.len, it.a, R);
+      else if (it.t < 0.5) rosa(c, it.x, it.y, it.r, it.p, R); else if (it.t < 0.75) azucena(c, it.x, it.y, it.r * 0.95, R); else margarita(c, it.x, it.y, it.r * 0.8, it.p, R);
+    });
+  }
+  function estrella(c, x, y, r, col) {
+    c.save(); c.translate(x, y); c.fillStyle = col; c.beginPath();
+    for (var i = 0; i < 8; i++) { var rad = i % 2 ? r * 0.18 : r, a = i * Math.PI / 4; c.lineTo(Math.cos(a) * rad, Math.sin(a) * rad); }
+    c.closePath(); c.fill(); c.restore();
+  }
+  function nube(c, x, y, s, al) {
+    for (var i = 0; i < 6; i++) { var px = x + (i - 2.5) * 70 * s, py = y + (i % 2 ? -18 : 10) * s, g = c.createRadialGradient(px, py, 0, px, py, 90 * s); g.addColorStop(0, "rgba(255,255,255," + al + ")"); g.addColorStop(1, "rgba(255,255,255,0)"); c.fillStyle = g; c.fillRect(px - 100 * s, py - 100 * s, 200 * s, 200 * s); }
+  }
   function drawPost(cv, p, dayIdx) {
     var W = 1080, H = 1350; cv.width = W; cv.height = H; var c = cv.getContext("2d");
-    var night = p.id === "n", mood = MOOD[(dayIdx + p.bg * 2) % MOOD.length];
+    var night = p.id === "n", mood = MOOD[(dayIdx + p.bg * 2) % MOOD.length], R = rng(dayIdx * 97 + p.bg * 13 + 7);
     var g = c.createLinearGradient(0, 0, 0, H);
-    if (night) { g.addColorStop(0, "#0E2238"); g.addColorStop(0.6, "#1F4E79"); g.addColorStop(1, "#2F6A9E"); } else { g.addColorStop(0, mood[0]); g.addColorStop(1, mood[1]); }
+    if (night) { g.addColorStop(0, "#B9C8F0"); g.addColorStop(0.5, "#E3DDF6"); g.addColorStop(1, "#FBEFE9"); } else { g.addColorStop(0, mood[0]); g.addColorStop(0.7, mood[1]); g.addColorStop(1, "#FFFAEC"); }
     c.fillStyle = g; c.fillRect(0, 0, W, H);
+    if (!night) { nube(c, 250, 300, 1.4, 0.55); nube(c, 900, 190, 1.1, 0.5); nube(c, 160, 760, 1.2, 0.35); }
     var cx = 760, cy = 520;
     if (c.createConicGradient) {
-      var cg = c.createConicGradient(0, cx, cy - 150); for (var k = 0; k < 24; k++) { var a = k / 24; cg.addColorStop(a, "rgba(255,236,170,0)"); cg.addColorStop(a + 0.5 / 24, night ? "rgba(255,236,170,0.20)" : "rgba(255,236,170,0.50)"); cg.addColorStop(Math.min(1, a + 1 / 24 - 0.001), "rgba(255,236,170,0)"); }
+      var cg = c.createConicGradient(0, cx, cy - 150); for (var k = 0; k < 24; k++) { var a0 = k / 24; cg.addColorStop(a0, "rgba(255,240,180,0)"); cg.addColorStop(a0 + 0.5 / 24, night ? "rgba(255,244,200,0.32)" : "rgba(255,240,180,0.55)"); cg.addColorStop(Math.min(1, a0 + 1 / 24 - 0.001), "rgba(255,240,180,0)"); }
       c.save(); c.fillStyle = cg; c.beginPath(); c.arc(cx, cy - 150, 1200, 0, 7); c.fill(); c.restore();
     }
-    var rg = c.createRadialGradient(cx, cy, 0, cx, cy, 620);
-    rg.addColorStop(0, "rgba(255,252,235,0.98)"); rg.addColorStop(0.3, night ? "rgba(255,226,140,0.55)" : "rgba(255,233,150,0.85)"); rg.addColorStop(1, "rgba(255,243,200,0)");
+    var rg = c.createRadialGradient(cx, cy, 0, cx, cy, 640);
+    rg.addColorStop(0, "rgba(255,253,240,1)"); rg.addColorStop(0.3, "rgba(255,236,160,0.85)"); rg.addColorStop(1, "rgba(255,243,200,0)");
     c.fillStyle = rg; c.fillRect(0, 0, W, H);
-    if (night) { for (var s = 0; s < 70; s++) { var sx = (s * 197) % W, sy = (s * 331) % 700, r = 1 + (s % 3); c.fillStyle = "rgba(255,243,200," + (0.4 + (s % 5) / 10) + ")"; c.beginPath(); c.arc(sx, sy, r, 0, 7); c.fill(); } }
+    var i, bk;
+    if (night) { for (i = 0; i < 40; i++) estrella(c, R() * W, R() * 650, 5 + R() * 11, "rgba(255,246,206," + (0.55 + R() * 0.4) + ")"); c.save(); c.shadowColor = "rgba(255,240,180,0.95)"; c.shadowBlur = 30; c.fillStyle = "#FFF6D2"; c.beginPath(); c.arc(990, 150, 40, 0, 7); c.arc(1012, 138, 34, 0, 7, true); c.fill("evenodd"); c.restore(); } 
+    for (i = 0; i < 22; i++) { bk = c.createRadialGradient(0, 0, 0, 0, 0, 1); var bx = R() * W, by = R() * H, br = 14 + R() * 38; bk = c.createRadialGradient(bx, by, 0, bx, by, br); bk.addColorStop(0, "rgba(255,255,255,0.55)"); bk.addColorStop(1, "rgba(255,240,190,0)"); c.fillStyle = bk; c.fillRect(bx - br, by - br, br * 2, br * 2); }
+    var pi = (dayIdx * 2 + p.bg * 3) % FLOR.length, pals = [FLOR[pi], FLOR[(pi + 1) % FLOR.length], FLOR[1], FLOR[(pi + 3) % FLOR.length]];
+    // flores del fondo (arriba a la izquierda, detrás de todo)
+    ramillete(c, 0, 10, 300, 230, 7, pals, R, 0.7);
     function fin(img) {
       if (img) { var h = 1230, w = h * img.width / img.height; c.save(); c.shadowColor = "rgba(255,226,140,0.95)"; c.shadowBlur = 40; c.drawImage(img, W - w - 40, H - h - 40, w, h); c.restore(); c.drawImage(img, W - w - 40, H - h - 40, w, h); }
+      // ramilletes del frente: a los pies de la Virgen y abajo a la izquierda
+      ramillete(c, 830, 1300, 560, 210, 17, pals, R, -1.2);
+      ramillete(c, 250, 1290, 600, 230, 17, [pals[1], pals[0], pals[2], pals[3]], R, -1.8);
+      // pétalos y destellos cayendo
+      for (var q = 0; q < 26; q++) { var pp = pals[q % pals.length]; c.save(); c.globalAlpha = 0.85; petal(c, R() * W, 120 + R() * 1000, 9 + R() * 9, 5 + R() * 5, R() * 6.28, pp[0], pp[1], pp[2]); c.restore(); }
+      for (q = 0; q < 14; q++) estrella(c, R() * W, R() * 1100, 6 + R() * 12, "rgba(255,214,110,0.9)");
       var x0 = 70, maxW = 490;
       c.textBaseline = "alphabetic"; c.textAlign = "left";
-      c.fillStyle = night ? "#F2D68A" : "#7A4E00"; c.font = "700 26px 'Nunito Sans',sans-serif"; if ("letterSpacing" in c) c.letterSpacing = "5px";
-      c.fillText(p.eb.toUpperCase(), x0, 130); if ("letterSpacing" in c) c.letterSpacing = "0px";
+      c.fillStyle = "#7A4E00"; c.font = "700 26px 'Nunito Sans',sans-serif"; if ("letterSpacing" in c) c.letterSpacing = "5px";
+      c.fillText(p.eb.toUpperCase(), x0, 190); if ("letterSpacing" in c) c.letterSpacing = "0px";
       // título: se reduce hasta que quepa
       var size = 150, lines;
       for (; size >= 72; size -= 4) { c.font = size + "px 'Great Vibes','Snell Roundhand',cursive"; lines = wrap(c, p.img, maxW); if (lines.length <= 5 && lines.every(function (l) { return c.measureText(l).width <= maxW; })) break; }
-      var y = 130 + size * 1.05, tg = c.createLinearGradient(0, y - size, 0, y + size * lines.length);
-      tg.addColorStop(0, night ? "#FBEBB5" : "#9A6A10"); tg.addColorStop(0.5, night ? "#F2D68A" : "#C9962E"); tg.addColorStop(1, night ? "#D9A93F" : "#7A4E00");
-      c.fillStyle = tg; c.font = size + "px 'Great Vibes','Snell Roundhand',cursive";
-      lines.forEach(function (l) { c.fillText(l, x0, y); y += size * 1.02; });
+      var y = 190 + size * 1.05, tg = c.createLinearGradient(0, y - size, 0, y + size * lines.length);
+      tg.addColorStop(0, "#9A6A10"); tg.addColorStop(0.5, "#C9962E"); tg.addColorStop(1, "#7A4E00");
+      c.save(); c.shadowColor = "rgba(255,255,255,0.9)"; c.shadowBlur = 14; c.fillStyle = tg; c.font = size + "px 'Great Vibes','Snell Roundhand',cursive";
+      lines.forEach(function (l) { c.fillText(l, x0, y); y += size * 1.02; }); c.restore();
       y += 20;
-      c.fillStyle = night ? "#CFE4F7" : "#5A3A12"; c.font = "600 44px 'Cormorant Garamond',Georgia,serif";
-      wrap(c, p.sub, maxW).forEach(function (l) { c.fillText(l, x0, y); y += 54; });
-      c.fillStyle = night ? "#F2D68A" : "#7A4E00"; c.font = "italic 500 40px 'Cormorant Garamond',Georgia,serif"; c.fillText("Virgen del milagro", x0, H - 70);
+      c.save(); c.shadowColor = "rgba(255,255,255,0.9)"; c.shadowBlur = 10; c.fillStyle = "#5A3A12"; c.font = "600 44px 'Cormorant Garamond',Georgia,serif";
+      wrap(c, p.sub, maxW).forEach(function (l) { c.fillText(l, x0, y); y += 54; }); c.restore();
+      // cinta con la firma
+      c.save(); c.shadowColor = "rgba(90,60,20,0.3)"; c.shadowBlur = 16; c.fillStyle = "rgba(255,250,236,0.92)"; c.beginPath();
+      if (c.roundRect) c.roundRect(60, 1236, 400, 70, 35); else c.rect(60, 1236, 400, 70); c.fill(); c.restore();
+      c.fillStyle = "#7A4E00"; c.font = "italic 600 40px 'Cormorant Garamond',Georgia,serif"; c.textAlign = "center"; c.fillText("Virgen del Milagro", 260, 1284); c.textAlign = "left";
     }
     return loadFig().then(fin, function () { fin(null); });
   }
