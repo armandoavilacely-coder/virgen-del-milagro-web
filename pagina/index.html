@@ -972,7 +972,6 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
       if (st.n && cnt < st.n) { cnt++; draw(); return; }
       if (idx === steps.length - 1) { setKey(cur); return; }
       idx++; cnt = 0; draw();
-      var c = $("rosario"); if (c.getBoundingClientRect().top < 0) c.scrollIntoView({ block: "start" });
     });
     $("ros-prev").addEventListener("click", function () { if (idx > 0) { idx--; cnt = steps[idx].n || 0; draw(); } });
     setKey(cur);
