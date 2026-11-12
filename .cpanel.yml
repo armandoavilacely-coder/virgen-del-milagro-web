@@ -5,6 +5,8 @@ deployment:
     - /bin/cp -f pagina/index.html $H/virgendelmilagro.co/index.html
     - /bin/cp -f pagina/virgen.webp $H/virgendelmilagro.co/virgen.webp
     - /bin/cp -f pagina/contenido.js $H/virgendelmilagro.co/contenido.js
+    - /bin/cp -f pagina/historia.html $H/virgendelmilagro.co/historia.html
+    - /bin/cp -f pagina/tunja.html $H/virgendelmilagro.co/tunja.html
     - /bin/mkdir -p $H/concursosdelestado.com/admin/virgen
     - /bin/cp -f servidor/admin/virgen/index.php $H/concursosdelestado.com/admin/virgen/index.php
     - /bin/cp -f pagina/contenido.js $H/concursosdelestado.com/admin/virgen/contenido.js
