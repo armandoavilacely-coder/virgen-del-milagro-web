@@ -281,7 +281,8 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .prom-today { max-width: 40rem; margin: 0 auto 28px; padding: 34px 32px; text-align: center; border-radius: 26px; background: var(--card-solid); border: 1px solid var(--line); box-shadow: 0 0 0 6px rgba(242, 214, 138, 0.35), 0 20px 48px var(--shadow); }
 .prom-today .k { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-ink); }
 .prom-today h3 { margin: 10px 0 8px; font-family: var(--font-serif); font-style: italic; font-weight: 600; font-size: clamp(28px, 3.4vw, 36px); line-height: 1.2; text-wrap: balance; }
-.prom-today .cita { margin: 0 0 18px; font-weight: 700; color: var(--gold-ink); }
+.prom-today .cita { margin: 0 0 12px; font-weight: 700; color: var(--gold-ink); }
+.prom-today .refl { margin: 0 auto 18px; max-width: 34rem; font-size: 16px; line-height: 1.6; color: var(--ink-soft, inherit); }
 .prom-today .row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 .prom-today .btn { cursor: pointer; padding: 11px 22px; font-size: 15px; box-shadow: none; }
 .prom-today .more { background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 10px 18px; font-size: 14px; font-weight: 600; }
@@ -413,10 +414,10 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
 .prom-today.out { opacity: 0; transform: translateX(-28px); }
 .prom-today.in { animation: promIn 0.5s ease both; }
 @keyframes promIn { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
-.prom-today { min-height: 15rem; display: flex; flex-direction: column; justify-content: center; }
+.prom-today { min-height: 19rem; display: flex; flex-direction: column; justify-content: center; }
 .prom-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(201, 150, 46, 0.18); }
 .prom-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #C9962E, #F2D68A); }
-.prom-today.run .prom-bar i { width: 100%; transition: width 9s linear; }
+.prom-today.run .prom-bar i { width: 100%; transition: width 16s linear; }
 .prom-today.paused .prom-bar i { transition: none; width: 100%; opacity: 0.4; }
 @media (prefers-reduced-motion: reduce) { .prom-today, .prom-today.in { transition: none; animation: none; } .prom-today.run .prom-bar i { transition: none; } }
 
@@ -1384,18 +1385,106 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   verSel.addEventListener("change", saveState);
   /* Promesas de Dios: frases resumidas (no se copia ninguna traducción) */
   var PROMESAS = [
-    { k: "Cuando tienes miedo", t: "No temas: Dios está contigo, te fortalece y te sostiene.", c: "Isaías 41,10" },
-    { k: "Cuando estás ansioso", t: "Presenta todo a Dios en oración y su paz guardará tu corazón.", c: "Filipenses 4,6-7" },
-    { k: "Cuando algo te falta", t: "El Señor es mi pastor: nada me faltará.", c: "Salmo 23,1" },
-    { k: "Cuando estás cansado", t: "Jesús invita a los agobiados a venir a Él para descansar.", c: "Mateo 11,28" },
-    { k: "Cuando no ves el futuro", t: "Dios tiene planes de bienestar y esperanza para ti.", c: "Jeremías 29,11" },
-    { k: "Cuando te falta valor", t: "Sé valiente: el Señor tu Dios te acompaña a donde vayas.", c: "Josué 1,9" },
-    { k: "Cuando necesitas protección", t: "El Señor te cuida al salir y al volver, ahora y siempre.", c: "Salmo 121,7-8" },
-    { k: "Cuando todo parece perdido", t: "Dios hace que todo coopere para el bien de quienes lo aman.", c: "Romanos 8,28" },
-    { k: "Cuando necesitas un refugio", t: "Dios es nuestro refugio y fortaleza, una ayuda siempre cercana en la angustia.", c: "Salmo 46,1" },
-    { k: "Cuando debes decidir", t: "Confía en el Señor de todo corazón y Él enderezará tus caminos.", c: "Proverbios 3,5-6" },
-    { k: "Cuando te faltan fuerzas", t: "Quienes esperan en el Señor renuevan sus fuerzas y no se cansan.", c: "Isaías 40,31" },
-    { k: "Cuando buscas paz", t: "Jesús deja su paz a los suyos, una paz distinta a la del mundo.", c: "Juan 14,27" }
+    { k: "Cuando tienes miedo", t: "No temas: Dios está contigo, te fortalece y te sostiene.", c: "Isaías 41,10", r: "El miedo no desaparece de golpe, pero cambia cuando recuerdas que no lo enfrentas solo. Hoy apóyate en esa compañía." },
+    { k: "Cuando estás ansioso", t: "Presenta todo a Dios en oración y su paz guardará tu corazón.", c: "Filipenses 4,6-7", r: "Contarle a Dios cada preocupación, con confianza y gratitud, es el primer paso. Su paz llega a cuidar el corazón mientras las respuestas se acomodan." },
+    { k: "Cuando algo te falta", t: "El Señor es mi pastor: nada me faltará.", c: "Salmo 23,1", r: "Un pastor conoce a cada oveja y sabe lo que necesita. Confía en que Dios sabe lo que te hace falta, incluso cuando no lo ves todavía." },
+    { k: "Cuando estás cansado", t: "Jesús invita a los agobiados a venir a Él para descansar.", c: "Mateo 11,28", r: "Jesús no pide que primero arregles tu vida: te invita a llegar tal como estás. Tómate hoy un momento para descansar en Él." },
+    { k: "Cuando no ves el futuro", t: "Dios tiene planes de bienestar y esperanza para ti.", c: "Jeremías 29,11", r: "Esta palabra fue dicha a un pueblo en el destierro. Aun en tiempos inciertos, Dios sigue sosteniendo el futuro con esperanza." },
+    { k: "Cuando te falta valor", t: "Sé valiente: el Señor tu Dios te acompaña a donde vayas.", c: "Josué 1,9", r: "El valor no es ausencia de miedo, sino dar el paso sabiendo que Dios camina contigo. No avanzas solo." },
+    { k: "Cuando necesitas protección", t: "El Señor te cuida al salir y al volver, ahora y siempre.", c: "Salmo 121,7-8", r: "Al empezar y terminar el día, puedes entregarlo en sus manos. Su cuidado acompaña cada entrada y cada salida." },
+    { k: "Cuando todo parece perdido", t: "Dios hace que todo coopere para el bien de quienes lo aman.", c: "Romanos 8,28", r: "No dice que todo sea bueno, sino que Dios puede sacar bien aun de lo que duele. Confía en que tu historia no está terminada." },
+    { k: "Cuando necesitas un refugio", t: "Dios es nuestro refugio y fortaleza, una ayuda siempre cercana en la angustia.", c: "Salmo 46,1", r: "Un refugio no evita la tormenta, pero te cobija mientras pasa. Corre hacia Él cuando todo se mueva." },
+    { k: "Cuando debes decidir", t: "Confía en el Señor de todo corazón y Él enderezará tus caminos.", c: "Proverbios 3,5-6", r: "Confiar no es entender todo: es entregarle a Dios la decisión y dar el siguiente paso con humildad." },
+    { k: "Cuando te faltan fuerzas", t: "Quienes esperan en el Señor renuevan sus fuerzas y no se cansan.", c: "Isaías 40,31", r: "Esperar en Dios no es quedarse quieto, sino sostenerse en Él. Allí se renuevan las fuerzas que ya no tienes." },
+    { k: "Cuando buscas paz", t: "Jesús deja su paz a los suyos, una paz distinta a la del mundo.", c: "Juan 14,27", r: "La paz de Jesús no depende de que todo salga bien. Es un regalo que se recibe aun en medio de las dificultades." },
+    { k: "Cuando necesitas perdón", t: "Si reconocemos nuestros pecados, Dios es fiel y justo para perdonarnos y limpiarnos.", c: "1 Juan 1,9", r: "Reconocer la falta no es humillarse sin sentido: es abrir la puerta al perdón. Dios no se cansa de perdonar." },
+    { k: "Cuando cargas culpa", t: "Dios ofrece borrar los pecados, aunque parezcan manchas imposibles de quitar.", c: "Isaías 1,18", r: "Ninguna culpa es más grande que su misericordia. Puedes acercarte a Él sin miedo a ser rechazado." },
+    { k: "Cuando dudas del amor de Dios", t: "Nada, ni la vida ni la muerte, podrá separarnos del amor de Dios en Cristo Jesús.", c: "Romanos 8,38-39", r: "Tus dudas no apagan su amor. Aun en tus días más oscuros, ese amor sigue sosteniéndote." },
+    { k: "Cuando te sientes solo", t: "Jesús promete estar con nosotros todos los días, hasta el final de los tiempos.", c: "Mateo 28,20", r: "La soledad más honda se alivia sabiendo que Alguien camina a tu lado. Háblale hoy como a un amigo cercano." },
+    { k: "Cuando oras", t: "Quien pide, recibe; quien busca, encuentra; a quien llama, se le abre.", c: "Mateo 7,7-8", r: "Dios invita a insistir con confianza. Sigue pidiendo, buscando y llamando, aunque la respuesta llegue de otro modo." },
+    { k: "Cuando buscas a Dios", t: "Dios promete dejarse encontrar por quienes lo buscan con todo el corazón.", c: "Jeremías 29,13", r: "Buscarlo con sinceridad ya es una respuesta a su llamado. Él no se esconde de quien lo busca." },
+    { k: "Cuando quieres acercarte", t: "Si te acercas a Dios, Él se acerca a ti.", c: "Santiago 4,8", r: "Un pequeño paso tuyo, como una oración corta, es suficiente para empezar. Él viene a tu encuentro." },
+    { k: "Cuando tienes el corazón roto", t: "El Señor está cerca de los que tienen el corazón quebrantado.", c: "Salmo 34,18", r: "Dios no se aleja del dolor. Está más cerca cuando más lo necesitas, aunque no lo sientas." },
+    { k: "Cuando lloras", t: "Quienes siembran entre lágrimas, cosecharán entre cantos de alegría.", c: "Salmo 126,5", r: "Las lágrimas de hoy no son el final de la historia. Dios sabe transformar el llanto en alegría a su tiempo." },
+    { k: "Cuando sufres", t: "Dios enjugará toda lágrima y ya no habrá luto, ni llanto, ni dolor.", c: "Apocalipsis 21,4", r: "Es una promesa de futuro que ilumina el presente: tu dolor tiene un límite, y Dios lo tiene en cuenta." },
+    { k: "Cuando temes la muerte", t: "Jesús dice que Él es la resurrección y la vida: quien cree en Él vivirá.", c: "Juan 11,25-26", r: "La fe no quita el dolor de la despedida, pero afirma que la última palabra la tiene la vida." },
+    { k: "Cuando buscas vida eterna", t: "Dios amó tanto al mundo que entregó a su Hijo para que quien crea en Él tenga vida eterna.", c: "Juan 3,16", r: "Toda la Biblia cabe en este amor. Hoy puedes recibirlo como un regalo, no como un premio ganado." },
+    { k: "Cuando necesitas salvación", t: "Todo el que invoque el nombre del Señor será salvo.", c: "Romanos 10,13", r: "La puerta está abierta para todos, sin requisitos especiales. Basta invocar su nombre con sinceridad." },
+    { k: "Cuando te sientes indigno", t: "Somos salvados por gracia, mediante la fe; no es por nuestras obras, es un don de Dios.", c: "Efesios 2,8-9", r: "No tienes que ganarte el amor de Dios. Lo recibes, y desde ahí vives agradecido." },
+    { k: "Cuando luchas contra la tentación", t: "Dios es fiel: no permitirá que seas tentado más allá de tus fuerzas y dará una salida.", c: "1 Corintios 10,13", r: "Si hoy estás en una lucha, no estás condenado a perderla. Pide ayuda y busca la salida que Dios te abre." },
+    { k: "Cuando te sientes débil", t: "La gracia de Dios nos basta, porque su poder se hace fuerte en nuestra debilidad.", c: "2 Corintios 12,9", r: "Tu debilidad no estorba a Dios. Es justamente el lugar donde puede mostrar su fuerza." },
+    { k: "Cuando todo parece muy grande", t: "Todo lo puedo en Cristo que me fortalece.", c: "Filipenses 4,13", r: "No habla de lograrlo todo, sino de poder atravesar cada situación sostenido por Cristo." },
+    { k: "Cuando nada parece posible", t: "Para Dios nada es imposible.", c: "Lucas 1,37", r: "El ángel se lo dijo a María cuando no había explicación humana. Lo que a ti te parece cerrado, Dios puede abrirlo." },
+    { k: "Cuando necesitas fe", t: "Todo es posible para el que cree.", c: "Marcos 9,23", r: "La fe pequeña también cuenta. Dile a Dios, como aquel padre: «creo, ayuda mi incredulidad»." },
+    { k: "Cuando tienes que esperar", t: "Espera en el Señor, ten ánimo y que tu corazón se fortalezca; sí, espera en el Señor.", c: "Salmo 27,14", r: "La espera es parte del camino de fe. Mientras llega la respuesta, Dios también está trabajando en ti." },
+    { k: "Cuando necesitas dirección", t: "Dios promete instruirte y enseñarte el camino que debes seguir, cuidándote con su mirada.", c: "Salmo 32,8", r: "Si le pides orientación, Él no te deja a ciegas. Pon atención a su voz en la oración y en los buenos consejos." },
+    { k: "Cuando buscas sabiduría", t: "Si a alguien le falta sabiduría, que se la pida a Dios, que da con generosidad y sin reproches.", c: "Santiago 1,5", r: "No necesitas tener todas las respuestas. Pídele a Dios luz, que Él no regaña a quien reconoce su necesidad." },
+    { k: "Cuando estás perdido", t: "La palabra de Dios es lámpara para mis pasos y luz en mi camino.", c: "Salmo 119,105", r: "Una lámpara no ilumina todo el camino, solo el siguiente paso. Con eso basta para seguir caminando." },
+    { k: "Cuando pones a Dios primero", t: "Busca primero el Reino de Dios y su justicia, y lo demás se te dará por añadidura.", c: "Mateo 6,33", r: "No es un negocio con Dios, sino una invitación a ordenar el corazón. Cuando Él ocupa el primer lugar, lo demás encuentra su lugar." },
+    { k: "Cuando te preocupa el mañana", t: "Jesús dice que no te angusties por el mañana, porque cada día tiene su propio afán.", c: "Mateo 6,34", r: "Hoy ya tiene bastante. Vive este día con confianza y deja el de mañana en las manos de Dios." },
+    { k: "Cuando llevas muchas preocupaciones", t: "Echa sobre Dios toda tu ansiedad, porque Él cuida de ti.", c: "1 Pedro 5,7", r: "No tienes que cargar solo. Entrégale en voz alta lo que te pesa y deja que Él lo cuide." },
+    { k: "Cuando llevas una carga", t: "Deja tu carga en el Señor y Él te sostendrá; no permitirá que el justo caiga para siempre.", c: "Salmo 55,22", r: "Soltar la carga es un acto de fe. Él no promete que no pese, sino que te sostiene mientras la llevas." },
+    { k: "Cuando te sientes olvidado", t: "Dios dice que no te olvidará, aunque una madre pudiera olvidar a su hijo.", c: "Isaías 49,15", r: "Estás grabado en las manos de Dios. Aunque otros te olviden, Él no lo hace." },
+    { k: "Cuando te sientes poco valioso", t: "Para Dios valemos mucho más que los pajarillos; hasta los cabellos de tu cabeza están contados.", c: "Mateo 10,29-31", r: "Tu valor no depende de lo que haces ni de lo que otros opinan. Dios te conoce al detalle y te estima." },
+    { k: "Cuando necesitas sentirte conocido", t: "Dios te conoce por dentro y te formó con cuidado; tus obras son admirables.", c: "Salmo 139,13-14", r: "No eres un error ni uno más. Fuiste pensado, formado y conocido por Dios desde antes de nacer." },
+    { k: "Cuando necesitas ser amado", t: "Dios te ama con amor eterno y te atrae con fidelidad.", c: "Jeremías 31,3", r: "Es un amor que no empezó cuando lo buscaste ni terminará cuando falles. Descansa en él." },
+    { k: "Cuando buscas tu identidad", t: "Dios nos ha amado tanto que nos llama hijos suyos, y lo somos.", c: "1 Juan 3,1", r: "Antes que cualquier título o papel, eres hijo o hija de Dios. Esa identidad nadie te la quita." },
+    { k: "Cuando quieres empezar de nuevo", t: "Quien está en Cristo es una creación nueva: lo viejo pasó, ha comenzado lo nuevo.", c: "2 Corintios 5,17", r: "Tu pasado no tiene la última palabra. En Cristo siempre es posible un nuevo comienzo." },
+    { k: "Cuando quieres cambiar", t: "Dios promete dar un corazón nuevo y poner en nosotros un espíritu nuevo.", c: "Ezequiel 36,26", r: "El cambio verdadero empieza por dentro y es obra de Dios en ti. Pídele ese corazón nuevo." },
+    { k: "Cuando empiezas una etapa", t: "Dios dice que hace algo nuevo: ya brota, ¿no lo notan?", c: "Isaías 43,18-19", r: "Mirar hacia atrás con rencor o nostalgia no deja ver lo que Dios está haciendo hoy. Abre los ojos a lo nuevo." },
+    { k: "Cuando atraviesas pruebas", t: "Cuando pases por las aguas y por el fuego, Dios estará contigo.", c: "Isaías 43,2", r: "Promete compañía en medio de la prueba, no ausencia de ella. Tampoco te dejará a la mitad del camino." },
+    { k: "Cuando estás en un valle oscuro", t: "Aunque camine por valle de sombras no temeré, porque Dios está conmigo.", c: "Salmo 23,4", r: "Es un valle que se cruza, no donde se vive. Y se cruza acompañado." },
+    { k: "Cuando hay tormenta", t: "Jesús dice a los suyos: «¡Ánimo! Soy yo, no tengan miedo».", c: "Mateo 14,27", r: "Jesús llegó caminando sobre las olas, justo en medio de la tormenta. Su voz también te alcanza hoy." },
+    { k: "Cuando buscas abrigo", t: "Quien vive al amparo del Altísimo descansa bajo la sombra del Todopoderoso.", c: "Salmo 91,1-2", r: "Habitar en Dios es volver a Él cada día. Allí hay una sombra que protege del cansancio y del miedo." },
+    { k: "Cuando enfrentas una batalla", t: "Dios dice que Él peleará por ti, y tú tendrás que estar tranquilo.", c: "Éxodo 14,14", r: "Hay batallas que no se ganan con más fuerza, sino con más confianza. Descansa en que Dios también actúa." },
+    { k: "Cuando sientes que todos están en contra", t: "Si Dios está de nuestra parte, ¿quién podrá estar contra nosotros?", c: "Romanos 8,31", r: "Con Dios a tu lado no estás en desventaja. Esa certeza da paz aun cuando haya oposición." },
+    { k: "Cuando te sientes atacado", t: "Dios promete que ninguna arma forjada contra los suyos tendrá la última palabra.", c: "Isaías 54,17", r: "Es una palabra para quien se siente amenazado: su defensa viene del Señor, no de tus propias fuerzas." },
+    { k: "Cuando buscas justicia", t: "Entrega tu camino al Señor, confía en Él y Él hará brillar tu justicia como la luz.", c: "Salmo 37,5-6", r: "No tienes que vengarte ni demostrar nada. Pon tu causa en manos de Dios, que ve todo." },
+    { k: "Cuando eres perseguido", t: "Jesús llama dichosos a los perseguidos por causa de la justicia, porque de ellos es el Reino de los cielos.", c: "Mateo 5,10", r: "Sufrir por hacer el bien tiene un valor que Dios no pasa por alto. Su Reino es de quienes perseveran." },
+    { k: "Cuando necesitas consuelo", t: "Dios es Padre misericordioso y Dios de todo consuelo, que nos consuela en toda tribulación.", c: "2 Corintios 1,3-4", r: "Quien ha sido consolado por Dios puede consolar a otros. Hoy recibe su consuelo y mañana compártelo." },
+    { k: "Cuando estás de luto", t: "Jesús llama dichosos a los que lloran, porque serán consolados.", c: "Mateo 5,4", r: "Llorar a quien amas es parte del amor. Dios no te pide ocultar el dolor y te promete consuelo." },
+    { k: "Cuando te sientes pobre por dentro", t: "Jesús llama dichosos a los pobres de espíritu, porque de ellos es el Reino de los cielos.", c: "Mateo 5,3", r: "Reconocer que necesitas a Dios no es debilidad, es el comienzo de su Reino en ti." },
+    { k: "Cuando tienes hambre de justicia", t: "Jesús llama dichosos a los que tienen hambre y sed de justicia, porque serán saciados.", c: "Mateo 5,6", r: "Ese deseo de que las cosas se hagan bien viene de Dios, y Él promete saciarlo." },
+    { k: "Cuando necesitas perdonar", t: "Si perdonas a los demás, tu Padre del cielo también te perdonará.", c: "Mateo 6,14", r: "Perdonar libera primero a quien perdona. Pídele a Dios la fuerza para hacerlo, aunque sea paso a paso." },
+    { k: "Cuando eres misericordioso", t: "Jesús llama dichosos a los misericordiosos, porque alcanzarán misericordia.", c: "Mateo 5,7", r: "Cada gesto de compasión que das se parece a Dios, y regresa como misericordia a tu vida." },
+    { k: "Cuando buscas limpiar el corazón", t: "Jesús llama dichosos a los limpios de corazón, porque verán a Dios.", c: "Mateo 5,8", r: "Un corazón sencillo y sincero reconoce a Dios en lo cotidiano. Empieza por ser transparente delante de Él." },
+    { k: "Cuando construyes la paz", t: "Jesús llama dichosos a los que trabajan por la paz, porque serán llamados hijos de Dios.", c: "Mateo 5,9", r: "Ser pacificador es parecerse al Padre. Un gesto de reconciliación hoy es una semilla de su Reino." },
+    { k: "Cuando eres generoso", t: "Jesús dice que a quien da se le dará una medida buena, apretada y rebosante.", c: "Lucas 6,38", r: "Dar con generosidad abre el corazón. No lo hagas para recibir, y confía en que Dios no se deja ganar en generosidad." },
+    { k: "Cuando sirves a otros", t: "Lo que hagas por uno de los más pequeños, Jesús lo toma como hecho a Él.", c: "Mateo 25,40", r: "En cada persona que ayudas, sirves a Cristo mismo. Ningún gesto de bondad se pierde." },
+    { k: "Cuando sientes que no das fruto", t: "Quien permanece en Jesús como el sarmiento en la vid, da mucho fruto.", c: "Juan 15,5", r: "El fruto no viene de esforzarte más, sino de permanecer unido a Jesús. Quédate cerca de Él." },
+    { k: "Cuando necesitas permanecer en Cristo", t: "Si permanecen en Jesús y su palabra permanece en ustedes, pueden pedir lo que quieran.", c: "Juan 15,7", r: "Cuanto más permaneces en su Palabra, más se parecen tus deseos a los de Dios. Allí la oración se vuelve profunda." },
+    { k: "Cuando buscas alegría", t: "Jesús habló para que su alegría esté en nosotros y nuestra alegría sea plena.", c: "Juan 15,11", r: "La alegría de Jesús es distinta a la del entretenimiento: nace de estar unido a Él. Pídele esa alegría." },
+    { k: "Cuando estás triste", t: "Jesús promete que la tristeza de sus discípulos se convertirá en alegría que nadie les quitará.", c: "Juan 16,22", r: "La tristeza es real, pero no es definitiva. Jesús promete una alegría que ninguna circunstancia puede arrebatar." },
+    { k: "Cuando el mundo te presiona", t: "Jesús dice que en el mundo habrá aflicción, pero que tengamos ánimo, porque Él ha vencido al mundo.", c: "Juan 16,33", r: "No te promete una vida sin dificultades, sino una victoria ya ganada. Eso cambia cómo las enfrentas." },
+    { k: "Cuando necesitas ayuda", t: "Jesús promete enviar al Espíritu Santo, el Defensor que estará con nosotros para siempre.", c: "Juan 14,16-17", r: "No estás solo en tu camino: el Espíritu Santo te acompaña, te enseña y te consuela cada día." },
+    { k: "Cuando te falta poder", t: "Jesús promete que recibirán la fuerza del Espíritu Santo para ser sus testigos.", c: "Hechos 1,8", r: "La fuerza para dar testimonio no es tuya: viene del Espíritu. Pídela con sencillez." },
+    { k: "Cuando rezas con otros", t: "Donde dos o tres se reúnen en su nombre, allí está Jesús en medio de ellos.", c: "Mateo 18,19-20", r: "Rezar en familia o en comunidad tiene una promesa especial. No hace falta una multitud para que Jesús esté presente." },
+    { k: "Cuando pides en nombre de Jesús", t: "Jesús promete hacer lo que pidamos en su nombre para que el Padre sea glorificado.", c: "Juan 14,13-14", r: "Pedir en su nombre es pedir con su corazón. Esa oración busca primero la gloria de Dios y el bien de todos." },
+    { k: "Cuando oras con fe", t: "Jesús dice que creamos haber recibido lo que pedimos en la oración, y así lo tendremos.", c: "Marcos 11,24", r: "La fe confía en que Dios escucha y responde, aun cuando la respuesta tarde o llegue distinta a lo esperado." },
+    { k: "Cuando oras con confianza", t: "Dios nos escucha cuando le pedimos algo conforme a su voluntad.", c: "1 Juan 5,14", r: "Orar es también alinear el corazón con Dios. Quien pide con esa disposición puede estar seguro de que es escuchado." },
+    { k: "Cuando clamas a Dios", t: "Dios dice: invócame en el día de la angustia; yo te libraré y tú me honrarás.", c: "Salmo 50,15", r: "No esperes a estar tranquilo para orar. Dios invita a llamarlo justo en el día difícil." },
+    { k: "Cuando necesitas respuestas", t: "Dios dice: clama a mí y te responderé, y te enseñaré cosas grandes que no conoces.", c: "Jeremías 33,3", r: "Dios no se cansa de que lo llames. Clamar es confiar en que Él tiene algo que enseñarte." },
+    { k: "Cuando Dios parece callar", t: "Antes de que clamen, Dios responderá; aún estarán hablando y Él ya los habrá escuchado.", c: "Isaías 65,24", r: "Aun en el silencio, Dios ya se ocupa de ti. Su respuesta empieza antes de que termines de pedir." },
+    { k: "Cuando necesitas ánimo", t: "Sé fuerte y valiente: Dios va contigo, no te dejará ni te abandonará.", c: "Deuteronomio 31,6", r: "Moisés se lo dijo al pueblo antes de entrar en lo desconocido. Hoy también es para ti." },
+    { k: "Cuando enfrentas lo desconocido", t: "Dios te toma de la mano y te dice: no temas, yo te ayudo.", c: "Isaías 41,13", r: "Imagina esa mano firme sosteniendo la tuya. No hace falta ver el camino completo si Él te guía." },
+    { k: "Cuando sientes que caes", t: "Aunque el justo tropiece, no quedará postrado, porque el Señor lo sostiene de la mano.", c: "Salmo 37,23-24", r: "Tropezar no es el final. Dios no deja que quien lo busca quede tirado en el suelo." },
+    { k: "Cuando has fallado", t: "El Señor sostiene a los que caen y levanta a los que están doblegados.", c: "Salmo 145,14", r: "Después de una caída, lo importante es levantarte de la mano de Dios. Él te vuelve a poner de pie." },
+    { k: "Cuando te cansas de hacer el bien", t: "No nos cansemos de hacer el bien: a su tiempo cosecharemos si no nos rendimos.", c: "Gálatas 6,9", r: "Hay buenos frutos que tardan en madurar. Sigue sembrando con constancia, que Dios no olvida ninguna semilla." },
+    { k: "Cuando esperas una respuesta", t: "Dios dice que la visión espera su momento: aunque parezca tardar, hay que esperarla, porque llegará.", c: "Habacuc 2,3", r: "Los tiempos de Dios no son los nuestros. Espera con paciencia y fe, sin dejar de caminar." },
+    { k: "Cuando sientes que Dios se demora", t: "El Señor no se retrasa en cumplir su promesa, sino que tiene paciencia con nosotros.", c: "2 Pedro 3,9", r: "Lo que parece demora puede ser paciencia de Dios. Él conoce mejor que tú el momento oportuno." },
+    { k: "Cuando necesitas esperanza", t: "Que el Dios de la esperanza los llene de alegría y de paz por su fe, para abundar en esperanza.", c: "Romanos 15,13", r: "La esperanza cristiana es un regalo que se pide y se recibe. Pídele hoy que te llene de ella." },
+    { k: "Cuando buscas fortaleza", t: "La alegría del Señor es nuestra fortaleza.", c: "Nehemías 8,10", r: "No se trata de sentirse siempre contento, sino de apoyarse en la alegría que viene de conocer a Dios." },
+    { k: "Cuando temes que Dios te deje", t: "Dios promete no dejarte ni abandonarte.", c: "Hebreos 13,5", r: "Es una promesa sin condiciones de tiempo ni lugar. Su presencia no depende de tus aciertos." },
+    { k: "Cuando necesitas descanso", t: "Dios dice a Moisés: mi presencia irá contigo y te daré descanso.", c: "Éxodo 33,14", r: "El verdadero descanso no está en que todo se resuelva, sino en saber que Dios va contigo." },
+    { k: "Cuando no logras dormir", t: "En paz me acostaré y dormiré, porque solo tú, Señor, me haces vivir tranquilo.", c: "Salmo 4,8", r: "Antes de dormir, entrégale a Dios lo que quedó pendiente. Descansa sabiendo que Él sigue despierto." },
+    { k: "Cuando oras por tu familia", t: "Cree en el Señor Jesús y te salvarás tú y toda tu casa.", c: "Hechos 16,31", r: "Tu fe y tu oración tocan a quienes viven contigo. Sigue intercediendo por tu casa con confianza." },
+    { k: "Cuando oras por tus hijos", t: "Dios promete instruir a todos tus hijos y darles gran paz.", c: "Isaías 54,13", r: "Entrega a tus hijos a Dios cada día. Él los acompaña aun cuando tú no puedes estar presente." },
+    { k: "Cuando educas con amor", t: "Instruye al niño en el camino que debe seguir, y aun de viejo no se apartará de él.", c: "Proverbios 22,6", r: "Lo que siembras con paciencia y ejemplo deja huella profunda. Los frutos no siempre se ven rápido." },
+    { k: "Cuando trabajas", t: "Todo lo que hagan, háganlo de corazón, como para el Señor y no para los hombres.", c: "Colosenses 3,23-24", r: "Cualquier trabajo honesto puede ser oración si lo ofreces a Dios. Él valora lo que haces con amor." },
+    { k: "Cuando piensas en el cielo", t: "Jesús va a preparar un lugar para los suyos y volverá para llevarlos con Él.", c: "Juan 14,2-3", r: "La esperanza del cielo da sentido a lo que hoy cuesta. Hay un lugar preparado con tu nombre." },
+    { k: "Cuando temes ser juzgado", t: "Ya no hay condenación para los que están unidos a Cristo Jesús.", c: "Romanos 8,1", r: "Si estás en Cristo, la culpa no es la última palabra. Hoy puedes vivir con libertad y gratitud." },
+    { k: "Cuando necesitas gracia", t: "Acerquémonos con confianza al trono de la gracia para recibir misericordia y ayuda a tiempo.", c: "Hebreos 4,16", r: "No hay que acercarse a Dios con miedo, sino con confianza. Allí siempre hay misericordia para ti." },
+    { k: "Cuando envejeces", t: "Dios dice que hasta la vejez será el mismo, y hasta las canas los llevará en brazos.", c: "Isaías 46,4", r: "Los años pasan, pero Dios no cambia. Cada etapa de tu vida está sostenida por Él." }
   ];
   /* Contenido diario: ver contenido.js */
   var VG = window.VG || { ORACIONES: [], MOODS: [["#BBD9F5", "#FFF3D6", "#FFF1B8"]], NUEVAS: {}, PLAN: [], MARIAS_DIA: [], MARIAS: [{ t: "Oración", p: "" }], FIJAS: [], MESES: [], DIAS: [], dayNumber: function () { return 0; } };
@@ -1453,6 +1542,7 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
     promBox.appendChild(el("p", "k", "Promesa " + (i + 1) + " de " + PROMESAS.length + " · " + p.k));
     promBox.appendChild(el("h3", null, p.t));
     promBox.appendChild(el("p", "cita", p.c));
+    promBox.appendChild(el("p", "refl", p.r));
     var bar = el("div", "prom-bar"); bar.setAttribute("aria-hidden", "true"); bar.appendChild(el("i"));
     promBox.appendChild(bar);
     promBox.appendChild(deck);
@@ -1478,7 +1568,7 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   function restartPromTimer() {
     clearInterval(promTimer);
     promBox.classList.remove("run"); void promBox.offsetWidth; promBox.classList.add("run");
-    promTimer = setInterval(function () { if (!promPaused && promVisible && !document.hidden) { showPromise((lastProm + 1) % PROMESAS.length); promBox.classList.remove("run"); void promBox.offsetWidth; promBox.classList.add("run"); } }, 9000);
+    promTimer = setInterval(function () { if (!promPaused && promVisible && !document.hidden) { showPromise((lastProm + 1) % PROMESAS.length); promBox.classList.remove("run"); void promBox.offsetWidth; promBox.classList.add("run"); } }, 16000);
   }
   ["mouseenter", "focusin", "touchstart"].forEach(function (ev) { promBox.addEventListener(ev, function () { promPaused = true; promBox.classList.add("paused"); }, { passive: true }); });
   ["mouseleave", "focusout"].forEach(function (ev) { promBox.addEventListener(ev, function () { promPaused = false; promBox.classList.remove("paused"); }); });
