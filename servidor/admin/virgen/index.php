@@ -181,7 +181,7 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
       var c = el("div", "kpi"); c.appendChild(el("b", null, String(x[0]))); c.appendChild(el("span", null, x[1])); k.appendChild(c);
     });
     m.appendChild(k);
-    m.appendChild(el("p", "muted", "Los pagos de Wompi llegan solos si en Wompi configuras la URL de eventos y guardas el secreto de eventos en el servidor (ver pestaña Pagos). Mientras tanto puedes registrarlos a mano."));
+    m.appendChild(el("p", "muted", "Los pagos de los dos links de Wompi (aporte y suscripción) se registran solos en la pestaña Pagos. Si alguno no aparece, puedes registrarlo a mano."));
   }
 
   function vUsuarios(m) {
@@ -246,7 +246,7 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
     });
     w.appendChild(t); m.appendChild(w);
     var help = el("div", "muted");
-    help.innerHTML = "<p><b>Para que Wompi registre los pagos solo:</b> en Wompi, Desarrolladores → URL de eventos, pega <code>https://www.concursosdelestado.com/acceso/wompi_virgen.php</code>. Luego copia el «Secreto de eventos» y guárdalo tú mismo en un archivo llamado <code>wompi_eventos.key</code> dentro de la carpeta <code>ce_data</code> del servidor (el secreto no debe pasar por el chat ni por git).</p>";
+    help.innerHTML = "<p><b>Pagos automáticos:</b> los pagos de los links de Wompi de la Virgen llegan solos a esta lista (ya probado con un pago real). Si uno no aparece, regístralo a mano arriba. Para quitar un pago de prueba, usa el botón «Quitar» de su fila.</p>";
     m.appendChild(help);
   }
 
