@@ -40,6 +40,11 @@ if ($act !== '') {
     if ($act === 'datos') {
         vg_json(['ok' => true, 'subs' => vg_read($subsF), 'pagos' => vg_read($pagosF), 'tests' => vg_read($testF), 'fb' => (object)vg_fb($fbF)]);
     }
+    if ($act === 'visitas') {   // registros de visitas de los últimos 90 días (los agrega el navegador)
+        $vf = ce_dir() . '/virgen_visitas.jsonl'; $out = []; $min = time() - 90 * 86400;
+        if (is_file($vf)) foreach (file($vf, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $l) { $r = json_decode($l, true); if (is_array($r) && ($r['t'] ?? 0) >= $min) $out[] = $r; }
+        vg_json(['ok' => true, 'v' => array_slice($out, -60000)]);
+    }
     if ($act === 'pago_add') {
         $monto = (int)preg_replace('/\D/', '', (string)($in['monto'] ?? ''));
         $fecha = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)($in['fecha'] ?? '')) ? $in['fecha'] : date('Y-m-d');
@@ -150,12 +155,67 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
       .then(function (r) { return r.json(); });
   }
   function load() { return api("datos").then(function (d) { if (d.ok) { D.subs = d.subs; D.pagos = d.pagos; D.tests = d.tests || []; D.fb = d.fb || {}; } render(); }); }
-  var TABS = [["resumen", "Resumen"], ["usuarios", "Suscriptores"], ["pagos", "Pagos"], ["publicidad", "Publicidad"], ["testimonios", "Testimonios"], ["facebook", "Facebook"]];
+  var TABS = [["resumen", "Resumen"], ["usuarios", "Suscriptores"], ["pagos", "Pagos"], ["publicidad", "Publicidad"], ["testimonios", "Testimonios"], ["facebook", "Facebook"], ["visitas", "Visitas"]];
   function drawTabs() {
     var n = $("tabs"); n.textContent = "";
     TABS.forEach(function (t) { var b = el("button", t[0] === tab ? "on" : "", t[1]); b.onclick = function () { tab = t[0]; render(); }; n.appendChild(b); });
   }
-  function render() { drawTabs(); var m = $("main"); m.textContent = ""; ({ resumen: vResumen, usuarios: vUsuarios, pagos: vPagos, publicidad: vPub, testimonios: vTest, facebook: vFb })[tab](m); }
+  function render() { drawTabs(); var m = $("main"); m.textContent = ""; ({ resumen: vResumen, usuarios: vUsuarios, pagos: vPagos, publicidad: vPub, testimonios: vTest, facebook: vFb, visitas: vVis })[tab](m); }
+
+
+  /* ---------- Visitas (solo cuentan quienes aceptaron las cookies) ---------- */
+  var VIS = null, visRango = 30;
+  function bogota(t) { var p = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Bogota", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hourCycle: "h23" }).formatToParts(new Date(t * 1000)), o = {}; p.forEach(function (x) { o[x.type] = x.value; }); return { d: o.year + "-" + o.month + "-" + o.day, h: +o.hour }; }
+  function top(rows, key, n) { var c = {}; rows.forEach(function (r) { var k = typeof key === "function" ? key(r) : r[key]; if (k) c[k] = (c[k] || 0) + 1; }); return Object.keys(c).map(function (k) { return [k, c[k]]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, n || 10); }
+  function bars(titulo, pares, total) {
+    var w = el("div"); w.appendChild(el("h3", null, titulo)); w.firstChild.style.cssText = "margin:0 0 8px;font:600 20px 'Cormorant Garamond',Georgia,serif";
+    if (!pares.length) { w.appendChild(el("p", "muted", "Aún sin datos.")); return w; }
+    var mx = pares[0][1];
+    pares.forEach(function (p) {
+      var r = el("div"); r.style.cssText = "display:grid;grid-template-columns:minmax(90px,38%) 1fr auto;gap:8px;align-items:center;margin:3px 0;font-size:14px";
+      r.appendChild(el("span", null, p[0]));
+      var b = el("div"); b.style.cssText = "background:#E6EBF5;border-radius:6px;height:12px"; var i = el("div"); i.style.cssText = "background:var(--navy);height:12px;border-radius:6px;width:" + Math.max(3, Math.round(p[1] / mx * 100)) + "%"; b.appendChild(i); r.appendChild(b);
+      r.appendChild(el("span", "muted", p[1] + (total ? " · " + Math.round(p[1] / total * 100) + "%" : ""))); w.appendChild(r);
+    });
+    return w;
+  }
+  function vVis(m) {
+    m.appendChild(el("h2", null, "Visitas a la página"));
+    if (!VIS) { m.appendChild(el("p", "muted", "Cargando…")); api("visitas").then(function (d) { VIS = d.v || []; if (tab === "visitas") render(); }); return; }
+    var corte = Math.floor(Date.now() / 1000) - visRango * 86400;
+    var todas = VIS.filter(function (r) { return r.t >= corte; }), vs = todas.filter(function (r) { return (r.ev || "visita") === "visita"; }), evs = todas.filter(function (r) { return r.ev && r.ev !== "visita"; });
+    var bar = el("div", "bar"); [[1, "Hoy"], [7, "7 días"], [30, "30 días"], [90, "90 días"]].forEach(function (x) { var b = el("button", "g", x[1]); if (x[0] === visRango) { b.style.background = "var(--navy)"; b.style.color = "#fff"; } b.onclick = function () { visRango = x[0]; render(); }; bar.appendChild(b); });
+    m.appendChild(bar);
+    var ids = {}; vs.forEach(function (r) { ids[r.vid] = 1; }); var nuevos = vs.filter(function (r) { return r.nuevo; }).length;
+    var hoy = bogota(Date.now() / 1000).d, hoyN = VIS.filter(function (r) { return (r.ev || "visita") === "visita" && bogota(r.t).d === hoy; }).length;
+    var k = el("div", "kpis");
+    [[vs.length, "Visitas (sesiones)"], [Object.keys(ids).length, "Personas distintas"], [nuevos, "Personas nuevas"], [vs.length - nuevos, "Volvieron a visitarnos"], [hoyN, "Visitas hoy"]].forEach(function (x) { var d = el("div", "kpi"); d.appendChild(el("b", null, String(x[0]))); d.appendChild(el("span", null, x[1])); k.appendChild(d); });
+    m.appendChild(k);
+    m.appendChild(el("p", "muted", "Solo se cuentan las personas que aceptaron las cookies; el número real de visitantes es algo mayor. Horas en hora de Colombia. No se guarda la dirección IP."));
+    if (!vs.length) { m.appendChild(el("p", null, "Todavía no hay visitas registradas en este periodo. Aparecerán cuando alguien acepte las cookies en virgendelmilagro.co.")); return; }
+    var g = el("div"); g.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:26px 30px;margin-top:10px";
+    g.appendChild(bars("Países", top(vs, function (r) { return r.pais; }, 8), vs.length));
+    g.appendChild(bars("Ciudades", top(vs, function (r) { return r.ciudad ? r.ciudad + (r.cc ? " (" + r.cc + ")" : "") : ""; }, 12), vs.length));
+    g.appendChild(bars("Departamentos / regiones", top(vs, function (r) { return r.region; }, 8), vs.length));
+    var hrs = []; for (var i = 0; i < 24; i++) hrs.push(0); vs.forEach(function (r) { hrs[bogota(r.t).h]++; });
+    g.appendChild(bars("Horas del día (Colombia)", hrs.map(function (n, h) { return [("0" + h).slice(-2) + ":00", n]; }).filter(function (p) { return p[1] > 0; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 12), vs.length));
+    var dias = {}; vs.forEach(function (r) { var d = bogota(r.t).d; dias[d] = (dias[d] || 0) + 1; });
+    g.appendChild(bars("Días con más visitas", Object.keys(dias).map(function (d) { return [d, dias[d]]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 10), vs.length));
+    g.appendChild(bars("Dispositivo", top(vs, "disp", 4), vs.length));
+    g.appendChild(bars("Sistema", top(vs, "so", 6), vs.length));
+    g.appendChild(bars("Navegador", top(vs, "nav", 6), vs.length));
+    g.appendChild(bars("Vienen de", top(vs.map(function (r) { return { x: r.ref || "Directo / WhatsApp / Facebook app" }; }), "x", 8), vs.length));
+    var nom = { donar: "Tocaron «Aportar»", suscribir: "Tocaron «Suscribirme»", facebook: "Tocaron Facebook", chat: "Usaron el chat" };
+    g.appendChild(bars("Acciones", top(evs, function (r) { return nom[r.ev] || r.ev; }, 6), 0));
+    m.appendChild(g);
+    var ex = el("button", "g", "Descargar CSV"); ex.style.marginTop = "18px";
+    ex.onclick = function () {
+      var rows = [["fecha_hora_colombia", "evento", "pais", "region", "ciudad", "dispositivo", "sistema", "navegador", "origen", "nuevo"]].concat(todas.map(function (r) { var b = bogota(r.t); return [b.d + " " + ("0" + b.h).slice(-2) + "h", r.ev || "visita", r.pais, r.region, r.ciudad, r.disp, r.so, r.nav, r.ref, r.nuevo ? "si" : "no"]; }));
+      var csv = rows.map(function (r) { return r.map(function (c) { return '"' + String(c || "").replace(/"/g, '""') + '"'; }).join(","); }).join("\n");
+      var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv" })); a.download = "visitas-virgen.csv"; a.click();
+    };
+    m.appendChild(ex);
+  }
 
   /* ---------- helpers de pagos ---------- */
   function mesActual() { return new Date().toISOString().slice(0, 7); }

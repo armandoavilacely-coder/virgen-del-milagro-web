@@ -35,6 +35,60 @@ if ($method === 'OPTIONS') { http_response_code(204); exit; }
 
 $file = ce_dir() . '/virgen_testimonios.jsonl';
 
+/* ---- Estadísticas de visitas (POST ?a=v): solo si la persona aceptó las cookies; no guarda la IP, solo país/ciudad y un identificador anónimo ---- */
+if (($_GET['a'] ?? '') === 'v') {
+    if ($method !== 'POST') ts_out(['ok' => false], 405);
+    $ua = (string)($_SERVER['HTTP_USER_AGENT'] ?? '');
+    if ($ua === '' || preg_match('/bot|crawl|spider|slurp|preview|facebookexternalhit|headless|monitor|curl|python|wget|scanner|lighthouse/i', $ua)) ts_out(['ok' => true]);
+    $in = json_decode(file_get_contents('php://input'), true);
+    if (!is_array($in) || empty($in['ok'])) ts_out(['ok' => false], 400);
+    $vid = preg_replace('/[^0-9a-f]/', '', strtolower((string)($in['vid'] ?? ''))); if (strlen($vid) < 12) ts_out(['ok' => false], 400); $vid = substr($vid, 0, 32);
+    $ev = in_array($in['ev'] ?? '', ['visita', 'donar', 'suscribir', 'facebook', 'chat', 'testimonio', 'rosario'], true) ? $in['ev'] : 'visita';
+
+    /* freno: 120 registros por hora y por visitante, 40 000 al día en total */
+    $rf = ce_dir() . '/virgen_vis_rate.json';
+    $fh = fopen($rf, 'c+'); if (!$fh) ts_out(['ok' => false], 503);
+    flock($fh, LOCK_EX);
+    $st = json_decode(stream_get_contents($fh) ?: '', true); if (!is_array($st)) $st = [];
+    $now = time();
+    if (($st['d'] ?? '') !== date('Y-m-d')) $st = ['d' => date('Y-m-d'), 'n' => 0, 'v' => []];
+    foreach ($st['v'] as $k => $l) { $st['v'][$k] = array_values(array_filter($l, fn($x) => $x > $now - 3600)); if (!$st['v'][$k]) unset($st['v'][$k]); }
+    $blocked = $st['n'] >= 40000 || count($st['v'][$vid] ?? []) >= 120;
+    if (!$blocked) { $st['n']++; $st['v'][$vid][] = $now; }
+    ftruncate($fh, 0); rewind($fh); fwrite($fh, json_encode($st)); flock($fh, LOCK_UN); fclose($fh);
+    if ($blocked) ts_out(['ok' => true]);
+
+    /* ubicación aproximada por IP (con caché; la IP nunca se guarda, solo su huella para no repetir la consulta) */
+    $ip = ce_ip(); $geo = ['cc' => '', 'pais' => '', 'region' => '', 'ciudad' => ''];
+    $ipH = hash('sha256', $ip . '|vg');
+    $gf = ce_dir() . '/virgen_geo.json';
+    $cache = is_file($gf) ? json_decode((string)file_get_contents($gf), true) : []; if (!is_array($cache)) $cache = [];
+    if (isset($cache[$ipH]) && ($cache[$ipH]['t'] ?? 0) > $now - 30 * 86400) { $geo = $cache[$ipH]['g']; }
+    elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) && function_exists('curl_init')) {
+        $ch = curl_init('https://ipwho.is/' . rawurlencode($ip) . '?lang=es&fields=success,country,country_code,region,city');
+        curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 3, CURLOPT_CONNECTTIMEOUT => 2, CURLOPT_USERAGENT => 'virgen-visitas']);
+        $raw = curl_exec($ch); curl_close($ch);
+        $j = $raw ? json_decode($raw, true) : null;
+        if (is_array($j) && !empty($j['success'])) {
+            $geo = ['cc' => substr((string)($j['country_code'] ?? ''), 0, 2), 'pais' => mb_substr((string)($j['country'] ?? ''), 0, 40), 'region' => mb_substr((string)($j['region'] ?? ''), 0, 50), 'ciudad' => mb_substr((string)($j['city'] ?? ''), 0, 50)];
+            if (count($cache) > 4000) $cache = array_slice($cache, -2000, null, true);
+            $cache[$ipH] = ['t' => $now, 'g' => $geo];
+            @file_put_contents($gf, json_encode($cache, JSON_UNESCAPED_UNICODE), LOCK_EX);
+        }
+    }
+
+    $disp = preg_match('/iPad|Tablet|Silk/i', $ua) ? 'Tableta' : (preg_match('/Mobi|Android|iPhone/i', $ua) ? 'Celular' : 'Computador');
+    $nav = preg_match('/Edg\//', $ua) ? 'Edge' : (preg_match('/OPR\/|Opera/', $ua) ? 'Opera' : (preg_match('/SamsungBrowser/', $ua) ? 'Samsung' : (preg_match('/Chrome|CriOS/', $ua) ? 'Chrome' : (preg_match('/Firefox|FxiOS/', $ua) ? 'Firefox' : (preg_match('/Safari/', $ua) ? 'Safari' : 'Otro')))));
+    $so = preg_match('/Android/', $ua) ? 'Android' : (preg_match('/iPhone|iPad|iOS/', $ua) ? 'iOS' : (preg_match('/Windows/', $ua) ? 'Windows' : (preg_match('/Mac OS/', $ua) ? 'macOS' : (preg_match('/Linux/', $ua) ? 'Linux' : 'Otro'))));
+    $ref = ''; $rh = parse_url((string)($in['ref'] ?? ''), PHP_URL_HOST);
+    if ($rh && !preg_match('/virgendelmilagro\.co$/i', $rh)) $ref = mb_substr(preg_replace('/^www\./', '', strtolower($rh)), 0, 60);
+    $reg = ['t' => $now, 'vid' => $vid, 'ev' => $ev, 'nuevo' => !empty($in['nuevo']), 'cc' => $geo['cc'], 'pais' => $geo['pais'], 'region' => $geo['region'], 'ciudad' => $geo['ciudad'],
+            'disp' => $disp, 'nav' => $nav, 'so' => $so, 'ref' => $ref, 'idioma' => mb_substr(strtolower((string)($in['l'] ?? '')), 0, 8), 'w' => (int)($in['w'] ?? 0)];
+    @file_put_contents(ce_dir() . '/virgen_visitas.jsonl', json_encode($reg, JSON_UNESCAPED_UNICODE) . "\n", FILE_APPEND | LOCK_EX);
+    ts_out(['ok' => true]);
+}
+
+
 /* ---- Lectura pública: solo aprobados ---- */
 if ($method === 'GET') {
     $out = [];

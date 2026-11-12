@@ -347,6 +347,15 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
   .prayer-card { padding: 26px 22px; }
   .subs-card { padding: 26px 20px; }
 }
+
+/* Aviso de cookies (estadísticas de visitas) */
+#ck { position: fixed; left: max(12px, env(safe-area-inset-left, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); bottom: max(12px, env(safe-area-inset-bottom, 0px)); z-index: 60; max-width: 640px; margin-inline: auto; background: var(--card-solid); color: var(--ink); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 10px 34px var(--shadow); padding: 14px 16px; font: 14px/1.5 var(--font-ui); }
+#ck p { margin: 0 0 10px; }
+#ck .row { display: flex; gap: 8px; flex-wrap: wrap; }
+#ck button { font: inherit; font-weight: 700; border-radius: 999px; padding: 9px 18px; cursor: pointer; min-height: 40px; border: 1px solid var(--btn-bg); }
+#ck .si { background: var(--btn-bg); color: var(--btn-ink); }
+#ck .no { background: var(--card-solid); color: var(--btn-bg); }
+#ck-open { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; opacity: .85; }
 </style>
 </head><body>
 
@@ -710,10 +719,16 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
       <a href="#palabra">Palabra del día</a>
       <a href="#visita">Visita Tunja</a>
       <a href="#comunidad">Comunidad</a>
+      <button id="ck-open" type="button">Cookies</button>
     </nav>
   </div>
 </footer>
 
+
+<div id="ck" role="dialog" aria-label="Aviso de cookies" hidden>
+  <p><b>Cookies para contar visitas.</b> Usamos una cookie propia y anónima para saber cuántas personas nos visitan, desde qué país o ciudad y a qué hora, y así mejorar esta página. No guardamos tu dirección IP, no te identificamos y no compartimos datos con nadie (Ley 1581 de 2012). Puedes cambiar tu decisión cuando quieras desde «Cookies» al final de la página.</p>
+  <div class="row"><button class="si" id="ck-si" type="button">Aceptar</button><button class="no" id="ck-no" type="button">Rechazar</button></div>
+</div>
 <script src="contenido.js"></script>
 <script>
 (function () {
@@ -1418,6 +1433,53 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
     sample = s;
     if (!s && !ENDPOINT) lockComposer("El chat funciona al abrir esta página desde Claude. Aquí no está disponible.");
   });
+})();
+</script>
+<script>
+/* Estadísticas propias de visitas: solo si la persona acepta las cookies. */
+(function () {
+  "use strict";
+  var EP = "https://www.concursosdelestado.com/acceso/testimonios_virgen.php?a=v";
+  var box = document.getElementById("ck");
+  function gs(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function ss(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function cookie(n) { var m = document.cookie.match(new RegExp("(?:^|; )" + n + "=([^;]*)")); return m ? m[1] : ""; }
+  function setCookie(n, v, days) { document.cookie = n + "=" + v + ";max-age=" + (days * 86400) + ";path=/;SameSite=Lax" + (location.protocol === "https:" ? ";Secure" : ""); }
+  function delCookie(n) { document.cookie = n + "=;max-age=0;path=/"; }
+  function rid() { var a = new Uint8Array(12); (window.crypto || window.msCrypto).getRandomValues(a); return Array.prototype.map.call(a, function (b) { return ("0" + b.toString(16)).slice(-2); }).join(""); }
+  function ok() { return gs("vg-ck") === "1"; }
+  function send(ev, nuevo) {
+    if (!ok()) return;
+    var vid = cookie("vg_id"); if (!vid) return;
+    var body = JSON.stringify({ ok: 1, vid: vid, ev: ev, nuevo: nuevo ? 1 : 0, ref: document.referrer || "", l: (navigator.language || "").slice(0, 8), w: window.innerWidth || 0 });
+    try { fetch(EP, { method: "POST", headers: { "Content-Type": "application/json" }, body: body, keepalive: true, credentials: "omit" }).catch(function () {}); } catch (e) {}
+  }
+  var once = {};
+  function evento(ev) { if (once[ev]) return; once[ev] = 1; send(ev, false); }
+  function visita() {
+    var nuevo = false, vid = cookie("vg_id");
+    if (!vid) { vid = rid(); nuevo = true; }
+    setCookie("vg_id", vid, 180);
+    var yaSesion = false; try { yaSesion = sessionStorage.getItem("vg-vis") === "1"; sessionStorage.setItem("vg-vis", "1"); } catch (e) {}
+    if (!yaSesion) send("visita", nuevo);
+  }
+  function mostrar(v) { box.hidden = !v; }
+  function decidir(si) {
+    ss("vg-ck", si ? "1" : "0"); mostrar(false);
+    if (si) visita(); else delCookie("vg_id");
+  }
+  document.getElementById("ck-si").onclick = function () { decidir(true); };
+  document.getElementById("ck-no").onclick = function () { decidir(false); };
+  document.getElementById("ck-open").onclick = function () { mostrar(true); };
+  var d = gs("vg-ck");
+  if (d === "1") visita(); else if (d !== "0") mostrar(true);
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest ? e.target.closest("a,button") : null; if (!a) return;
+    var h = a.getAttribute("href") || "";
+    if (/wompi\.co/.test(h)) evento(/hyEaOO/.test(h) ? "donar" : "suscribir");
+    else if (a.id === "fb") evento("facebook");
+  }, true);
+  var f = document.getElementById("form"); if (f) f.addEventListener("submit", function () { evento("chat"); });
 })();
 </script>
 </body></html>
