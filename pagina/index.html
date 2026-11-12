@@ -78,7 +78,7 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .eyebrow { margin: 0 0 6px; font-size: 13px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-ink); }
 .script { margin: -0.12em -0.22em -0.26em; padding: 0.12em 0.22em 0.26em; font-family: var(--font-script); font-weight: 400; line-height: 1.08; text-wrap: balance; background: linear-gradient(180deg, var(--title-a) 0%, var(--title-b) 52%, var(--title-c) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .lede { margin: 12px 0 0; font-family: var(--font-serif); font-size: clamp(22px, 2.6vw, 28px); line-height: 1.3; color: var(--soft); text-wrap: balance; }
-.sec-head { text-align: center; max-width: 42rem; margin: 0 auto 48px; }
+.sec-head { text-align: center; max-width: 42rem; margin: 0 auto 32px; }
 .sec-head .script { font-size: clamp(48px, 6.4vw, 76px); }
 .btn { display: inline-block; padding: 15px 30px; border: 2px solid transparent; border-radius: 999px; background: var(--btn-bg); color: var(--btn-ink); font-weight: 700; font-size: 16px; box-shadow: 0 10px 26px var(--shadow); }
 .btn.alt { background: transparent; color: var(--gold-ink); border-color: var(--gold-ink); box-shadow: none; }
@@ -90,7 +90,7 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .brand span { font-family: var(--font-serif); font-size: 26px; font-weight: 600; line-height: 1; }
 .menu { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 26px; font-size: 15px; font-weight: 600; color: var(--navy); }
 .menu a.pill { padding: 9px 20px; border-radius: 999px; background: var(--btn-bg); color: var(--btn-ink); }
-.hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 40px; align-items: center; padding-block: 24px 96px; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 40px; align-items: center; padding-block: 24px 56px; }
 .hero h1 { font-size: clamp(60px, 8.6vw, 116px); }
 .hero-grid > div:first-child { position: relative; z-index: 2; padding-top: 80px; }
 .hero .eyebrow { margin-bottom: 18px; }
@@ -123,7 +123,7 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 @media (prefers-reduced-motion: reduce) { .arch .fig, .arch .spark, .arch .glow, .arch .halo, .arch .rays, .postal .p-glow, .postal .p-rays { animation: none; } }
 
 /* Chat bíblico */
-.chat-sec { background: var(--chat-bg); padding-block: 96px; overflow-x: clip; }
+.chat-sec { background: var(--chat-bg); padding-block: 56px; overflow-x: clip; }
 .chat-grid { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 48px; align-items: start; }
 .chat-grid .niche { width: 300px; position: sticky; top: 24px; }
 .chat { min-width: 0; display: flex; flex-direction: column; height: min(80vh, 760px); min-height: 520px; background: var(--card); border: 1px solid var(--line); border-radius: 28px; box-shadow: 0 26px 64px var(--shadow); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); overflow: hidden; }
@@ -170,14 +170,14 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .fine { margin: 10px 0 0; font-size: 13px; line-height: 1.5; color: var(--soft); }
 
 /* Oración */
-.prayer-sec { background: var(--prayer-bg); padding-block: 96px; }
+.prayer-sec { background: var(--prayer-bg); padding-block: 56px; }
 .prayers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 28px; }
 .prayer-card { padding: 34px 32px; border-radius: 26px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 20px 48px var(--shadow); }
 .prayer-card h3 { margin: 0 0 12px; font-size: 13px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-ink); }
 .prayer-card p { margin: 0; font-family: var(--font-serif); font-style: italic; font-size: clamp(22px, 2.3vw, 26px); line-height: 1.42; }
 
 /* La fiesta */
-.fiesta-sec { background: var(--band); padding-block: 96px; }
+.fiesta-sec { background: var(--band); padding-block: 56px; }
 .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 24px; }
 .fact { padding: 28px 26px; border-radius: 22px; background: var(--card-solid); border: 1px solid var(--line); box-shadow: 0 12px 30px var(--shadow); }
 .fact svg { display: block; }
@@ -187,7 +187,7 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .sources { margin: 28px 0 0; text-align: center; font-size: 14px; color: var(--soft); }
 
 /* Comunidad */
-.comm-sec { background: var(--comm-bg); color: var(--comm-ink); padding-block: 96px; }
+.comm-sec { background: var(--comm-bg); color: var(--comm-ink); padding-block: 56px; }
 .comm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 48px; align-items: center; }
 .comm-sec .eyebrow { color: var(--comm-gold); }
 .comm-sec .script { font-size: clamp(52px, 6.6vw, 82px); background: linear-gradient(180deg, #FBEBB5, #F2D68A 55%, #D9A93F); -webkit-background-clip: text; background-clip: text; }
@@ -200,7 +200,7 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .gifts span { color: var(--comm-soft); font-size: 16px; }
 
 /* Palabra del día (suscripción) */
-.subs-sec { background: var(--chat-bg); padding-block: 96px; }
+.subs-sec { background: var(--chat-bg); padding-block: 56px; }
 .subs-card { max-width: 40rem; margin: 0 auto; padding: 34px 32px; border-radius: 26px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 20px 48px var(--shadow); }
 .subs-card form { display: grid; gap: 14px; }
 .subs-card label.f { display: grid; gap: 4px; font-size: 14px; font-weight: 700; color: var(--soft); }
@@ -214,7 +214,7 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
 /* Oración del día */
-.dia-sec { background: var(--band); padding-block: 96px; }
+.dia-sec { background: var(--band); padding-block: 56px; }
 .dia-grid { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 48px; align-items: center; justify-content: center; max-width: 1000px; margin: 0 auto; }
 .postal { --pa: #BBD9F5; --pb: #FFF3D6; --pc: #FFF1B8; position: relative; container-type: inline-size; aspect-ratio: 4 / 5; border-radius: 26px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 24px 54px var(--shadow); background: linear-gradient(180deg, var(--pa) 0%, var(--pb) 100%); }
 .postal .p-glow { position: absolute; left: 70%; top: 40%; width: 110%; aspect-ratio: 1; transform: translate(-50%, -50%); background: radial-gradient(circle, rgba(255, 252, 235, 0.95) 0%, var(--pc) 28%, rgba(255, 243, 200, 0) 62%); animation: aura 6s ease-in-out infinite; }
@@ -235,7 +235,7 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 @media (max-width: 900px) { .dia-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; } .postal { max-width: 440px; margin-inline: auto; width: 100%; } }
 
 /* Santo Rosario */
-.ros-sec { background: var(--chat-bg); padding-block: 96px; }
+.ros-sec { background: var(--chat-bg); padding-block: 56px; }
 .ros-card { max-width: 46rem; margin: 0 auto; padding: 30px 30px 26px; border-radius: 26px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 20px 48px var(--shadow); }
 .ros-tabs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 14px; }
 .ros-tabs button { cursor: pointer; border: 1px solid var(--line); background: var(--card-solid); color: var(--soft); border-radius: 999px; padding: 8px 16px; font: inherit; font-size: 14px; font-weight: 700; }
@@ -258,8 +258,8 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .ros-actions .more { cursor: pointer; background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 10px 16px; font: inherit; font-size: 14px; font-weight: 600; color: var(--soft); }
 
 /* Testimonios */
-.test-sec { background: var(--band); padding-block: 96px; }
-.test-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto 48px; }
+.test-sec { background: var(--band); padding-block: 56px; }
+.test-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto 32px; }
 .t-card { margin: 0; padding: 24px 24px 20px; border-radius: 22px; background: var(--card-solid); border: 1px solid var(--line); box-shadow: 0 12px 30px var(--shadow); display: flex; flex-direction: column; gap: 12px; }
 .t-card p { margin: 0; font-family: var(--font-serif); font-style: italic; font-size: 21px; line-height: 1.45; white-space: pre-line; overflow-wrap: anywhere; }
 .t-card cite { font-style: normal; font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-ink); }
@@ -270,7 +270,7 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .t-count { font-size: 12px; font-weight: 600; color: var(--soft); text-align: right; }
 
 /* Promesas de Dios */
-.prom-sec { background: var(--chat-bg); padding-block: 96px; }
+.prom-sec { background: var(--chat-bg); padding-block: 56px; }
 .prom { gap: 22px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); }
 .prom .card { gap: 8px; }
 .prom .k { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-ink); }
@@ -290,10 +290,10 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .prom .more:hover { border-color: var(--gold-ink); }
 
 /* Recuerdos, patrocinadores, apoyo, turismo */
-.shop-sec { background: var(--band); padding-block: 96px; }
-.spons-sec { background: var(--prayer-bg); padding-block: 96px; }
-.apoyo-sec { background: var(--band); padding-block: 96px; }
-.tour-sec { background: var(--chat-bg); padding-block: 96px; }
+.shop-sec { background: var(--band); padding-block: 56px; }
+.spons-sec { background: var(--prayer-bg); padding-block: 56px; }
+.apoyo-sec { background: var(--band); padding-block: 56px; }
+.tour-sec { background: var(--chat-bg); padding-block: 56px; }
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 24px; }
 .card { padding: 26px 24px; border-radius: 22px; background: var(--card-solid); border: 1px solid var(--line); box-shadow: 0 12px 30px var(--shadow); display: flex; flex-direction: column; gap: 6px; }
 .card h3 { margin: 0; font-family: var(--font-serif); font-size: 28px; font-weight: 600; line-height: 1.15; }
@@ -337,7 +337,8 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
   .hero-grid .niche { order: 2; width: min(100%, 340px); }
   .chat-grid { grid-template-columns: minmax(0, 1fr); }
   .chat-grid .niche { display: none; }
-  .chat-sec, .prayer-sec, .fiesta-sec, .comm-sec, .dia-sec, .prom-sec, .subs-sec, .shop-sec, .spons-sec, .apoyo-sec, .tour-sec { padding-block: 64px; }
+  .chat-sec, .prayer-sec, .fiesta-sec, .comm-sec, .dia-sec, .ros-sec, .test-sec, .prom-sec, .subs-sec, .shop-sec, .spons-sec, .apoyo-sec, .tour-sec { padding-block: 36px; }
+  .hero-grid { padding-block: 24px 36px; }
   .menu a.hide-s { display: none; }
 }
 @media (max-width: 480px) {
@@ -452,7 +453,6 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
             </form>
           </div>
         </div>
-        <p class="fine">Las respuestas las escribe una IA y pueden tener errores: confirma cada versículo en tu Biblia. Tu mensaje se envía a una IA para responderte: no escribas datos personales. Si estás pasando por un momento muy difícil, llama al 123 (emergencias) o a la Línea 192, opción 4, de salud mental.</p>
       </div>
     </div>
   </div>
