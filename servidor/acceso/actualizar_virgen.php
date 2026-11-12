@@ -17,6 +17,7 @@ $MAP = [   // archivo en el repo => destino en el servidor
     'pagina/historia.html' => $H . '/virgendelmilagro.co/historia.html',
     'pagina/tunja.html' => $H . '/virgendelmilagro.co/tunja.html',
     'pagina/cuadro-original.jpg' => $H . '/virgendelmilagro.co/cuadro-original.jpg',
+    'pagina/tunja-plaza.webp' => $H . '/virgendelmilagro.co/tunja-plaza.webp',
     'servidor/admin/virgen/index.php' => $H . '/concursosdelestado.com/admin/virgen/index.php',
     'pagina/contenido.js#admin' => $H . '/concursosdelestado.com/admin/virgen/contenido.js',
     'pagina/virgen.webp#admin' => $H . '/concursosdelestado.com/admin/virgen/virgen.webp',

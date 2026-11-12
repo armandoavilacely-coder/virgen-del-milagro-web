@@ -514,6 +514,15 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
 .cuadro figcaption { margin-top: 20px; font-family: var(--font-serif); font-style: italic; font-size: 18px; line-height: 1.45; color: var(--soft); }
 .pg-two.cu { grid-template-columns: minmax(0, 1fr) minmax(0, 470px); }
 @media (max-width: 900px) { .lujo { padding: 24px; } .lujo::before { inset: 6px; border-width: 10px; } .lujo::after { inset: 20px; } .lujo .e { width: 40px; height: 40px; } .pg-two.cu { grid-template-columns: minmax(0, 1fr); } }
+
+/* Foto panorámica de Tunja */
+.pano { max-width: 1060px; margin: 6px auto 0; }
+.pano .lujo { display: block; padding: 24px; }
+.pano .lujo::before { inset: 6px; border-width: 10px; }
+.pano .lujo::after { inset: 20px; }
+.pano .lienzo img { max-width: none; aspect-ratio: 1600 / 1016; object-fit: cover; }
+.pano figcaption { margin-top: 18px; font-family: var(--font-serif); font-style: italic; font-size: 18px; text-align: center; color: var(--soft); }
+@media (max-width: 640px) { .pano .lujo { padding: 20px; } .pano .lienzo img { aspect-ratio: 4 / 3; object-position: 78% 50%; } }
 @media (max-width: 640px) { .pg-sec { padding-block: 34px; } .pg-prose { font-size: 18px; } .tl b.y { font-size: 24px; } }
 </style>
 </head><body>
@@ -547,6 +556,17 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
       <h1 class="script">Tunja</h1>
       <p class="lead">La ciudad que custodia a la Virgen del Milagro: un centro histórico colonial, raíces muiscas y la cuna de la libertad de Colombia.</p>
     </div>
+  </div>
+</section>
+
+<section class="pg-sec">
+  <div class="wrap">
+    <figure class="pano cuadro">
+      <div class="lujo"><i class="e e1"></i><i class="e e2"></i><i class="e e3"></i><i class="e e4"></i>
+        <div class="lienzo"><img src="tunja-plaza.webp" width="1600" height="1016" alt="Plaza de Bolívar de Tunja con la catedral y la estatua de Bolívar bajo un cielo de nubes"></div>
+      </div>
+      <figcaption>La Plaza de Bolívar de Tunja, con la catedral al fondo</figcaption>
+    </figure>
   </div>
 </section>
 
