@@ -1453,11 +1453,6 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
     promBox.appendChild(el("p", "k", "Promesa " + (i + 1) + " de " + PROMESAS.length + " · " + p.k));
     promBox.appendChild(el("h3", null, p.t));
     promBox.appendChild(el("p", "cita", p.c));
-    var row = el("div", "row");
-    var a = el("button", "btn", "Conversar sobre esta promesa");
-    a.type = "button"; a.addEventListener("click", function () { talkAbout(p); });
-    row.appendChild(a);
-    promBox.appendChild(row);
     var bar = el("div", "prom-bar"); bar.setAttribute("aria-hidden", "true"); bar.appendChild(el("i"));
     promBox.appendChild(bar);
     promBox.appendChild(deck);
