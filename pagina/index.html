@@ -435,6 +435,26 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
 .ros-txt.lect { font-size: clamp(19px, 1.9vw, 22px); line-height: 1.65; font-style: normal; text-align: left; }
 @media (max-width: 640px) { .ros-txt.lect { font-size: 19px; } }
 .ros-fuente { text-align: center; }
+
+/* Promesas: efecto de baraja de cartas al pedir otra promesa */
+.prom-deck { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; pointer-events: none; z-index: 3; }
+.prom-today.shuf .prom-deck { display: flex; }
+.prom-today.shuf > :not(.prom-deck) { opacity: 0; transition: opacity 0.15s ease; }
+.prom-deck .pc { position: absolute; width: 104px; height: 148px; border-radius: 12px; border: 2px solid #B8841F;
+  background: radial-gradient(circle at 50% 42%, #FFF1B8 0 14%, transparent 15%), repeating-linear-gradient(45deg, #1E4F7D 0 6px, #25598C 6px 12px);
+  box-shadow: inset 0 0 0 4px #F2D68A, inset 0 0 0 5px #8A6420, 0 10px 22px rgba(20, 48, 79, 0.28);
+  animation: barajar 1.35s ease-in-out both; animation-delay: calc(var(--n) * 55ms); }
+@keyframes barajar {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  18% { transform: translate(calc(var(--d) * -96px), -8px) rotate(calc(var(--d) * -11deg)); }
+  38% { transform: translate(calc(var(--d) * 96px), 6px) rotate(calc(var(--d) * 9deg)); }
+  56% { transform: translate(calc(var(--d) * -64px), 0) rotate(calc(var(--d) * -7deg)); }
+  76% { transform: translate(calc(var(--d) * 48px), 0) rotate(calc(var(--d) * 4deg)); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+.prom-today.flip { animation: promFlip 0.62s ease both; }
+@keyframes promFlip { from { opacity: 0; transform: perspective(900px) rotateY(88deg) scale(0.96); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .prom-deck { display: none !important; } .prom-today.flip { animation: none; } }
 </style>
 </head><body>
 
@@ -601,10 +621,10 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
     <div class="sec-head">
       <p class="eyebrow">Palabra de esperanza</p>
       <h2 class="script">Promesas de Dios</h2>
-      <p class="lede">Lo que Dios ha prometido a quienes confían en Él. Se renuevan solas cada pocos segundos; toca el botón para pasar a la siguiente.</p>
+      <p class="lede">Lo que Dios ha prometido a quienes confían en Él. Se renuevan solas cada pocos segundos; toca el botón y se barajan como cartas para mostrarte otra.</p>
     </div>
     <div class="prom-today" id="prom-today" aria-live="off"></div>
-    <div class="cta-row prom-cta"><button class="btn" id="prom-random" type="button">Siguiente promesa</button></div>
+    <div class="cta-row prom-cta"><button class="btn" id="prom-random" type="button">Barajar y ver otra promesa</button></div>
     <p class="sources">Frases resumidas con nuestras palabras. Lee cada pasaje completo en tu Biblia.</p>
   </div>
 </section>
@@ -1424,6 +1444,9 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   }
   var promBox = $("prom-today"), promTimer = null, promPaused = false, promVisible = true;
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var deck = el("div", "prom-deck"); deck.setAttribute("aria-hidden", "true");
+  for (var d = 0; d < 7; d++) { var pcd = el("span", "pc"); pcd.style.setProperty("--d", d % 2 ? "1" : "-1"); pcd.style.setProperty("--n", String(d)); deck.appendChild(pcd); }
+  var barajando = false;
   function fillPromise(i) {
     var p = PROMESAS[i];
     promBox.textContent = "";
@@ -1437,6 +1460,7 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
     promBox.appendChild(row);
     var bar = el("div", "prom-bar"); bar.setAttribute("aria-hidden", "true"); bar.appendChild(el("i"));
     promBox.appendChild(bar);
+    promBox.appendChild(deck);
   }
   function showPromise(i, instant) {
     lastProm = i;
@@ -1445,7 +1469,17 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
     promBox.classList.add("out");
     setTimeout(function () { fillPromise(i); promBox.classList.remove("out"); promBox.classList.add("in"); setTimeout(function () { promBox.classList.remove("in"); }, 520); }, 260);
   }
-  function nextPromise() { showPromise((lastProm + 1) % PROMESAS.length); restartPromTimer(); }
+  function nextPromise() {
+    if (barajando) return;
+    var i; do { i = Math.floor(Math.random() * PROMESAS.length); } while (i === lastProm && PROMESAS.length > 1);
+    if (reduce) { showPromise(i, true); restartPromTimer(); return; }
+    barajando = true; promPaused = true; promBox.classList.add("shuf");
+    setTimeout(function () {
+      fillPromise(i); lastProm = i;
+      promBox.classList.remove("shuf"); promBox.classList.add("flip");
+      setTimeout(function () { promBox.classList.remove("flip"); barajando = false; promPaused = false; restartPromTimer(); }, 650);
+    }, 1400);
+  }
   function restartPromTimer() {
     clearInterval(promTimer);
     promBox.classList.remove("run"); void promBox.offsetWidth; promBox.classList.add("run");
@@ -1457,7 +1491,7 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   if ("IntersectionObserver" in window) new IntersectionObserver(function (e) { promVisible = e[0].isIntersecting; }, { threshold: 0.2 }).observe(promBox);
   showPromise(Math.floor(Math.random() * PROMESAS.length), true);
   restartPromTimer();
-  $("prom-random").textContent = "Siguiente promesa";
+  $("prom-random").textContent = "Barajar y ver otra promesa";
   $("prom-random").addEventListener("click", nextPromise);
 
   $("verse-today").addEventListener("click", function () { ask(TODAY); });
