@@ -357,6 +357,37 @@ footer { background: var(--foot-bg); color: #CFE4F7; }
 #ck .si { background: var(--btn-bg); color: var(--btn-ink); }
 #ck .no { background: var(--card-solid); color: var(--btn-bg); }
 #ck-open { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; opacity: .85; }
+
+/* Móvil: criterios WCAG 2.2 (objetivos táctiles 44 px, texto legible, sin zoom en campos) y guías de Apple/Material */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 125, 0.18); }
+@media (max-width: 640px) {
+  body { font-size: 17px; line-height: 1.65; }
+  .btn, .more, .ghost, .chip, .ros-tabs button, #ck button, .menu a.pill { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; }
+  .chip { justify-content: flex-start; }
+  .btn { padding-inline: 26px; }
+  .menu { gap: 4px 18px; }
+  .menu a, .foot nav a, .sources a, .tour-list a { display: inline-flex; align-items: center; min-height: 44px; }
+  .foot nav { gap: 0 20px; }
+  input, select, textarea, .composer textarea, .subs-card input, .subs-card textarea, .ver select { font-size: 16px; min-height: 48px; }
+  .composer textarea { min-height: 48px; }
+  .subs-card textarea { min-height: 150px; }
+  .subs-card .chk input, .subs-card input[type=radio], .subs-card input[type=checkbox] { width: 24px; height: 24px; flex: none; }
+  .subs-card .chk, .t-who label { min-height: 44px; align-items: center; }
+  .eyebrow, .eg, .label, .ver label, .verse figcaption, .t-card cite, .fact .k, .prom .k, .prom-today .k, .ros-step .k, .dia-prayer .k, .prayer-card h3, .pay b, .t-count { font-size: 13px; }
+  .fine, .sources, .foot small, .ros-sub { font-size: 14px; line-height: 1.55; }
+  .ros-card { padding: 22px 18px; }
+  .ros-txt { font-size: 21px; line-height: 1.55; }
+  .ros-actions .btn { flex: 1 1 60%; }
+  .ros-actions { gap: 12px; }
+  .ros-beads i { width: 26px; height: 26px; }
+  .ros-step { min-height: 0; }
+  .sec-head .script { font-size: clamp(40px, 11vw, 56px); line-height: 1.1; }
+  .lede { font-size: 17px; }
+  #ck { padding: 16px; }
+  #ck button { flex: 1 1 40%; }
+}
+@media (max-width: 640px) and (hover: none) { .btn:hover, .card:hover, .fact:hover, .prayer-card:hover, .chip:hover, .more:hover { transform: none; } }
 </style>
 </head><body>
 
