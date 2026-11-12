@@ -255,5 +255,253 @@ window.FB_POSTS = [
   "img": "2026-11-23_2030_familia.jpg",
   "f": "María, cuida a quienes amamos y danos serenidad.",
   "t": "🌙 María, cuida a quienes amamos y danos serenidad.\n\nEsta noche pensamos en cada persona que queremos: los que duermen cerca y los que están lejos, los que están sanos y los que sufren. Los ponemos bajo el manto de la Virgen.\n\n🙏 Santa María, cuida a quienes amamos y danos serenidad para descansar.\n\nEscribe los nombres de tus seres queridos en los comentarios y oramos por ellos. 🤍\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Oración #Familia"
+ },
+ {
+  "id": "2026-12-07_2030_oracion",
+  "d": "2026-12-07",
+  "h": "20:30",
+  "img": "2026-12-07_2030_oracion.jpg",
+  "f": "",
+  "t": "🕯️ Esta noche, Noche de las Velitas, encendemos una luz por quienes amamos y por quienes ya no están. Cada vela es una oración que sube con esperanza.\n\n🙏 Señor, limpia nuestro corazón y aumenta nuestra esperanza. Que esta luz nos recuerde que Tú vienes a nuestro encuentro.\n\nCuéntanos: ¿por quién enciendes una vela hoy? Escribe su nombre y la ponemos en oración. 🤍\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-08_0900_inmaculada",
+  "d": "2026-12-08",
+  "h": "09:00",
+  "img": "2026-12-08_0900_inmaculada.jpg",
+  "f": "",
+  "t": "🌸 Hoy celebramos a la Inmaculada Concepción: María, la elegida de Dios, nacida sin mancha para ser Madre de Jesús. Su sí abrió el camino de la salvación.\n\n🙏 Virgen María, Inmaculada Concepción, ruega por nosotros y por nuestras familias.\n\nFeliz día de la Inmaculada. Escribe \"Ave María\" para unirte a esta oración y comparte esta imagen con quien quieres bendecir. ✨\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-08_1230_gratitud",
+  "d": "2026-12-08",
+  "h": "12:30",
+  "img": "2026-12-08_1230_gratitud.jpg",
+  "f": "",
+  "t": "🌷 Gracias, Madre, por mostrarnos que una vida entregada a Dios se llena de gracia. No hace falta ser perfectos: hace falta decir \"sí\" cada día con humildad.\n\n🙏 María Inmaculada, enséñanos a vivir con un corazón lleno de gracia.\n\n¿Qué gracia quieres agradecer hoy? Cuéntanosla en los comentarios. 🤍\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-08_2030_inmaculada",
+  "d": "2026-12-08",
+  "h": "20:30",
+  "img": "2026-12-08_2030_inmaculada.jpg",
+  "f": "",
+  "t": "🌙 Termina el día de la Inmaculada. Ponemos nuestros hogares bajo el manto de María: a los que duermen en ellos, a los que aún no llegan y a los que están lejos.\n\n🙏 Virgen Inmaculada, cubre nuestros hogares con tu paz.\n\nEscribe \"Amén\" para pedir protección para tu casa y comparte esta oración con tu familia. 🏠🙏\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-09_0900_adviento",
+  "d": "2026-12-09",
+  "h": "09:00",
+  "img": "2026-12-09_0900_adviento.jpg",
+  "f": "",
+  "t": "🕯️ Estamos en Adviento, un tiempo para esperar con alegría y despertar la esperanza. Esperar no es quedarse quieto: es preparar el corazón, la casa y las relaciones para recibir a Jesús.\n\n🙏 Señor, que esta espera nos haga más atentos, más amables y más agradecidos.\n\n¿Qué quieres preparar en tu corazón este Adviento? Cuéntanos y lo acompañamos con nuestra oración.\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-09_1230_caridad",
+  "d": "2026-12-09",
+  "h": "12:30",
+  "img": "2026-12-09_1230_caridad.jpg",
+  "f": "",
+  "t": "🌟 La espera de Jesús nos mueve a servir con amor. Preparar la Navidad no es solo comprar y decorar: es visitar a quien está solo, compartir lo que tenemos y tender la mano.\n\n🙏 Señor, que nuestra espera se convierta en obras de caridad.\n\nCuéntanos un gesto de servicio que vas a hacer esta semana. Compartirlo puede inspirar a otros. 💛\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-09_2030_paz",
+  "d": "2026-12-09",
+  "h": "20:30",
+  "img": "2026-12-09_2030_paz.jpg",
+  "f": "",
+  "t": "🌙 Buenas noches. A veces el Adviento llega con cansancio, deudas, ausencias o preocupaciones. No pierdas la paz: la promesa de Dios no falla y Él viene a cada hogar.\n\n🙏 Señor, guarda nuestra paz mientras esperamos tu promesa.\n\nDeja una 🕊️ si esta noche necesitas paz y comparte esta oración con quien la necesite.\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-10_0900_esperanza",
+  "d": "2026-12-10",
+  "h": "09:00",
+  "img": "2026-12-10_0900_esperanza.jpg",
+  "f": "",
+  "t": "🕯️ Buenos días. En este Adviento pedimos a la Virgen del Milagro que fortalezca nuestra esperanza, sobre todo la de quienes hoy están enfermos, sin trabajo o lejos de casa.\n\n🙏 Virgen del Milagro, fortalece nuestra esperanza en este Adviento.\n\nEscribe una intención y la presentamos juntos ante la Virgen. 🤍\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-10_1230_familia",
+  "d": "2026-12-10",
+  "h": "12:30",
+  "img": "2026-12-10_1230_familia.jpg",
+  "f": "",
+  "t": "🎄 Que la alegría de preparar la Navidad una a nuestras familias: armar el pesebre, cocinar juntos, rezar la novena, perdonarse viejas heridas.\n\n🙏 Señor, que cada hogar sea un pesebre donde nazca la paz.\n\nCuéntanos: ¿cómo preparan la Navidad en tu familia? Etiqueta a quien quieras compartirlo. ✨\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-10_2030_descanso",
+  "d": "2026-12-10",
+  "h": "20:30",
+  "img": "2026-12-10_2030_descanso.jpg",
+  "f": "",
+  "t": "🌙 Buenas noches. Descansa sabiendo que Dios vela por ti. Esta noche entregamos al Señor lo que vivimos hoy y lo que esperamos para estos días de Adviento.\n\n🙏 Virgen del Milagro, acompaña nuestro descanso y nuestro Adviento.\n\nDeja una 🙏 si te unes a esta oración y cuéntanos por quién rezas antes de dormir.\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-11_0900_esperanza",
+  "d": "2026-12-11",
+  "h": "09:00",
+  "img": "2026-12-11_0900_esperanza.jpg",
+  "f": "",
+  "t": "☀️ Buenos días. La esperanza no es un sentimiento pasajero: es una decisión de confiar cada mañana, aunque las cosas no estén resueltas.\n\n🙏 Virgen del Milagro, aviva nuestra esperanza.\n\nEscribe \"Esperanza\" si hoy necesitas fuerzas para seguir adelante, y oramos por ti. 🕯️\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-11_1230_caridad",
+  "d": "2026-12-11",
+  "h": "12:30",
+  "img": "2026-12-11_1230_caridad.jpg",
+  "f": "",
+  "t": "🌿 La esperanza se demuestra cuidando a los demás. Hoy puedes ser esperanza para alguien: una llamada, una visita, un abrazo, un plato de comida compartido.\n\n🙏 Señor, haznos instrumentos de tu esperanza.\n\nCuéntanos a quién vas a cuidar hoy. Tu ejemplo puede animar a otros. 💛\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-11_2030_paz",
+  "d": "2026-12-11",
+  "h": "20:30",
+  "img": "2026-12-11_2030_paz.jpg",
+  "f": "",
+  "t": "🌙 Buenas noches. Que esta noche sea de paz y confianza: la puerta cerrada, el corazón tranquilo y las preocupaciones en manos de Dios.\n\n🙏 Señor, danos una noche de paz y confianza.\n\nEscribe \"Amén\" y comparte esta oración con alguien que hoy duerma con preocupación. 🤍\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-12_0900_guadalupe",
+  "d": "2026-12-12",
+  "h": "09:00",
+  "img": "2026-12-12_0900_guadalupe.jpg",
+  "f": "",
+  "t": "🌹 Hoy, 12 de diciembre, encomendamos a Nuestra Señora de Guadalupe a todos sus hijos: a las familias, a los migrantes, a los enfermos y a los que sienten que nadie los escucha. Ella no se cansa de acompañarnos.\n\n🙏 Madre, cúbrenos con tu manto y llévanos siempre a Jesús.\n\nEscribe \"Viva la Virgen de Guadalupe\" para sumarte a esta oración. ✨\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-12_1230_familia",
+  "d": "2026-12-12",
+  "h": "12:30",
+  "img": "2026-12-12_1230_familia.jpg",
+  "f": "",
+  "t": "🌸 Las familias que hoy atraviesan un momento difícil necesitan consuelo y esperanza: una enfermedad, una pérdida, una despedida, un conflicto sin resolver.\n\n🙏 María, consuela a las familias que hoy necesitan esperanza.\n\nEscribe el nombre de una familia por la que quieras orar. La ponemos ante la Virgen. 🤍\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-12_2030_guadalupe",
+  "d": "2026-12-12",
+  "h": "20:30",
+  "img": "2026-12-12_2030_guadalupe.jpg",
+  "f": "",
+  "t": "🌙 Madre de todos, acompaña nuestra oración esta noche. Te presentamos lo que llevamos en el corazón: las alegrías, las dudas, los miedos y los sueños.\n\n🙏 Madre de todos, acompaña nuestra oración.\n\nEscribe tu intención en los comentarios, puede ser sin nombre, y la rezamos juntos. 🌹\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-13_0900_domingo",
+  "d": "2026-12-13",
+  "h": "09:00",
+  "img": "2026-12-13_0900_domingo.jpg",
+  "f": "",
+  "t": "🔔 Feliz domingo, tercer domingo de Adviento, el domingo de la alegría. La alegría cristiana no depende de que todo salga bien: nace de saber que Dios camina con nosotros.\n\n🙏 Señor, prepara nuestro corazón para recibirte con alegría.\n\n¿A qué misa vas hoy? Cuéntanos y comparte esta imagen con quien quieras desearle un domingo bendecido. ✨\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-13_1230_alegria",
+  "d": "2026-12-13",
+  "h": "12:30",
+  "img": "2026-12-13_1230_alegria.jpg",
+  "f": "",
+  "t": "🎶 Alégrense: Dios sigue caminando con nosotros. En medio del trabajo, del cansancio y de las prisas de diciembre, hay motivos para dar gracias y sonreír.\n\n🙏 Señor, que nada nos quite la alegría de saber que estás cerca.\n\nCuéntanos una razón por la que hoy estás alegre. Entre todos hacemos una cadena de alegría. 💛\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-13_2030_paz",
+  "d": "2026-12-13",
+  "h": "20:30",
+  "img": "2026-12-13_2030_paz.jpg",
+  "f": "",
+  "t": "🌙 Terminamos el domingo con gratitud. Señor, conserva en nosotros la alegría de la fe, aun cuando haya cansancio o tristeza.\n\n🙏 Señor, conserva en nosotros la alegría de la fe.\n\nDeja una 🤍 si te unes a esta oración y cuéntanos cómo vas preparando tu Navidad.\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-14_0900_adviento",
+  "d": "2026-12-14",
+  "h": "09:00",
+  "img": "2026-12-14_0900_adviento.jpg",
+  "f": "",
+  "t": "☀️ Feliz lunes. El Adviento nos invita a caminar con alegría y confianza. No hace falta tener todo claro: basta dar el siguiente paso con fe.\n\n🙏 Virgen del Milagro, guía nuestros pasos esta semana hacia la Navidad.\n\n¿Qué le pides a Dios para esta semana? Cuéntanoslo y oramos por tu intención. 🕯️\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-14_1230_esperanza",
+  "d": "2026-12-14",
+  "h": "12:30",
+  "img": "2026-12-14_1230_esperanza.jpg",
+  "f": "",
+  "t": "🌿 La esperanza crece cuando la compartimos. Una palabra de ánimo, una oración, un mensaje a quien está pasando un mal momento puede ser la luz que esa persona necesitaba.\n\n🙏 Señor, haz de nosotros mensajeros de esperanza.\n\nComparte esta imagen con alguien que hoy necesite ánimo y cuéntanos a quién se la dedicas. 💛\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-14_2030_oracion",
+  "d": "2026-12-14",
+  "h": "20:30",
+  "img": "2026-12-14_2030_oracion.jpg",
+  "f": "",
+  "t": "🌙 Buenas noches. Señor, enséñanos a esperar sin perder la paz. A veces la espera cansa, pero Tú no te olvidas de nosotros.\n\n🙏 Señor, enséñanos a esperar sin perder la paz.\n\nEscribe \"Amén\" si hoy estás esperando algo importante y oramos contigo. 🤍\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-15_0900_familia",
+  "d": "2026-12-15",
+  "h": "09:00",
+  "img": "2026-12-15_0900_familia.jpg",
+  "f": "",
+  "t": "☀️ Buenos días. Virgen del Milagro, bendice nuestros hogares en este tiempo de espera: las mesas, las camas, las conversaciones y los silencios.\n\n🙏 Virgen del Milagro, bendice nuestros hogares en este tiempo de espera.\n\nEtiqueta a un familiar y cuéntanos qué tradición no puede faltar en tu casa esta Navidad. 🎄\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-15_1230_caridad",
+  "d": "2026-12-15",
+  "h": "12:30",
+  "img": "2026-12-15_1230_caridad.jpg",
+  "f": "",
+  "t": "🎁 Preparar la Navidad también es compartir. Compartir tiempo, comida, ropa, una visita, una sonrisa. El mejor regalo es estar presentes para los demás.\n\n🙏 Señor, enséñanos a dar sin esperar nada a cambio.\n\nCuéntanos qué vas a compartir esta Navidad y con quién. 💛\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-15_2030_descanso",
+  "d": "2026-12-15",
+  "h": "20:30",
+  "img": "2026-12-15_2030_descanso.jpg",
+  "f": "",
+  "t": "🌙 Buenas noches. Esta noche pedimos que la Virgen del Milagro acompañe nuestro descanso y prepare nuestro corazón para el nacimiento de Jesús.\n\n🙏 Virgen del Milagro, acompaña nuestro descanso y prepara nuestro corazón.\n\nDeja una 🙏 si te unes a esta oración y comparte esta imagen con tu familia. 🤍\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-16_0900_novena",
+  "d": "2026-12-16",
+  "h": "09:00",
+  "img": "2026-12-16_0900_novena.jpg",
+  "f": "",
+  "t": "🕯️ Hoy comienza la Novena de Aguinaldos: abramos el corazón a Jesús. Nueve días de oración en familia, con villancicos, con la Palabra y con ganas de reconciliarnos.\n\n🙏 Señor Jesús, ven a nuestro corazón y a nuestro hogar.\n\n¿Con quién vas a rezar la novena este año? Cuéntanos y comparte esta imagen para invitar a otros. ✨\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-16_1230_familia",
+  "d": "2026-12-16",
+  "h": "12:30",
+  "img": "2026-12-16_1230_familia.jpg",
+  "f": "",
+  "t": "🎄 La Novena reúne a las familias en la esperanza. Una vela, una oración, un villancico y las voces de todos juntos hacen del hogar un pequeño pesebre.\n\n🙏 Señor, reúne a nuestras familias en tu esperanza.\n\nCuéntanos: ¿a qué hora rezan la novena en tu casa? Etiqueta a quien quieras invitar. 💛\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-16_2030_novena",
+  "d": "2026-12-16",
+  "h": "20:30",
+  "img": "2026-12-16_2030_novena.jpg",
+  "f": "",
+  "t": "🌙 Señor, recibe nuestra primera oración de Novena. Con sencillez, con cansancio y con fe, te ofrecemos esta noche.\n\n🙏 Señor, recibe nuestra primera oración de Novena.\n\nEscribe \"Amén\" si hoy rezaste la novena y cuéntanos con quién. 🕯️\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-17_0900_novena",
+  "d": "2026-12-17",
+  "h": "09:00",
+  "img": "2026-12-17_0900_novena.jpg",
+  "f": "",
+  "t": "☀️ Segundo día de Novena: crezcamos en la confianza. Confiar no es entenderlo todo: es descansar en la promesa de Dios aunque el camino no se vea.\n\n🙏 Señor, aumenta nuestra confianza.\n\nCuéntanos una cosa en la que hoy quieres confiar más en Dios, y oramos por ella. 🤍\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-17_1230_esperanza",
+  "d": "2026-12-17",
+  "h": "12:30",
+  "img": "2026-12-17_1230_esperanza.jpg",
+  "f": "",
+  "t": "🌿 La esperanza cristiana sabe esperar sin rendirse. Espera con paciencia, trabaja con honradez, ama con constancia y deja el resultado en manos de Dios.\n\n🙏 Señor, danos una esperanza que no se canse.\n\nComparte esta imagen con alguien que hoy necesite no rendirse. 🕯️\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
+ },
+ {
+  "id": "2026-12-19_0900_novena",
+  "d": "2026-12-19",
+  "h": "09:00",
+  "img": "2026-12-19_0900_novena.jpg",
+  "f": "",
+  "t": "☀️ Cuarto día de Novena: Dios hace florecer la esperanza. Donde parecía no haber nada, Él puede hacer brotar vida nueva.\n\n🙏 Señor, haz florecer la esperanza en nuestros hogares.\n\nEscribe \"Esperanza\" si hoy rezaste la novena y oramos por tu familia. 🌷\n\n#VirgenDelMilagro #Tunja #Boyacá #Fe #Adviento #Navidad"
  }
 ];
