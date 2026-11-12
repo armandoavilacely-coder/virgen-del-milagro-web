@@ -407,6 +407,18 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   .feed { overscroll-behavior-y: auto; -webkit-overflow-scrolling: touch; contain: layout paint; }
   .chat-sec .chat { margin: 12px 8px; }
 }
+
+/* Promesas: paso automático con transición suave y barra de tiempo */
+.prom-today { overflow: hidden; position: relative; transition: opacity 0.26s ease, transform 0.26s ease; animation: none; }
+.prom-today.out { opacity: 0; transform: translateX(-28px); }
+.prom-today.in { animation: promIn 0.5s ease both; }
+@keyframes promIn { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+.prom-today { min-height: 15rem; display: flex; flex-direction: column; justify-content: center; }
+.prom-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(201, 150, 46, 0.18); }
+.prom-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #C9962E, #F2D68A); }
+.prom-today.run .prom-bar i { width: 100%; transition: width 9s linear; }
+.prom-today.paused .prom-bar i { transition: none; width: 100%; opacity: 0.4; }
+@media (prefers-reduced-motion: reduce) { .prom-today, .prom-today.in { transition: none; animation: none; } .prom-today.run .prom-bar i { transition: none; } }
 </style>
 </head><body>
 
@@ -590,10 +602,10 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
     <div class="sec-head">
       <p class="eyebrow">Palabra de esperanza</p>
       <h2 class="script">Promesas de Dios</h2>
-      <p class="lede">Lo que Dios ha prometido a quienes confían en Él. Toca el botón y recibe una promesa para hoy.</p>
+      <p class="lede">Lo que Dios ha prometido a quienes confían en Él. Se renuevan solas cada pocos segundos; toca el botón para pasar a la siguiente.</p>
     </div>
-    <div class="prom-today" id="prom-today" hidden aria-live="polite"></div>
-    <div class="cta-row prom-cta"><button class="btn" id="prom-random" type="button">Ver mi promesa de hoy</button></div>
+    <div class="prom-today" id="prom-today" aria-live="off"></div>
+    <div class="cta-row prom-cta"><button class="btn" id="prom-random" type="button">Siguiente promesa</button></div>
     <p class="sources">Frases resumidas con nuestras palabras. Lee cada pasaje completo en tu Biblia.</p>
   </div>
 </section>
@@ -1408,24 +1420,43 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
     if (ch) ch.scrollIntoView({ behavior: "smooth" });
     ask("Quiero conversar sobre esta promesa de Dios: " + p.c + ". " + p.k + ".");
   }
-  function showRandomPromise() {
-    var i;
-    do { i = Math.floor(Math.random() * PROMESAS.length); } while (i === lastProm && PROMESAS.length > 1);
-    lastProm = i;
-    var p = PROMESAS[i], box = $("prom-today");
-    box.textContent = "";
-    box.appendChild(el("p", "k", "Tu promesa de hoy · " + p.k));
-    box.appendChild(el("h3", null, p.t));
-    box.appendChild(el("p", "cita", p.c));
+  var promBox = $("prom-today"), promTimer = null, promPaused = false, promVisible = true;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function fillPromise(i) {
+    var p = PROMESAS[i];
+    promBox.textContent = "";
+    promBox.appendChild(el("p", "k", "Promesa " + (i + 1) + " de " + PROMESAS.length + " · " + p.k));
+    promBox.appendChild(el("h3", null, p.t));
+    promBox.appendChild(el("p", "cita", p.c));
     var row = el("div", "row");
     var a = el("button", "btn", "Conversar sobre esta promesa");
     a.type = "button"; a.addEventListener("click", function () { talkAbout(p); });
     row.appendChild(a);
-    box.appendChild(row);
-    box.hidden = false;
-    $("prom-random").textContent = "Ver otra promesa";
+    promBox.appendChild(row);
+    var bar = el("div", "prom-bar"); bar.setAttribute("aria-hidden", "true"); bar.appendChild(el("i"));
+    promBox.appendChild(bar);
   }
-  $("prom-random").addEventListener("click", showRandomPromise);
+  function showPromise(i, instant) {
+    lastProm = i;
+    promBox.hidden = false;
+    if (instant || reduce) { fillPromise(i); return; }
+    promBox.classList.add("out");
+    setTimeout(function () { fillPromise(i); promBox.classList.remove("out"); promBox.classList.add("in"); setTimeout(function () { promBox.classList.remove("in"); }, 520); }, 260);
+  }
+  function nextPromise() { showPromise((lastProm + 1) % PROMESAS.length); restartPromTimer(); }
+  function restartPromTimer() {
+    clearInterval(promTimer);
+    promBox.classList.remove("run"); void promBox.offsetWidth; promBox.classList.add("run");
+    promTimer = setInterval(function () { if (!promPaused && promVisible && !document.hidden) { showPromise((lastProm + 1) % PROMESAS.length); promBox.classList.remove("run"); void promBox.offsetWidth; promBox.classList.add("run"); } }, 9000);
+  }
+  ["mouseenter", "focusin", "touchstart"].forEach(function (ev) { promBox.addEventListener(ev, function () { promPaused = true; promBox.classList.add("paused"); }, { passive: true }); });
+  ["mouseleave", "focusout"].forEach(function (ev) { promBox.addEventListener(ev, function () { promPaused = false; promBox.classList.remove("paused"); }); });
+  promBox.addEventListener("touchend", function () { setTimeout(function () { promPaused = false; promBox.classList.remove("paused"); }, 6000); }, { passive: true });
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (e) { promVisible = e[0].isIntersecting; }, { threshold: 0.2 }).observe(promBox);
+  showPromise(Math.floor(Math.random() * PROMESAS.length), true);
+  restartPromTimer();
+  $("prom-random").textContent = "Siguiente promesa";
+  $("prom-random").addEventListener("click", nextPromise);
 
   $("verse-today").addEventListener("click", function () { ask(TODAY); });
 
