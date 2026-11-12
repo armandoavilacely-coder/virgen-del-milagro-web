@@ -13,6 +13,8 @@ if (!$S || ($S['role'] ?? '') !== 'admin') { header('Location: /admin/'); exit; 
 $subsF = ce_dir() . '/virgen_suscriptores.jsonl';
 $pagosF = ce_dir() . '/virgen_pagos.jsonl';
 $testF = ce_dir() . '/virgen_testimonios.jsonl';
+$fbF = ce_dir() . '/virgen_fb.json';   // estado de las publicaciones de Facebook: {id: {done, text}}
+function vg_fb($f) { $d = is_file($f) ? json_decode((string)file_get_contents($f), true) : null; return is_array($d) ? $d : []; }
 
 function vg_read($f) {
     $out = [];
@@ -36,7 +38,7 @@ if ($act !== '') {
     if (($_SERVER['HTTP_X_VG'] ?? '') !== '1' || ($og && $og !== preg_replace('/:\d+$/', '', $host))) vg_json(['ok' => false, 'e' => 'csrf'], 403);
     $in = json_decode(file_get_contents('php://input'), true) ?: [];
     if ($act === 'datos') {
-        vg_json(['ok' => true, 'subs' => vg_read($subsF), 'pagos' => vg_read($pagosF), 'tests' => vg_read($testF)]);
+        vg_json(['ok' => true, 'subs' => vg_read($subsF), 'pagos' => vg_read($pagosF), 'tests' => vg_read($testF), 'fb' => (object)vg_fb($fbF)]);
     }
     if ($act === 'pago_add') {
         $monto = (int)preg_replace('/\D/', '', (string)($in['monto'] ?? ''));
@@ -79,6 +81,16 @@ if ($act !== '') {
         $id = (string)($in['id'] ?? '');
         $rows = array_values(array_filter(vg_read($testF), fn($r) => ($r['id'] ?? '') !== $id));
         vg_write($testF, $rows); vg_json(['ok' => true, 'tests' => $rows]);
+    }
+    if ($act === 'fb_set') {   // marcar publicada / guardar un texto editado
+        $id = preg_replace('/[^0-9A-Za-z_\-]/', '', (string)($in['id'] ?? '')); if ($id === '') vg_json(['ok' => false], 400);
+        $fh = fopen($fbF, 'c+'); if (!$fh) vg_json(['ok' => false], 503);
+        flock($fh, LOCK_EX); $d = json_decode(stream_get_contents($fh) ?: '', true); if (!is_array($d)) $d = [];
+        $r = $d[$id] ?? [];
+        if (isset($in['done'])) $r['done'] = (bool)$in['done'] ? date('c') : false;
+        if (isset($in['text'])) { $t = trim(mb_substr(strip_tags((string)$in['text']), 0, 2000)); if ($t !== '') $r['text'] = $t; }
+        $d[$id] = $r; ftruncate($fh, 0); rewind($fh); fwrite($fh, json_encode($d, JSON_UNESCAPED_UNICODE)); flock($fh, LOCK_UN); fclose($fh);
+        vg_json(['ok' => true, 'fb' => (object)$d]);
     }
     vg_json(['ok' => false], 404);
 }
@@ -125,10 +137,11 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
 <nav id="tabs"></nav>
 <main id="main"><p class="muted">Cargando…</p></main>
 <script src="contenido.js"></script>
+<script src="facebook/posts.js"></script>
 <script>
 (function () {
   "use strict";
-  var VG = window.VG, D = { subs: [], pagos: [], tests: [] }, tab = "resumen";
+  var VG = window.VG, D = { subs: [], pagos: [], tests: [], fb: {} }, tab = "resumen";
   function $(id) { return document.getElementById(id); }
   function el(t, c, x) { var n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; }
   function money(n) { return "$" + Number(n || 0).toLocaleString("es-CO"); }
@@ -136,13 +149,13 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
     return fetch("?a=" + a, { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-VG": "1" }, body: JSON.stringify(body || {}) })
       .then(function (r) { return r.json(); });
   }
-  function load() { return api("datos").then(function (d) { if (d.ok) { D.subs = d.subs; D.pagos = d.pagos; D.tests = d.tests || []; } render(); }); }
-  var TABS = [["resumen", "Resumen"], ["usuarios", "Suscriptores"], ["pagos", "Pagos"], ["publicidad", "Publicidad"], ["testimonios", "Testimonios"]];
+  function load() { return api("datos").then(function (d) { if (d.ok) { D.subs = d.subs; D.pagos = d.pagos; D.tests = d.tests || []; D.fb = d.fb || {}; } render(); }); }
+  var TABS = [["resumen", "Resumen"], ["usuarios", "Suscriptores"], ["pagos", "Pagos"], ["publicidad", "Publicidad"], ["testimonios", "Testimonios"], ["facebook", "Facebook"]];
   function drawTabs() {
     var n = $("tabs"); n.textContent = "";
     TABS.forEach(function (t) { var b = el("button", t[0] === tab ? "on" : "", t[1]); b.onclick = function () { tab = t[0]; render(); }; n.appendChild(b); });
   }
-  function render() { drawTabs(); var m = $("main"); m.textContent = ""; ({ resumen: vResumen, usuarios: vUsuarios, pagos: vPagos, publicidad: vPub, testimonios: vTest })[tab](m); }
+  function render() { drawTabs(); var m = $("main"); m.textContent = ""; ({ resumen: vResumen, usuarios: vUsuarios, pagos: vPagos, publicidad: vPub, testimonios: vTest, facebook: vFb })[tab](m); }
 
   /* ---------- helpers de pagos ---------- */
   function mesActual() { return new Date().toISOString().slice(0, 7); }
@@ -238,6 +251,38 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
   }
 
   /* ---------- Testimonios (moderación) ---------- */
+  /* ---------- Facebook: imágenes listas con su texto, por día ---------- */
+  var fbDia = "";
+  function vFb(m) {
+    var P = window.FB_POSTS || [];
+    var hechas = P.filter(function (p) { return D.fb[p.id] && D.fb[p.id].done; }).length;
+    m.appendChild(el("h2", null, "Publicaciones de Facebook"));
+    m.appendChild(el("p", "muted", "Imágenes de 1080×1350 con su texto. Copia el texto, descarga la imagen, publícala en Facebook y marca «Publicada». Listas: " + hechas + " de " + P.length + "."));
+    var dias = []; P.forEach(function (p) { if (dias.indexOf(p.d) < 0) dias.push(p.d); });
+    if (!fbDia || dias.indexOf(fbDia) < 0) fbDia = dias.filter(function (d) { return d >= new Date().toISOString().slice(0, 10); })[0] || dias[0] || "";
+    var bar = el("div", "tabs");
+    dias.forEach(function (d) { var b = el("button", d === fbDia ? "on" : "", d.slice(8) + "/" + d.slice(5, 7)); b.onclick = function () { fbDia = d; render(); }; bar.appendChild(b); });
+    m.appendChild(bar);
+    var list = el("div", "posts"); list.style.marginTop = "16px";
+    P.filter(function (p) { return p.d === fbDia; }).forEach(function (p) {
+      var st = D.fb[p.id] || {}, box = el("div", "post");
+      box.appendChild(el("h3", null, p.d + " · " + p.h));
+      var a = el("a"); a.href = "facebook/" + p.img; a.target = "_blank"; a.rel = "noopener";
+      var im = el("img"); im.src = "facebook/" + p.img; im.loading = "lazy"; im.alt = p.f; im.style.cssText = "width:100%;height:auto;border-radius:10px;border:1px solid var(--line);display:block";
+      a.appendChild(im); box.appendChild(a);
+      var ta = el("textarea"); ta.style.minHeight = "150px"; ta.value = st.text || p.t; box.appendChild(ta);
+      var r = el("div", "row2");
+      var b1 = el("button", "b", "Copiar texto"); b1.onclick = function () { copy(ta.value, b1); };
+      var d1 = el("a", "g", "Descargar imagen"); d1.href = "facebook/" + p.img; d1.setAttribute("download", p.img); d1.style.cssText = "text-decoration:none;display:inline-block;background:#fff;color:var(--navy);border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-weight:600";
+      var b2 = el("button", "g", "Guardar texto"); b2.onclick = function () { api("fb_set", { id: p.id, text: ta.value }).then(function (d) { if (d.ok) { D.fb = d.fb; b2.textContent = "¡Guardado!"; setTimeout(function () { b2.textContent = "Guardar texto"; }, 1200); } }); };
+      var b3 = el("button", st.done ? "g" : "b", st.done ? "Publicada ✓ (deshacer)" : "Marcar como publicada");
+      b3.onclick = function () { api("fb_set", { id: p.id, done: !st.done }).then(function (d) { if (d.ok) { D.fb = d.fb; render(); } }); };
+      r.appendChild(b1); r.appendChild(d1); r.appendChild(b2); r.appendChild(b3); box.appendChild(r);
+      list.appendChild(box);
+    });
+    m.appendChild(list);
+  }
+
   function vTest(m) {
     m.appendChild(el("h2", null, "Testimonios de fe"));
     var pend = D.tests.filter(function (t) { return t.estado !== "aprobado"; }).length;

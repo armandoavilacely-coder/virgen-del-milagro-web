@@ -18,3 +18,5 @@ deployment:
     - /bin/cp -f servidor/admin/virgen/fondos/* $H/concursosdelestado.com/admin/virgen/fondos/
     - /bin/cp -f servidor/acceso/testimonios_virgen.php $H/concursosdelestado.com/acceso/testimonios_virgen.php
     - /bin/cp -f servidor/acceso/virgen_hook.php $H/concursosdelestado.com/acceso/virgen_hook.php
+    - /bin/mkdir -p $H/concursosdelestado.com/admin/virgen/facebook
+    - /bin/cp -f servidor/admin/virgen/facebook/* $H/concursosdelestado.com/admin/virgen/facebook/
