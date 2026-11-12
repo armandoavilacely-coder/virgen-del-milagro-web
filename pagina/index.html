@@ -419,6 +419,17 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
 .prom-today.run .prom-bar i { width: 100%; transition: width 9s linear; }
 .prom-today.paused .prom-bar i { transition: none; width: 100%; opacity: 0.4; }
 @media (prefers-reduced-motion: reduce) { .prom-today, .prom-today.in { transition: none; animation: none; } .prom-today.run .prom-bar i { transition: none; } }
+
+/* Oración del día en computador: aprovecha todo el ancho (tarjeta fija a la izquierda y las tres oraciones en columnas) */
+@media (min-width: 1000px) {
+  .dia-grid { max-width: 1180px; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 56px; align-items: start; }
+  .dia-grid .postal { position: sticky; top: 24px; }
+  .dia-text { font-size: clamp(24px, 2vw, 29px); margin-bottom: 26px; }
+  #dia-marias { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-bottom: 18px; }
+  #dia-marias .dia-maria { margin: 0; padding: 18px 20px; }
+  #dia-marias .dia-text.maria { font-size: 18px; line-height: 1.5; }
+}
+@media (min-width: 1500px) { .dia-grid { max-width: 1320px; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); } }
 </style>
 </head><body>
 
