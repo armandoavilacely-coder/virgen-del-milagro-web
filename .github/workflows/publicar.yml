@@ -1,0 +1,20 @@
+name: Publicar en el servidor
+# Cada vez que se sube algo a main, avisa al actualizador del servidor para que baje y copie los archivos.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Llamar al actualizador
+        run: |
+          sleep 10
+          for i in 1 2 3; do
+            r=$(curl -sS --max-time 60 https://www.concursosdelestado.com/acceso/actualizar_virgen.php || true)
+            echo "$r"
+            echo "$r" | grep -q '"ok":true' && exit 0
+            sleep 30
+          done
+          exit 1
