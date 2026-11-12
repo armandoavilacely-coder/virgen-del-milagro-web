@@ -1,3 +1,6 @@
 # Dominios autorizados a usar el chat de la Virgen (uno por linea, con https:// y sin barra final)
 https://www.virgendelmilagro.co
 https://virgendelmilagro.co
+# Temporal: mientras el dominio no tenga certificado HTTPS (quitar cuando el candado funcione)
+http://www.virgendelmilagro.co
+http://virgendelmilagro.co
