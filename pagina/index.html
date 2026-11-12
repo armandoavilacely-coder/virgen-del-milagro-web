@@ -293,7 +293,7 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 /* Recuerdos, patrocinadores, apoyo, turismo */
 .shop-sec { background: var(--band); padding-block: 56px; }
 .spons-sec { background: var(--prayer-bg); padding-block: 56px; }
-.apoyo-sec { background: var(--band); padding-block: 56px; }
+.apoyo-sec { background: var(--band); padding-block: 36px; }
 .tour-sec { background: var(--chat-bg); padding-block: 56px; }
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 24px; }
 .card { padding: 26px 24px; border-radius: 22px; background: var(--card-solid); border: 1px solid var(--line); box-shadow: 0 12px 30px var(--shadow); display: flex; flex-direction: column; gap: 6px; }
@@ -479,6 +479,7 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
         <a class="hide-s" href="#testimonios">Testimonios</a>
         <a class="hide-s" href="#palabra">Palabra del día</a>
         <a class="hide-s" href="#comunidad">Comunidad</a>
+        <a class="hide-s" href="#apoyo">Apoyar</a>
         <a class="pill" href="#chat">Pregúntale a la Palabra</a>
       </nav>
     </div>
@@ -508,6 +509,18 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
     </div>
   </div>
 </header>
+
+<section class="apoyo-sec" id="apoyo" hidden>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Apoya esta página</p>
+      <h2 class="script">Un aporte voluntario</h2>
+      <p class="lede">La página es gratuita para todos. Si te ayuda, puedes colaborar con su sostenimiento.</p>
+    </div>
+    <div class="cards apoyo-cards" id="apoyo-cards"></div>
+    <p class="sources" id="pay-note"></p>
+  </div>
+</section>
 
 <section class="chat-sec" id="chat">
   <div class="wrap">
@@ -754,18 +767,6 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
       <p>¿Tienes un negocio en Tunja? Preséntalo a quienes visitan esta página en las fiestas.</p>
       <a class="btn" id="spons-wa" href="#patrocinadores">Quiero anunciarme</a>
     </div>
-  </div>
-</section>
-
-<section class="apoyo-sec" id="apoyo" hidden>
-  <div class="wrap">
-    <div class="sec-head">
-      <p class="eyebrow">Apoya esta página</p>
-      <h2 class="script">Un aporte voluntario</h2>
-      <p class="lede">La página es gratuita para todos. Si te ayuda, puedes colaborar con su sostenimiento.</p>
-    </div>
-    <div class="cards apoyo-cards" id="apoyo-cards"></div>
-    <p class="sources" id="pay-note"></p>
   </div>
 </section>
 
