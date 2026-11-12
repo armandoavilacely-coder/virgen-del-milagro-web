@@ -436,7 +436,27 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
 .ros-txt.lect { font-size: clamp(19px, 1.9vw, 22px); line-height: 1.65; font-style: normal; text-align: left; }
 @media (max-width: 640px) { .ros-txt.lect { font-size: 19px; } }
 .ros-fuente { text-align: center; }
-</style>
+
+/* Promesas: efecto de baraja de cartas al pedir otra promesa */
+.prom-deck { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; pointer-events: none; z-index: 3; }
+.prom-today.shuf .prom-deck { display: flex; }
+.prom-today.shuf > :not(.prom-deck) { opacity: 0; transition: opacity 0.15s ease; }
+.prom-deck .pc { position: absolute; width: 104px; height: 148px; border-radius: 12px; border: 2px solid #B8841F;
+  background: radial-gradient(circle at 50% 42%, #FFF1B8 0 14%, transparent 15%), repeating-linear-gradient(45deg, #1E4F7D 0 6px, #25598C 6px 12px);
+  box-shadow: inset 0 0 0 4px #F2D68A, inset 0 0 0 5px #8A6420, 0 10px 22px rgba(20, 48, 79, 0.28);
+  animation: barajar 1.35s ease-in-out both; animation-delay: calc(var(--n) * 55ms); }
+@keyframes barajar {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  18% { transform: translate(calc(var(--d) * -96px), -8px) rotate(calc(var(--d) * -11deg)); }
+  38% { transform: translate(calc(var(--d) * 96px), 6px) rotate(calc(var(--d) * 9deg)); }
+  56% { transform: translate(calc(var(--d) * -64px), 0) rotate(calc(var(--d) * -7deg)); }
+  76% { transform: translate(calc(var(--d) * 48px), 0) rotate(calc(var(--d) * 4deg)); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+.prom-today.flip { animation: promFlip 0.62s ease both; }
+@keyframes promFlip { from { opacity: 0; transform: perspective(900px) rotateY(88deg) scale(0.96); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .prom-deck { display: none !important; } .prom-today.flip { animation: none; } }
+
 /* Páginas interiores: Historia y Tunja */
 .pgtop { padding-block: 8px 0; }
 .pg-hero { text-align: center; padding-block: 28px 12px; }
