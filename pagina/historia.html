@@ -494,6 +494,26 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
 .pg-cards .fact p { margin: 0 0 8px; font-size: 16px; line-height: 1.6; color: var(--soft); }
 .pg-cards .fact .k { margin: 0; }
 @media (max-width: 900px) { .pg-two { grid-template-columns: minmax(0, 1fr); gap: 28px; } .pg-fig { position: static; order: -1; } .pg-fig img { height: min(52vh, 380px); } }
+
+/* Marco de lujo para el cuadro original */
+.cuadro { margin: 0; text-align: center; }
+.lujo { position: relative; display: inline-block; max-width: 100%; padding: 30px; border-radius: 10px;
+  background: linear-gradient(135deg, #6B4710 0%, #F6DC88 14%, #B8862A 30%, #FFF0B0 46%, #A8761F 62%, #F2D27A 80%, #6B4710 100%);
+  box-shadow: 0 0 0 2px #3F2807, 0 0 0 4px #E9C872, 0 0 0 5px #5B3E0F, 0 34px 64px rgba(20, 48, 79, 0.42), inset 0 0 0 2px #FFF0B0, inset 0 0 16px rgba(60, 36, 4, 0.55); }
+.lujo::before { content: ""; position: absolute; inset: 8px; border: 11px solid transparent; border-radius: 6px; pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, #FFF6C4 0 2.5px, #C9962E 3.5px 5.5px, #5B3E0F 6.5px, transparent 7.5px) 0 0 / 17px 17px, linear-gradient(135deg, #8A6420, #F7E4A4 50%, #8A6420);
+  -webkit-mask: linear-gradient(#000 0 0) border-box, linear-gradient(#000 0 0) padding-box; -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) border-box exclude, linear-gradient(#000 0 0) padding-box; }
+.lujo::after { content: ""; position: absolute; inset: 24px; border: 1px solid rgba(255, 240, 176, 0.9); box-shadow: 0 0 0 1px rgba(91, 62, 15, 0.8); pointer-events: none; }
+.lujo .e { position: absolute; width: 48px; height: 48px; z-index: 2; border-radius: 50%;
+  background: radial-gradient(circle, #FFF6C4 0 14%, #D9AE4B 16% 34%, #6B4710 36% 40%, #F2D27A 42% 58%, #8A6420 60% 64%, transparent 66%);
+  filter: drop-shadow(0 2px 3px rgba(40, 24, 2, 0.55)); }
+.lujo .e1 { left: -14px; top: -14px; } .lujo .e2 { right: -14px; top: -14px; } .lujo .e3 { left: -14px; bottom: -14px; } .lujo .e4 { right: -14px; bottom: -14px; }
+.lujo .lienzo { position: relative; background: #1B1005; box-shadow: 0 0 0 3px #3A2408, 0 0 0 4px #F2D27A, inset 0 0 22px rgba(0, 0, 0, 0.6); }
+.lujo .lienzo img { display: block; width: 100%; max-width: 391px; height: auto; }
+.lujo .lienzo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, rgba(255, 255, 255, 0) 38%, rgba(255, 244, 200, 0.16) 50%, rgba(255, 255, 255, 0) 62%); pointer-events: none; }
+.cuadro figcaption { margin-top: 20px; font-family: var(--font-serif); font-style: italic; font-size: 18px; line-height: 1.45; color: var(--soft); }
+.pg-two.cu { grid-template-columns: minmax(0, 1fr) minmax(0, 470px); }
+@media (max-width: 900px) { .lujo { padding: 24px; } .lujo::before { inset: 6px; border-width: 10px; } .lujo::after { inset: 20px; } .lujo .e { width: 40px; height: 40px; } .pg-two.cu { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 640px) { .pg-sec { padding-block: 34px; } .pg-prose { font-size: 18px; } .tl b.y { font-size: 24px; } }
 </style>
 </head><body>
@@ -552,11 +572,19 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
 <section class="pg-sec">
   <div class="wrap">
     <h2 class="t">El cuadro y su historia</h2>
-    <div class="pg-prose">
-      <p>La imagen que se venera es una pintura al óleo sobre lienzo, de autor anónimo. Una de las fuentes la sitúa en el siglo XVI y señala que fue renovada a mediados del siglo XVII. Perteneció al antiguo convento de las Concepcionistas, fundado en Tunja en 1599, y desde 1880 está al cuidado de las monjas de clausura de la comunidad de la Inmaculada Concepción, en el santuario de El Topo.</p>
-      <h3>Del Topo al Milagro</h3>
-      <p>El templo donde hoy se la venera nació ligado a otra devoción: la de Nuestra Señora del Topo (de los Dolores del Topo), una advocación que se veneraba en El Topo, un poblado cercano a Muzo, en Boyacá. Según una de las fuentes, el sacerdote José Osorio Nieto de Paz, devoto de esa Virgen por una gracia recibida al salvarse de un naufragio, costeó el templo y lo donó a los Padres Candelarios.</p>
-      <p>En el siglo XIX, cuando las Hermanas Concepcionistas se trasladaron al convento, la devoción principal pasó a ser la Virgen del Milagro. Por eso muchas personas todavía llaman a este lugar «santuario de la Virgen del Topo» y mezclan ambos nombres.</p>
+    <div class="pg-two cu">
+      <div class="pg-prose">
+        <p>La imagen que se venera es una pintura al óleo sobre lienzo, de autor anónimo. Una de las fuentes la sitúa en el siglo XVI y señala que fue renovada a mediados del siglo XVII. Perteneció al antiguo convento de las Concepcionistas, fundado en Tunja en 1599, y desde 1880 está al cuidado de las monjas de clausura de la comunidad de la Inmaculada Concepción, en el santuario de El Topo.</p>
+        <h3>Del Topo al Milagro</h3>
+        <p>El templo donde hoy se la venera nació ligado a otra devoción: la de Nuestra Señora del Topo (de los Dolores del Topo), una advocación que se veneraba en El Topo, un poblado cercano a Muzo, en Boyacá. Según una de las fuentes, el sacerdote José Osorio Nieto de Paz, devoto de esa Virgen por una gracia recibida al salvarse de un naufragio, costeó el templo y lo donó a los Padres Candelarios.</p>
+        <p>En el siglo XIX, cuando las Hermanas Concepcionistas se trasladaron al convento, la devoción principal pasó a ser la Virgen del Milagro. Por eso muchas personas todavía llaman a este lugar «santuario de la Virgen del Topo» y mezclan ambos nombres.</p>
+      </div>
+      <figure class="pg-fig cuadro">
+        <div class="lujo"><i class="e e1"></i><i class="e e2"></i><i class="e e3"></i><i class="e e4"></i>
+          <div class="lienzo"><img src="cuadro-original.jpg" width="391" height="515" alt="Cuadro de Nuestra Señora del Milagro de Tunja"></div>
+        </div>
+        <figcaption>Cuadro de Nuestra Señora del Milagro, Tunja</figcaption>
+      </figure>
     </div>
   </div>
 </section>
