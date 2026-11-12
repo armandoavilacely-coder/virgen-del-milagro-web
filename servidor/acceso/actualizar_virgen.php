@@ -27,6 +27,10 @@ $MAP = [   // archivo en el repo => destino en el servidor
     'servidor/acceso/testimonios_virgen.php' => $H . '/concursosdelestado.com/acceso/testimonios_virgen.php',
     'servidor/acceso/suscribir_virgen.php' => $H . '/concursosdelestado.com/acceso/suscribir_virgen.php',
     'servidor/acceso/actualizar_virgen.php' => $H . '/concursosdelestado.com/acceso/actualizar_virgen.php',
+    'servidor/acceso/palabra_lib_virgen.php' => $H . '/concursosdelestado.com/acceso/palabra_lib_virgen.php',
+    'servidor/acceso/enviar_palabra_virgen.php' => $H . '/concursosdelestado.com/acceso/enviar_palabra_virgen.php',
+    'servidor/acceso/baja_virgen.php' => $H . '/concursosdelestado.com/acceso/baja_virgen.php',
+    'servidor/ce_data/virgen_palabra.json' => $H . '/ce_data/virgen_palabra.json',
     'servidor/ce_data/virgen_origins.txt' => $H . '/ce_data/virgen_origins.txt',
 ];
 

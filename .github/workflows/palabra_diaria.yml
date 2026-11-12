@@ -1,0 +1,15 @@
+name: Palabra del día por correo
+# Cada mañana (6:00 a 7:50, hora de Bogotá) pide al servidor que envíe la Palabra del día a los suscriptores.
+# El servidor manda como máximo un correo por persona al día, así que repetir la llamada es seguro.
+on:
+  schedule:
+    - cron: '3,18,33,48 11,12 * * *'
+  workflow_dispatch:
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pedir el envío
+        run: |
+          r=$(curl -sS --max-time 120 https://www.concursosdelestado.com/acceso/enviar_palabra_virgen.php || true)
+          echo "$r"

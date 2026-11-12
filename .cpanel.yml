@@ -24,3 +24,7 @@ deployment:
     - /bin/cp -f servidor/acceso/virgen_hook.php $H/concursosdelestado.com/acceso/virgen_hook.php
     - /bin/mkdir -p $H/concursosdelestado.com/admin/virgen/facebook
     - /bin/cp -f servidor/admin/virgen/facebook/* $H/concursosdelestado.com/admin/virgen/facebook/
+    - /bin/cp -f servidor/acceso/palabra_lib_virgen.php $H/concursosdelestado.com/acceso/palabra_lib_virgen.php
+    - /bin/cp -f servidor/acceso/enviar_palabra_virgen.php $H/concursosdelestado.com/acceso/enviar_palabra_virgen.php
+    - /bin/cp -f servidor/acceso/baja_virgen.php $H/concursosdelestado.com/acceso/baja_virgen.php
+    - /bin/cp -f servidor/ce_data/virgen_palabra.json $H/ce_data/virgen_palabra.json
