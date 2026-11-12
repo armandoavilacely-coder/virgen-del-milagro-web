@@ -370,7 +370,7 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   .menu a, .foot nav a, .sources a, .tour-list a { display: inline-flex; align-items: center; min-height: 44px; }
   .foot nav { gap: 0 20px; }
   input, select, textarea, .composer textarea, .subs-card input, .subs-card textarea, .ver select { font-size: 16px; min-height: 48px; }
-  .composer textarea { min-height: 48px; }
+  .composer textarea { min-height: 96px; }
   .subs-card textarea { min-height: 150px; }
   .subs-card .chk input, .subs-card input[type=radio], .subs-card input[type=checkbox] { width: 24px; height: 24px; flex: none; }
   .subs-card .chk, .t-who label { min-height: 44px; align-items: center; }
@@ -388,6 +388,20 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   #ck button { flex: 1 1 40%; }
 }
 @media (max-width: 640px) and (hover: none) { .btn:hover, .card:hover, .fact:hover, .prayer-card:hover, .chip:hover, .more:hover { transform: none; } }
+
+/* Marco dorado de cuadro antiguo para el chat */
+.chat { position: relative; border: 0; border-radius: 22px;
+  box-shadow: 0 0 0 2px #6B4A14, 0 0 0 5px #D9AE4B, 0 0 0 7px #F7E4A4, 0 0 0 10px #A9782A, 0 0 0 12px #E9C872, 0 0 0 13px #5B3E0F, 0 22px 54px var(--shadow); }
+.chat::after { content: ""; position: absolute; inset: 6px; border: 1px solid rgba(201, 150, 46, 0.75); border-radius: 16px; pointer-events: none; box-shadow: inset 0 0 0 3px rgba(247, 228, 164, 0.35); }
+.chat-sec .chat { margin: 13px; }
+/* Cuadro de escritura más alto para ver mejor lo que se escribe */
+.composer textarea { min-height: 96px; padding-top: 14px; padding-bottom: 14px; }
+/* Desplazamiento fluido en el celular: sin desenfoque pesado y con espacio fuera del chat para seguir bajando */
+@media (max-width: 900px) {
+  .chat { -webkit-backdrop-filter: none; backdrop-filter: none; height: min(68svh, 600px); min-height: 440px; }
+  .feed { overscroll-behavior-y: auto; -webkit-overflow-scrolling: touch; contain: layout paint; }
+  .chat-sec .chat { margin: 12px 8px; }
+}
 </style>
 </head><body>
 
@@ -1324,7 +1338,7 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   });
   function autosize() {
     box.style.height = "auto";
-    box.style.height = Math.min(box.scrollHeight, 144) + "px";
+    box.style.height = Math.min(box.scrollHeight, 168) + "px";
   }
   box.addEventListener("input", autosize);
   stopBtn.addEventListener("click", function () { if (ctl) ctl.abort(); });
