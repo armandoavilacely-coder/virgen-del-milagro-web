@@ -35,3 +35,5 @@ deployment:
     - /bin/mkdir -p $H/virgendelmilagro.co/historia $H/virgendelmilagro.co/tunja
     - /bin/cp -f pagina/historia/index.html $H/virgendelmilagro.co/historia/index.html
     - /bin/cp -f pagina/tunja/index.html $H/virgendelmilagro.co/tunja/index.html
+    - /bin/mkdir -p $H/virgendelmilagro.co/politica-de-datos
+    - /bin/cp -f pagina/politica-de-datos/index.html $H/virgendelmilagro.co/politica-de-datos/index.html

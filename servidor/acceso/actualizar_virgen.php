@@ -18,6 +18,7 @@ $MAP = [   // archivo en el repo => destino en el servidor
     'pagina/tunja.html' => $H . '/virgendelmilagro.co/tunja.html',
     'pagina/historia/index.html' => $H . '/virgendelmilagro.co/historia/index.html',
     'pagina/tunja/index.html' => $H . '/virgendelmilagro.co/tunja/index.html',
+    'pagina/politica-de-datos/index.html' => $H . '/virgendelmilagro.co/politica-de-datos/index.html',
     'pagina/cuadro-original.jpg' => $H . '/virgendelmilagro.co/cuadro-original.jpg',
     'pagina/tunja-plaza.webp' => $H . '/virgendelmilagro.co/tunja-plaza.webp',
     'servidor/admin/virgen/index.php' => $H . '/concursosdelestado.com/admin/virgen/index.php',
@@ -63,7 +64,7 @@ $res = [];
 foreach ($MAP as $src => $dst) {
     $data = $zip->getFromName($root . '/' . explode('#', $src)[0]);
     if ($data === false || $data === '') { $res[$src] = 'no encontrado'; continue; }
-    if (!is_dir(dirname($dst)) && (strpos($dst, '/admin/') !== false || preg_match('#/virgendelmilagro\.co/(historia|tunja)/#', $dst))) @mkdir(dirname($dst), 0755, true);
+    if (!is_dir(dirname($dst)) && (strpos($dst, '/admin/') !== false || preg_match('#/virgendelmilagro\.co/(historia|tunja|politica-de-datos)/#', $dst))) @mkdir(dirname($dst), 0755, true);
     if (!is_dir(dirname($dst))) { $res[$src] = 'carpeta destino no existe'; continue; }
     if (is_file($dst) && md5_file($dst) === md5($data)) { $res[$src] = 'igual'; continue; }
     $t = $dst . '.new';
