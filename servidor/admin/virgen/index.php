@@ -6,9 +6,14 @@ header('Cache-Control: no-store');
 if (function_exists('ce_headers_seguras')) ce_headers_seguras();
 header('X-Robots-Tag: noindex, nofollow');
 
-$b = ce_boot();
-$S = ($b === true) ? ce_session() : null;
-if (!$S || ($S['role'] ?? '') !== 'admin') { header('Location: /admin/'); exit; }
+if (defined('VG_DOMINIO')) {   // en virgendelmilagro.co/admin: inicio de sesión propio (solo HTTPS)
+    require __DIR__ . '/../../acceso/vg_auth.php';
+    vga_require();
+} else {
+    $b = ce_boot();
+    $S = ($b === true) ? ce_session() : null;
+    if (!$S || ($S['role'] ?? '') !== 'admin') { header('Location: /admin/'); exit; }
+}
 
 $subsF = ce_dir() . '/virgen_suscriptores.jsonl';
 $pagosF = ce_dir() . '/virgen_pagos.jsonl';
@@ -138,7 +143,7 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
 @media(max-width:600px){main{margin:0 8px 24px;padding:14px}nav,header{padding-inline:12px}.posts{grid-template-columns:minmax(0,1fr)}}
 </style></head>
 <body>
-<header><h1>Virgen del Milagro · Administración</h1><span><a href="/admin/">Panel de Concursos del Estado</a> · <a href="/admin/?salir=1">Cerrar sesión</a></span></header>
+<header><h1>Virgen del Milagro · Administración</h1><span><?php if (defined('VG_DOMINIO')) { ?><a href="?salir=1">Cerrar sesión</a><?php } else { ?><a href="/admin/">Panel de Concursos del Estado</a> · <a href="/admin/?salir=1">Cerrar sesión</a><?php } ?></span></header>
 <nav id="tabs"></nav>
 <main id="main"><p class="muted">Cargando…</p></main>
 <script src="contenido.js"></script>

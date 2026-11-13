@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteRule ^(facebook|fondos)/([^/]+)$ a.php?d=$1&f=$2 [L,QSA]
+Options -Indexes

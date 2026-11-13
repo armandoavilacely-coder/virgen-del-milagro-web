@@ -28,3 +28,7 @@ deployment:
     - /bin/cp -f servidor/acceso/enviar_palabra_virgen.php $H/concursosdelestado.com/acceso/enviar_palabra_virgen.php
     - /bin/cp -f servidor/acceso/baja_virgen.php $H/concursosdelestado.com/acceso/baja_virgen.php
     - /bin/cp -f servidor/ce_data/virgen_palabra.json $H/ce_data/virgen_palabra.json
+    - /bin/cp -f servidor/acceso/vg_auth.php $H/concursosdelestado.com/acceso/vg_auth.php
+    - /bin/mkdir -p $H/virgendelmilagro.co/admin
+    - /bin/cp -f servidor/dominio_admin/index.php servidor/dominio_admin/a.php servidor/dominio_admin/.htaccess $H/virgendelmilagro.co/admin/
+    - /bin/cp -f pagina/contenido.js pagina/virgen.webp $H/virgendelmilagro.co/admin/

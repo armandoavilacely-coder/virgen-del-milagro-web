@@ -31,6 +31,12 @@ $MAP = [   // archivo en el repo => destino en el servidor
     'servidor/acceso/enviar_palabra_virgen.php' => $H . '/concursosdelestado.com/acceso/enviar_palabra_virgen.php',
     'servidor/acceso/baja_virgen.php' => $H . '/concursosdelestado.com/acceso/baja_virgen.php',
     'servidor/ce_data/virgen_palabra.json' => $H . '/ce_data/virgen_palabra.json',
+    'servidor/acceso/vg_auth.php' => $H . '/concursosdelestado.com/acceso/vg_auth.php',
+    'servidor/dominio_admin/index.php' => $H . '/virgendelmilagro.co/admin/index.php',
+    'servidor/dominio_admin/a.php' => $H . '/virgendelmilagro.co/admin/a.php',
+    'servidor/dominio_admin/.htaccess' => $H . '/virgendelmilagro.co/admin/.htaccess',
+    'pagina/contenido.js#dadmin' => $H . '/virgendelmilagro.co/admin/contenido.js',
+    'pagina/virgen.webp#dadmin' => $H . '/virgendelmilagro.co/admin/virgen.webp',
     'servidor/ce_data/virgen_origins.txt' => $H . '/ce_data/virgen_origins.txt',
 ];
 
@@ -55,7 +61,7 @@ $res = [];
 foreach ($MAP as $src => $dst) {
     $data = $zip->getFromName($root . '/' . explode('#', $src)[0]);
     if ($data === false || $data === '') { $res[$src] = 'no encontrado'; continue; }
-    if (!is_dir(dirname($dst)) && strpos($dst, '/admin/virgen/') !== false) @mkdir(dirname($dst), 0755, true);
+    if (!is_dir(dirname($dst)) && strpos($dst, '/admin/') !== false) @mkdir(dirname($dst), 0755, true);
     if (!is_dir(dirname($dst))) { $res[$src] = 'carpeta destino no existe'; continue; }
     if (is_file($dst) && md5_file($dst) === md5($data)) { $res[$src] = 'igual'; continue; }
     $t = $dst . '.new';
