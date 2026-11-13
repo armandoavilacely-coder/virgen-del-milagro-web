@@ -4,7 +4,7 @@
 // - La primera vez pide un código de instalación (se entrega aparte) y deja que la persona escriba su contraseña.
 // - Frenos: 5 intentos fallidos por IP cada 15 min; sesión de 8 horas, con cierre a los 60 min sin uso; cookie Secure, HttpOnly y SameSite=Strict.
 require_once __DIR__ . '/lib.php';
-const VGA_SETUP_HASH = 'e2151d52f7905d7ab2aa9b94361fb2e7ec15c7c57d02583b8ca9d424700bae8e';
+const VGA_SETUP_HASH = 'a4c5005727e30b7d502b2195f176036e264b8e4cf640a9aecebd3c6a23ba0b1b';
 const VGA_COOKIE = 'vgadm';
 
 function vga_https() { return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https'; }
@@ -51,7 +51,7 @@ function vga_require() {
     }
     if (vga_session_ok()) return;
     $cfg = vga_rd('virgen_admin.json'); $post = ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST';
-    if (!$cfg) {   // primera vez
+    if (!$cfg) {   // primera vez: código de instalación + contraseña
         $msg = '';
         if ($post) {
             if (!vga_limit(false)) vga_page('Demasiados intentos', 'Espera 15 minutos e inténtalo de nuevo.', 429);
@@ -61,18 +61,81 @@ function vga_require() {
             elseif (mb_strlen($p1) < 12) $msg = 'Usa al menos 12 caracteres (puede ser una frase).';
             else { vga_wr('virgen_admin.json', ['hash' => password_hash($p1, PASSWORD_DEFAULT), 'ts' => date('c')]); header('Location: ./'); exit; }
         }
-        vga_page('Crear contraseña del panel', ($msg ? '<p style="color:#9B2C2C;margin:0 0 6px"><b>' . vga_h($msg) . '</b></p>' : '<p style="margin:0 0 4px">Escribe el código de instalación y elige tu contraseña. Solo tú debes conocerla.</p>')
+        vga_page('Crear contraseña del panel', ($msg ? '<p style="color:#9B2C2C;margin:0 0 6px"><b>' . vga_h($msg) . '</b></p>' : '<p style="margin:0 0 4px">Escribe el código de instalación y elige tu contraseña. Solo tú debes conocerla. Después activarás la verificación en dos pasos.</p>')
             . vga_form(vga_input('codigo', 'Código de instalación', 'text') . vga_input('p1', 'Nueva contraseña (mínimo 12 caracteres)') . vga_input('p2', 'Repite la contraseña'), 'Crear contraseña'));
     }
-    $msg = '';
-    if ($post) {
-        if (!vga_limit(false)) vga_page('Demasiados intentos', 'Espera 15 minutos e inténtalo de nuevo.', 429);
-        if (password_verify((string)($_POST['pw'] ?? ''), (string)($cfg['hash'] ?? ''))) {
-            $tok = bin2hex(random_bytes(32)); $S = vga_rd('virgen_admin_sessions.json'); $now = time();
-            $S[hash('sha256', $tok)] = ['exp' => $now + 8 * 3600, 'last' => $now];
-            vga_wr('virgen_admin_sessions.json', $S); vga_cookie($tok, $now + 8 * 3600); header('Location: ./'); exit;
+    // Paso 1: contraseña -> "pre-sesión" de 10 minutos
+    if (!vga_pre()) {
+        $msg = '';
+        if ($post && isset($_POST['pw'])) {
+            if (!vga_limit(false)) vga_page('Demasiados intentos', 'Espera 15 minutos e inténtalo de nuevo.', 429);
+            if (password_verify((string)$_POST['pw'], (string)($cfg['hash'] ?? ''))) { vga_pre_new(); header('Location: ./'); exit; }
+            vga_fail(); usleep(600000); $msg = 'Contraseña incorrecta.';
         }
-        vga_fail(); usleep(600000); $msg = 'Contraseña incorrecta.';
+        vga_page('Administración', ($msg ? '<p style="color:#9B2C2C;margin:0 0 6px"><b>' . vga_h($msg) . '</b></p>' : '') . vga_form(vga_input('pw', 'Contraseña'), 'Continuar'));
     }
-    vga_page('Administración', ($msg ? '<p style="color:#9B2C2C;margin:0 0 6px"><b>' . vga_h($msg) . '</b></p>' : '') . vga_form(vga_input('pw', 'Contraseña'), 'Entrar'));
+    // Paso 2: verificación en dos pasos
+    $msg = '';
+    if (empty($cfg['totp'])) {   // aún no activada: mostrar clave y confirmar un código
+        $sec = $cfg['pend'] ?? null;
+        if (!$sec) { $sec = vga_b32(random_bytes(20)); $cfg['pend'] = $sec; vga_wr('virgen_admin.json', $cfg); }
+        if ($post && isset($_POST['c'])) {
+            if (!vga_limit(false)) vga_page('Demasiados intentos', 'Espera 15 minutos e inténtalo de nuevo.', 429);
+            if (vga_totp_check($sec, (string)$_POST['c'], $cfg)) {
+                $rec = []; $plain = [];
+                for ($k = 0; $k < 8; $k++) { $c = strtoupper(bin2hex(random_bytes(4))); $plain[] = substr($c, 0, 4) . '-' . substr($c, 4); $rec[] = hash('sha256', $c); }
+                $cfg['totp'] = $sec; unset($cfg['pend']); $cfg['rec'] = $rec; vga_wr('virgen_admin.json', $cfg);
+                vga_login();
+                vga_page('Guarda tus códigos de respaldo', '<p style="margin:0 0 8px">Si pierdes tu celular, cada uno de estos códigos sirve <b>una sola vez</b> para entrar. Anótalos en un lugar seguro: <b>no se volverán a mostrar</b>.</p><pre style="background:#FBF4E4;border-radius:10px;padding:12px;font-size:18px;line-height:1.7;margin:0 0 6px">' . implode("\n", $plain) . '</pre><a href="./" style="display:block;text-align:center;min-height:48px;line-height:48px;margin-top:10px;background:#14304F;color:#fff;border-radius:999px;font-weight:bold;text-decoration:none">Ya los guardé, entrar al panel</a>');
+            }
+            vga_fail(); $msg = 'Ese código no es correcto. Revisa que la hora del celular sea automática.';
+        }
+        $uri = 'otpauth://totp/Virgen%20del%20Milagro:admin?secret=' . $sec . '&issuer=Virgen%20del%20Milagro&digits=6&period=30';
+        vga_page('Activa la verificación en dos pasos', ($msg ? '<p style="color:#9B2C2C;margin:0 0 6px"><b>' . vga_h($msg) . '</b></p>' : '')
+            . '<p style="margin:0 0 8px">1. Abre <b>Google Authenticator</b> (o Authy, Microsoft Authenticator) en tu celular.<br>2. Toca <b>+ → Ingresar clave de configuración</b>.<br>3. Nombre: <i>Virgen del Milagro</i>. Clave:</p>'
+            . '<p style="font-family:monospace;font-size:18px;word-break:break-all;background:#FBF4E4;border-radius:10px;padding:10px;margin:0 0 8px;user-select:all">' . implode(' ', str_split($sec, 4)) . '</p>'
+            . '<p style="margin:0 0 4px;font-size:14px">En este mismo celular, también puedes <a href="' . vga_h($uri) . '">tocar aquí para abrirla en tu app</a>.</p>'
+            . '<p style="margin:10px 0 0">4. Escribe el código de 6 dígitos que muestra la app:</p>' . vga_form(vga_input('c', 'Código de 6 dígitos', 'text'), 'Activar y entrar'));
+    }
+    if ($post && isset($_POST['c'])) {
+        if (!vga_limit(false)) vga_page('Demasiados intentos', 'Espera 15 minutos e inténtalo de nuevo.', 429);
+        $in = (string)$_POST['c'];
+        if (vga_totp_check($cfg['totp'], $in, $cfg)) { vga_login(); header('Location: ./'); exit; }
+        $norm = strtoupper(preg_replace('/[^0-9A-Fa-f]/', '', $in)); $h = hash('sha256', $norm);
+        if (strlen($norm) === 8 && !empty($cfg['rec']) && ($k = array_search($h, $cfg['rec'], true)) !== false) { unset($cfg['rec'][$k]); $cfg['rec'] = array_values($cfg['rec']); vga_wr('virgen_admin.json', $cfg); vga_login(); header('Location: ./'); exit; }
+        vga_fail(); usleep(600000); $msg = 'Código incorrecto.';
+    }
+    vga_page('Verificación en dos pasos', ($msg ? '<p style="color:#9B2C2C;margin:0 0 6px"><b>' . vga_h($msg) . '</b></p>' : '<p style="margin:0 0 4px">Escribe el código de 6 dígitos de tu app de autenticación (o un código de respaldo).</p>') . vga_form(vga_input('c', 'Código', 'text'), 'Entrar'));
+}
+
+/* ---- ayudas de la verificación en dos pasos ---- */
+function vga_b32($bin) { $a = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'; $b = ''; foreach (str_split($bin) as $c) $b .= str_pad(decbin(ord($c)), 8, '0', STR_PAD_LEFT); $o = ''; foreach (str_split($b, 5) as $x) $o .= $a[bindec(str_pad($x, 5, '0'))]; return $o; }
+function vga_unb32($s) { $a = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'; $b = ''; foreach (str_split(strtoupper($s)) as $c) { $p = strpos($a, $c); if ($p !== false) $b .= str_pad(decbin($p), 5, '0', STR_PAD_LEFT); } $o = ''; foreach (str_split($b, 8) as $x) if (strlen($x) === 8) $o .= chr(bindec($x)); return $o; }
+function vga_totp_at($sec, $ctr) { $h = hash_hmac('sha1', pack('N*', 0, $ctr), vga_unb32($sec), true); $o = ord($h[19]) & 15; $v = ((ord($h[$o]) & 127) << 24) | (ord($h[$o + 1]) << 16) | (ord($h[$o + 2]) << 8) | ord($h[$o + 3]); return str_pad((string)($v % 1000000), 6, '0', STR_PAD_LEFT); }
+function vga_totp_check($sec, $code, &$cfg) {
+    $code = preg_replace('/\D/', '', $code); if (strlen($code) !== 6) return false;
+    $now = (int)floor(time() / 30);
+    for ($d = -1; $d <= 1; $d++) {
+        $c = $now + $d;
+        if (hash_equals(vga_totp_at($sec, $c), $code)) {
+            if ((int)($cfg['last'] ?? 0) >= $c) return false;   // no se puede reutilizar el mismo código
+            $cfg['last'] = $c; vga_wr('virgen_admin.json', $cfg); return true;
+        }
+    }
+    return false;
+}
+function vga_pre() {   // contraseña ya verificada (10 min)
+    $t = $_COOKIE['vgpre'] ?? ''; if (!preg_match('/^[0-9a-f]{64}$/', $t)) return false;
+    $P = vga_rd('virgen_admin_pre.json'); $h = hash('sha256', $t); $now = time();
+    foreach ($P as $k => $e) if ($e < $now) unset($P[$k]);
+    vga_wr('virgen_admin_pre.json', $P); return isset($P[$h]);
+}
+function vga_pre_new() {
+    $t = bin2hex(random_bytes(32)); $P = vga_rd('virgen_admin_pre.json'); $P[hash('sha256', $t)] = time() + 600; vga_wr('virgen_admin_pre.json', $P);
+    setcookie('vgpre', $t, ['expires' => time() + 600, 'path' => '/', 'secure' => true, 'httponly' => true, 'samesite' => 'Strict']);
+}
+function vga_login() {
+    $tok = bin2hex(random_bytes(32)); $S = vga_rd('virgen_admin_sessions.json'); $now = time();
+    $S[hash('sha256', $tok)] = ['exp' => $now + 8 * 3600, 'last' => $now]; vga_wr('virgen_admin_sessions.json', $S); vga_cookie($tok, $now + 8 * 3600);
+    $t = $_COOKIE['vgpre'] ?? ''; if ($t) { $P = vga_rd('virgen_admin_pre.json'); unset($P[hash('sha256', $t)]); vga_wr('virgen_admin_pre.json', $P); setcookie('vgpre', '', ['expires' => time() - 3600, 'path' => '/', 'secure' => true, 'httponly' => true, 'samesite' => 'Strict']); }
 }
