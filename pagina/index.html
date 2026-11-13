@@ -509,8 +509,8 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
       </a>
       <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú"><span class="bars" aria-hidden="true"></span><span>Menú</span></button>
       <nav class="menu" id="menu" aria-label="Principal">
-        <a class="hide-s" href="historia.html">Historia</a>
-        <a class="hide-s" href="tunja.html">Tunja</a>
+        <a class="hide-s" href="/historia/">Historia</a>
+        <a class="hide-s" href="/tunja/">Tunja</a>
         <a class="hide-s" href="#oracion-dia">Oración del día</a>
         <a class="hide-s" href="#rosario">Rosario</a>
         <a class="hide-s" href="#fiesta">La fiesta</a>
@@ -548,10 +548,10 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   </div>
 </header>
 <nav class="tabbar" aria-label="Navegación rápida">
-  <a href="index.html" data-t="Inicio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg><span>Inicio</span></a>
-  <a href="index.html#chat" data-t="Chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg><span>Chat</span></a>
-  <a href="historia.html" data-t="Historia"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5c3-1 6-1 8 1 2-2 5-2 8-1v13c-3-1-6-1-8 1-2-2-5-2-8-1z M12 6v13"/></svg><span>Historia</span></a>
-  <a href="tunja.html" data-t="Tunja"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Tunja</span></a>
+  <a href="/" data-t="Inicio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg><span>Inicio</span></a>
+  <a href="/#chat" data-t="Chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg><span>Chat</span></a>
+  <a href="/historia/" data-t="Historia"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5c3-1 6-1 8 1 2-2 5-2 8-1v13c-3-1-6-1-8 1-2-2-5-2-8-1z M12 6v13"/></svg><span>Historia</span></a>
+  <a href="/tunja/" data-t="Tunja"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Tunja</span></a>
   <button type="button" id="tab-more" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>Más</span></button>
 </nav>
 <script>
@@ -562,7 +562,7 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   var more = document.getElementById("tab-more");
   function sync(o) { if (more) more.setAttribute("aria-expanded", o ? "true" : "false"); }
   var _set = set; set = function (o) { _set(o); sync(o); };
-  var here = (location.pathname.split("/").pop() || "index.html"); if (here === "") here = "index.html";
+  var here = location.pathname.replace(/index\.html$/, "");
   document.querySelectorAll(".tabbar a").forEach(function (a) { if (a.getAttribute("href") === here && !location.hash) a.setAttribute("aria-current", "page"); });
   if (more) more.addEventListener("click", function (e) { e.stopPropagation(); set(!top.classList.contains("open")); });
   document.addEventListener("click", function (e) { if (top.classList.contains("open") && !e.target.closest(".menu, .tabbar")) set(false); });
@@ -855,8 +855,8 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   <div class="wrap foot">
     <div><b>Virgen del Milagro</b><small>Tunja, Boyacá, Colombia</small></div>
     <nav aria-label="Pie de página">
-      <a href="historia.html">Historia de la Virgen</a>
-      <a href="tunja.html">Tunja</a>
+      <a href="/historia/">Historia de la Virgen</a>
+      <a href="/tunja/">Tunja</a>
       <a href="#chat">Chat bíblico</a>
       <a href="#oracion-dia">Oración del día</a>
       <a href="#oracion-dia">Rezar</a>

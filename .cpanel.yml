@@ -32,3 +32,6 @@ deployment:
     - /bin/mkdir -p $H/virgendelmilagro.co/admin
     - /bin/cp -f servidor/dominio_admin/index.php servidor/dominio_admin/a.php servidor/dominio_admin/.htaccess $H/virgendelmilagro.co/admin/
     - /bin/cp -f pagina/contenido.js pagina/virgen.webp $H/virgendelmilagro.co/admin/
+    - /bin/mkdir -p $H/virgendelmilagro.co/historia $H/virgendelmilagro.co/tunja
+    - /bin/cp -f pagina/historia/index.html $H/virgendelmilagro.co/historia/index.html
+    - /bin/cp -f pagina/tunja/index.html $H/virgendelmilagro.co/tunja/index.html
