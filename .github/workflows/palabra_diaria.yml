@@ -1,9 +1,9 @@
 name: Palabra del día por correo
-# Cada mañana (6:00 a 7:50, hora de Bogotá) pide al servidor que envíe la Palabra del día a los suscriptores.
+# Cada mañana (desde las 6:00, hora de Bogotá, con reintentos hasta la tarde porque GitHub a veces retrasa o salta ejecuciones) pide al servidor que envíe la Palabra del día a los suscriptores.
 # El servidor manda como máximo un correo por persona al día, así que repetir la llamada es seguro.
 on:
   schedule:
-    - cron: '3,18,33,48 11,12 * * *'
+    - cron: '7,37 11-17 * * *'
   workflow_dispatch:
 jobs:
   enviar:
