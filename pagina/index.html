@@ -528,6 +528,29 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   #ck { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
   .top .menu { position: fixed; z-index: 49; left: max(10px, env(safe-area-inset-left, 0px)); right: max(10px, env(safe-area-inset-right, 0px)); bottom: calc(70px + env(safe-area-inset-bottom, 0px)); max-height: min(68vh, 520px); overflow-y: auto; overscroll-behavior: contain; flex-basis: auto; }
 }
+
+/* Interacción: enlaces y botones responden al mouse */
+a, button { transition: color .2s ease, background-color .2s ease, border-color .2s ease, box-shadow .25s ease, transform .2s ease, opacity .2s ease; }
+.menu a { position: relative; padding-block: 6px; }
+.menu a::after, .foot nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 2px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, #F2D68A, #B8841F); transform: scaleX(0); transform-origin: left; transition: transform .28s ease; }
+.foot nav a { position: relative; }
+.menu a:hover::after, .menu a:focus-visible::after, .foot nav a:hover::after, .foot nav a:focus-visible::after { transform: scaleX(1); }
+.menu a:hover { color: var(--gold-ink); transform: translateY(-2px); }
+.foot nav a:hover { transform: translateY(-2px); }
+.foot nav button:hover, #ck-open:hover { transform: translateY(-2px); text-decoration: underline; }
+.devby a:hover { opacity: 1; letter-spacing: .02em; color: #F2D68A; }
+.pol a, .orac a, .lede a, .sources a, .fine a, article a:not(.btn) { text-decoration-color: #B8841F; text-underline-offset: 3px; }
+.pol a:hover, .orac a:hover, .lede a:hover, .sources a:hover, .fine a:hover, article a:not(.btn):hover { color: var(--gold-ink); text-decoration-thickness: 3px; background: rgba(242, 214, 138, .35); border-radius: 4px; }
+.share a:hover, .share button:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 10px 22px rgba(20, 48, 79, .25), 0 0 0 4px rgba(242, 214, 138, .45); filter: brightness(1.08); }
+.prom-tabs button:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(20, 48, 79, .18); border-color: var(--gold-ink); }
+.prom-list button:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(20, 48, 79, .16); background: #FFF6DC; }
+.chip:hover, .tour-list a:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(20, 48, 79, .18); }
+.t-card:hover, .ros-step:hover, .pay:hover { transform: translateY(-4px); box-shadow: 0 0 0 3px rgba(242, 214, 138, .4), 0 18px 34px var(--shadow); }
+.t-card, .ros-step, .pay { transition: transform .25s ease, box-shadow .25s ease; }
+a:active, button:active { transform: translateY(0) scale(.98); }
+a:focus-visible, button:focus-visible { outline: 3px solid #B8841F; outline-offset: 3px; border-radius: 8px; }
+@media (prefers-reduced-motion: reduce) { a, button { transition: none; } a:hover, button:hover { transform: none !important; } }
+@media (hover: none) { a:hover, button:hover { transform: none !important; } }
 </style>
 </head><body>
 
