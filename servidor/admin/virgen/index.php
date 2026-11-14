@@ -18,6 +18,7 @@ if (defined('VG_DOMINIO')) {   // en virgendelmilagro.co/admin: inicio de sesió
 $subsF = ce_dir() . '/virgen_suscriptores.jsonl';
 $pagosF = ce_dir() . '/virgen_pagos.jsonl';
 $testF = ce_dir() . '/virgen_testimonios.jsonl';
+$gastosF = ce_dir() . '/virgen_gastos.jsonl';
 $fbF = ce_dir() . '/virgen_fb.json';   // estado de las publicaciones de Facebook: {id: {done, text}}
 function vg_fb($f) { $d = is_file($f) ? json_decode((string)file_get_contents($f), true) : null; return is_array($d) ? $d : []; }
 
@@ -43,7 +44,7 @@ if ($act !== '') {
     if (($_SERVER['HTTP_X_VG'] ?? '') !== '1' || ($og && $og !== preg_replace('/:\d+$/', '', $host))) vg_json(['ok' => false, 'e' => 'csrf'], 403);
     $in = json_decode(file_get_contents('php://input'), true) ?: [];
     if ($act === 'datos') {
-        vg_json(['ok' => true, 'subs' => vg_read($subsF), 'pagos' => vg_read($pagosF), 'tests' => vg_read($testF), 'fb' => (object)vg_fb($fbF)]);
+        vg_json(['ok' => true, 'subs' => vg_read($subsF), 'pagos' => vg_read($pagosF), 'tests' => vg_read($testF), 'gastos' => vg_read($gastosF), 'fb' => (object)vg_fb($fbF)]);
     }
     if ($act === 'visitas') {   // registros de visitas de los últimos 90 días (los agrega el navegador)
         $vf = ce_dir() . '/virgen_visitas.jsonl'; $out = []; $min = time() - 90 * 86400;
@@ -65,6 +66,21 @@ if ($act !== '') {
         ];
         $rows = vg_read($pagosF); $rows[] = $reg; vg_write($pagosF, $rows);
         vg_json(['ok' => true, 'pagos' => $rows]);
+    }
+    if ($act === 'gasto_add') {
+        $monto = (int)preg_replace('/\D/', '', (string)($in['monto'] ?? ''));
+        if ($monto <= 0) vg_json(['ok' => false, 'r' => 'Escribe un monto válido.'], 400);
+        $fecha = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)($in['fecha'] ?? '')) ? $in['fecha'] : date('Y-m-d');
+        $cat = in_array($in['cat'] ?? '', ['Hosting', 'Dominio', 'Publicidad en Facebook', 'Diseño e IA', 'Comisión Wompi', 'Impuestos', 'Otro'], true) ? $in['cat'] : 'Otro';
+        $reg = ['id' => 'g_' . bin2hex(random_bytes(5)), 'ts' => date('c'), 'fecha' => $fecha, 'cat' => $cat,
+            'concepto' => mb_substr(strip_tags((string)($in['concepto'] ?? '')), 0, 120), 'monto' => $monto];
+        $rows = vg_read($gastosF); $rows[] = $reg; vg_write($gastosF, $rows);
+        vg_json(['ok' => true, 'gastos' => $rows]);
+    }
+    if ($act === 'gasto_del') {
+        $id = (string)($in['id'] ?? '');
+        $rows = array_values(array_filter(vg_read($gastosF), fn($r) => ($r['id'] ?? '') !== $id));
+        vg_write($gastosF, $rows); vg_json(['ok' => true, 'gastos' => $rows]);
     }
     if ($act === 'pago_del') {
         $id = (string)($in['id'] ?? '');
@@ -140,9 +156,10 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
 .post canvas{width:100%;height:auto;border-radius:10px;border:1px solid var(--line);background:#dde}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;color:var(--soft)}.tabs button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
 .row2{display:flex;gap:8px;flex-wrap:wrap}
-.vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:18px;margin-top:10px}
+.vgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:10px}
 .vgrid .wide{grid-column:span 2}
-@media (max-width:820px){.vgrid .wide{grid-column:auto}}
+@media (max-width:1100px){.vgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:700px){.vgrid{grid-template-columns:minmax(0,1fr)}.vgrid .wide{grid-column:auto}}
 .vcard{border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px;min-width:0;box-shadow:0 1px 2px rgba(20,48,79,.05)}
 .vcard h3{margin:0 0 10px;font:600 21px "Cormorant Garamond",Georgia,serif;color:var(--navy)}
 .vcard .muted{margin:8px 0 0}
@@ -157,7 +174,7 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
 <script>
 (function () {
   "use strict";
-  var VG = window.VG, D = { subs: [], pagos: [], tests: [], fb: {} }, tab = "resumen";
+  var VG = window.VG, D = { subs: [], pagos: [], gastos: [], tests: [], fb: {} }, tab = "resumen";
   function $(id) { return document.getElementById(id); }
   function el(t, c, x) { var n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; }
   function money(n) { return "$" + Number(n || 0).toLocaleString("es-CO"); }
@@ -165,13 +182,13 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
     return fetch("?a=" + a, { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-VG": "1" }, body: JSON.stringify(body || {}) })
       .then(function (r) { return r.json(); });
   }
-  function load() { return api("datos").then(function (d) { if (d.ok) { D.subs = d.subs; D.pagos = d.pagos; D.tests = d.tests || []; D.fb = d.fb || {}; } render(); }); }
-  var TABS = [["resumen", "Resumen"], ["usuarios", "Suscriptores"], ["pagos", "Pagos"], ["publicidad", "Publicidad"], ["testimonios", "Testimonios"], ["facebook", "Facebook"], ["visitas", "Visitas"]];
+  function load() { return api("datos").then(function (d) { if (d.ok) { D.subs = d.subs; D.pagos = d.pagos; D.tests = d.tests || []; D.gastos = d.gastos || []; D.fb = d.fb || {}; } render(); }); }
+  var TABS = [["resumen", "Resumen"], ["usuarios", "Suscriptores"], ["pagos", "Pagos"], ["conta", "Contabilidad"], ["publicidad", "Publicidad"], ["testimonios", "Testimonios"], ["facebook", "Facebook"], ["visitas", "Visitas"]];
   function drawTabs() {
     var n = $("tabs"); n.textContent = "";
     TABS.forEach(function (t) { var b = el("button", t[0] === tab ? "on" : "", t[1]); b.onclick = function () { tab = t[0]; render(); }; n.appendChild(b); });
   }
-  function render() { drawTabs(); var m = $("main"); m.textContent = ""; ({ resumen: vResumen, usuarios: vUsuarios, pagos: vPagos, publicidad: vPub, testimonios: vTest, facebook: vFb, visitas: vVis })[tab](m); }
+  function render() { drawTabs(); var m = $("main"); m.textContent = ""; ({ resumen: vResumen, usuarios: vUsuarios, pagos: vPagos, conta: vConta, publicidad: vPub, testimonios: vTest, facebook: vFb, visitas: vVis })[tab](m); }
 
 
   /* ---------- Visitas (solo cuentan quienes aceptaron las cookies) ---------- */
@@ -300,7 +317,7 @@ var prevN = visRango < 90 ? VIS.filter(function (r) { return (r.ev || "visita") 
     }
     var gr = el("div", "vgrid");
     if (dl.length > 1) gr.appendChild(card("Visitas por día", lineChart(dl, [{ name: "Visitas", color: "#14304F", vals: dl.map(function (d) { return porDia[d] || 0; }) }, { name: "Personas distintas", color: "#C9962E", vals: dl.map(function (d) { return perDia[d] ? Object.keys(perDia[d]).length : 0; }) }]), "Azul: visitas · Dorado: personas distintas"));
-    gr.firstChild && dl.length > 1 && (gr.firstChild.className += " wide");
+    gr.firstChild && dl.length > 1 && (void 0);
     var hrs = []; for (var i = 0; i < 24; i++) hrs.push(0); vs.forEach(function (r) { hrs[bogota(r.t).h]++; });
     gr.appendChild(card("¿A qué hora nos visitan? (hora de Colombia)", colChart(hrs, hrs.map(function (_, h) { return ("0" + h).slice(-2) + "h"; }), "#14304F", true), "En dorado, la hora con más visitas."));
     gr.appendChild(card("Día de la semana y hora", heat(), "Más oscuro = más visitas."));
@@ -416,6 +433,69 @@ var prevN = visRango < 90 ? VIS.filter(function (r) { return (r.ev || "visita") 
     var help = el("div", "muted");
     help.innerHTML = "<p><b>Pagos automáticos:</b> los pagos de los links de Wompi de la Virgen llegan solos a esta lista (ya probado con un pago real). Si uno no aparece, regístralo a mano arriba. Para quitar un pago de prueba, usa el botón «Quitar» de su fila.</p>";
     m.appendChild(help);
+  }
+
+  /* ---------- Contabilidad: ingresos (pagos) menos gastos ---------- */
+  function vConta(m) {
+    var sum = function (a) { return a.reduce(function (s, x) { return s + (x.monto || 0); }, 0); };
+    var mes = mesActual(), año = mes.slice(0, 4);
+    var inM = sum(D.pagos.filter(function (p) { return (p.fecha || "").slice(0, 7) === mes; })), gaM = sum(D.gastos.filter(function (g) { return (g.fecha || "").slice(0, 7) === mes; }));
+    var inA = sum(D.pagos.filter(function (p) { return (p.fecha || "").slice(0, 4) === año; })), gaA = sum(D.gastos.filter(function (g) { return (g.fecha || "").slice(0, 4) === año; }));
+    var inT = sum(D.pagos), gaT = sum(D.gastos);
+    m.appendChild(el("h2", null, "Contabilidad"));
+    var k = el("div", "kpis");
+    [[money(inM), "Ingresos este mes"], [money(gaM), "Gastos este mes"], [money(inM - gaM), "Resultado del mes"], [money(inA - gaA), "Resultado de " + año], [money(inT), "Ingresos totales"], [money(gaT), "Gastos totales"], [money(inT - gaT), "Ganancia neta total"]].forEach(function (x) {
+      var c = el("div", "kpi"); c.appendChild(el("b", null, x[0])); c.appendChild(el("span", null, x[1])); k.appendChild(c);
+    });
+    m.appendChild(k);
+    m.appendChild(el("p", "muted", "Los ingresos salen solos de la pestaña Pagos (Wompi). Aquí registras los gastos: hosting, dominio, publicidad, etc."));
+    var f = el("form", "form"); f.innerHTML =
+      '<label>Fecha<input type="date" id="gf" value="' + new Date().toISOString().slice(0, 10) + '"></label>' +
+      '<label>Categoría<select id="gc"><option>Hosting</option><option>Dominio</option><option>Publicidad en Facebook</option><option>Diseño e IA</option><option>Comisión Wompi</option><option>Impuestos</option><option>Otro</option></select></label>' +
+      '<label>Concepto<input id="gn" maxlength="120"></label><label>Monto (COP)<input id="gm" inputmode="numeric"></label><button class="b" type="submit">Registrar gasto</button>';
+    var msg = el("p", "muted", "");
+    f.onsubmit = function (e) {
+      e.preventDefault();
+      api("gasto_add", { fecha: $("gf").value, cat: $("gc").value, concepto: $("gn").value, monto: $("gm").value }).then(function (d) { if (d.ok) { D.gastos = d.gastos; render(); } else msg.textContent = d.r || "No se pudo guardar."; });
+    };
+    m.appendChild(f); m.appendChild(msg);
+    /* por mes (últimos 12) */
+    m.appendChild(el("h2", null, "Por mes"));
+    var ms = []; var d0 = new Date(); for (var i = 0; i < 12; i++) { var dd = new Date(d0.getFullYear(), d0.getMonth() - i, 1); ms.push(dd.getFullYear() + "-" + ("0" + (dd.getMonth() + 1)).slice(-2)); }
+    var w = el("div", "tw"), t = el("table"); t.innerHTML = "<tr><th>Mes</th><th>Ingresos</th><th>Gastos</th><th>Resultado</th></tr>";
+    ms.forEach(function (mm) {
+      var a = sum(D.pagos.filter(function (p) { return (p.fecha || "").slice(0, 7) === mm; })), b = sum(D.gastos.filter(function (g) { return (g.fecha || "").slice(0, 7) === mm; }));
+      if (!a && !b && mm !== mes) return;
+      var tr = el("tr"); [mm, money(a), money(b)].forEach(function (x) { tr.appendChild(el("td", null, x)); }); tr.appendChild(el("td", a - b < 0 ? "bad" : "ok", money(a - b))); t.appendChild(tr);
+    });
+    w.appendChild(t); m.appendChild(w);
+    /* gastos por categoría */
+    var cats = {}; D.gastos.forEach(function (g) { cats[g.cat] = (cats[g.cat] || 0) + g.monto; });
+    if (Object.keys(cats).length) {
+      m.appendChild(el("h2", null, "Gastos por categoría"));
+      var w2 = el("div", "tw"), t2 = el("table"); t2.innerHTML = "<tr><th>Categoría</th><th>Total</th></tr>";
+      Object.keys(cats).sort(function (a, b) { return cats[b] - cats[a]; }).forEach(function (c) { var tr = el("tr"); tr.appendChild(el("td", null, c)); tr.appendChild(el("td", null, money(cats[c]))); t2.appendChild(tr); });
+      w2.appendChild(t2); m.appendChild(w2);
+    }
+    m.appendChild(el("h2", null, "Gastos registrados (" + D.gastos.length + ")"));
+    var w3 = el("div", "tw"), t3 = el("table"); t3.innerHTML = "<tr><th>Fecha</th><th>Categoría</th><th>Concepto</th><th>Monto</th><th></th></tr>";
+    D.gastos.slice().sort(function (a, b) { return (b.fecha + b.ts).localeCompare(a.fecha + a.ts); }).forEach(function (g) {
+      var tr = el("tr"); [g.fecha, g.cat, g.concepto || "", money(g.monto)].forEach(function (x) { tr.appendChild(el("td", null, x)); });
+      var td = el("td"), b = el("button", "x", "Quitar");
+      b.onclick = function () { if (b.dataset.s) { api("gasto_del", { id: g.id }).then(function (d) { if (d.ok) { D.gastos = d.gastos; render(); } }); } else { b.dataset.s = "1"; b.textContent = "¿Seguro?"; } };
+      td.appendChild(b); tr.appendChild(td); t3.appendChild(tr);
+    });
+    w3.appendChild(t3); m.appendChild(w3);
+    var ex = el("button", "g", "Descargar contabilidad (CSV)"); ex.style.marginTop = "14px";
+    ex.onclick = function () {
+      var rows = [["fecha", "tipo", "categoria", "detalle", "monto"]];
+      D.pagos.forEach(function (p) { rows.push([p.fecha, "Ingreso", p.tipo === "suscripcion" ? "Suscripción" : "Aporte", ((p.nombre || "") + " " + (p.correo || "")).trim(), p.monto]); });
+      D.gastos.forEach(function (g) { rows.push([g.fecha, "Gasto", g.cat, g.concepto || "", -g.monto]); });
+      rows.sort(function (a, b) { return String(a[0]).localeCompare(String(b[0])); });
+      var csv = rows.map(function (r) { return r.map(function (c) { return '"' + String(c == null ? "" : c).replace(/"/g, '""') + '"'; }).join(","); }).join("\n");
+      var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["\ufeff" + csv], { type: "text/csv" })); a.download = "contabilidad-virgen.csv"; a.click();
+    };
+    m.appendChild(ex);
   }
 
   /* ---------- Testimonios (moderación) ---------- */
