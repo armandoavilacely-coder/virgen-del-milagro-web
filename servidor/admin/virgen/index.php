@@ -140,7 +140,9 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
 .post canvas{width:100%;height:auto;border-radius:10px;border:1px solid var(--line);background:#dde}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;color:var(--soft)}.tabs button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
 .row2{display:flex;gap:8px;flex-wrap:wrap}
-.vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:18px;margin-top:10px}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:18px;margin-top:10px}
+.vgrid .wide{grid-column:span 2}
+@media (max-width:820px){.vgrid .wide{grid-column:auto}}
 .vcard{border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px;min-width:0;box-shadow:0 1px 2px rgba(20,48,79,.05)}
 .vcard h3{margin:0 0 10px;font:600 21px "Cormorant Garamond",Georgia,serif;color:var(--navy)}
 .vcard .muted{margin:8px 0 0}
@@ -208,11 +210,11 @@ var prevN = visRango < 90 ? VIS.filter(function (r) { return (r.ev || "visita") 
     var PAL = ["#14304F", "#C9962E", "#2F8F83", "#B5475B", "#6B7FD7", "#8C6D3F", "#7A8B99"];
     function card(titulo, nodo, nota) { var c = el("div", "vcard"); c.appendChild(el("h3", null, titulo)); c.appendChild(nodo); if (nota) c.appendChild(el("p", "muted", nota)); return c; }
     function S(tag, at, txt) { var n = document.createElementNS("http://www.w3.org/2000/svg", tag); for (var k in at) n.setAttribute(k, at[k]); if (txt != null) n.textContent = txt; return n; }
-    function svgBox(w, h) { var sv = S("svg", { viewBox: "0 0 " + w + " " + h, role: "img" }); sv.style.cssText = "width:100%;max-width:560px;height:auto;display:block"; return sv; }
+    function svgBox(w, h) { var sv = S("svg", { viewBox: "0 0 " + w + " " + h, role: "img" }); sv.style.cssText = "width:100%;height:auto;display:block"; return sv; }
     function nice(mx) { if (mx <= 4) return 4; var p = Math.pow(10, Math.floor(Math.log10(mx))), f = mx / p; return (f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; }
     /* línea/área por día */
     function lineChart(labels, series) {
-      var W = Math.min(CW, 560), H = 150, L = 30, R = 10, T = 10, B = 24, sv = svgBox(W, H), mx = 1;
+      var W = Math.min(CW, 680), H = 170, L = 30, R = 10, T = 10, B = 24, sv = svgBox(W, H), mx = 1;
       series.forEach(function (s) { s.vals.forEach(function (v) { if (v > mx) mx = v; }); }); var top = nice(mx);
       function X(i) { return L + (labels.length < 2 ? 0 : i * (W - L - R) / (labels.length - 1)); } function Y(v) { return T + (H - T - B) * (1 - v / top); }
       for (var g = 0; g <= 4; g++) { var v = top * g / 4, y = Y(v); sv.appendChild(S("line", { x1: L, x2: W - R, y1: y, y2: y, stroke: "#E3E8F2", "stroke-width": 1 })); sv.appendChild(S("text", { x: L - 6, y: y + 4, "text-anchor": "end", "font-size": 11, fill: "#5B6B85" }, String(Math.round(v)))); }
@@ -288,7 +290,7 @@ var prevN = visRango < 90 ? VIS.filter(function (r) { return (r.ev || "visita") 
     var porDia = {}, perDia = {}; vs.forEach(function (r) { var d = bogota(r.t).d; porDia[d] = (porDia[d] || 0) + 1; (perDia[d] = perDia[d] || {})[r.vid] = 1; });
     var gr = el("div", "vgrid");
     if (dl.length > 1) gr.appendChild(card("Visitas por día", lineChart(dl, [{ name: "Visitas", color: "#14304F", vals: dl.map(function (d) { return porDia[d] || 0; }) }, { name: "Personas distintas", color: "#C9962E", vals: dl.map(function (d) { return perDia[d] ? Object.keys(perDia[d]).length : 0; }) }]), "Azul: visitas · Dorado: personas distintas"));
-    gr.firstChild && dl.length > 1 && (gr.firstChild.style.gridColumn = "1 / -1");
+    gr.firstChild && dl.length > 1 && (gr.firstChild.className += " wide");
     var hrs = []; for (var i = 0; i < 24; i++) hrs.push(0); vs.forEach(function (r) { hrs[bogota(r.t).h]++; });
     gr.appendChild(card("¿A qué hora nos visitan? (hora de Colombia)", colChart(hrs, hrs.map(function (_, h) { return ("0" + h).slice(-2) + "h"; }), "#14304F", true), "En dorado, la hora con más visitas."));
     gr.appendChild(card("Día de la semana y hora", heat(), "Más oscuro = más visitas."));
