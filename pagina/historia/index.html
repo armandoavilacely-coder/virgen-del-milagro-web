@@ -348,6 +348,7 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .card, .fact, .prayer-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
 .card:hover, .fact:hover, .prayer-card:hover { transform: translateY(-6px); box-shadow: 0 0 0 4px rgba(242, 214, 138, 0.4), 0 24px 44px var(--shadow); }
 .prom-today { animation: pop 0.45s ease; }
+.devby { margin: 14px 0 0; flex-basis: 100%; text-align: center; font-size: 13px; opacity: .8; } .devby a { color: inherit; text-decoration: underline; }
 .prom-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 56rem; margin: 0 auto 18px; padding: 0; }
 .prom-tabs button { cursor: pointer; font: inherit; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--card-solid); color: inherit; }
 .prom-tabs button:hover { border-color: var(--gold-ink); }
@@ -529,6 +530,7 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   .top .menu { position: fixed; z-index: 49; left: max(10px, env(safe-area-inset-left, 0px)); right: max(10px, env(safe-area-inset-right, 0px)); bottom: calc(70px + env(safe-area-inset-bottom, 0px)); max-height: min(68vh, 520px); overflow-y: auto; overscroll-behavior: contain; flex-basis: auto; }
 }
 
+.devby { margin: 14px 0 0; flex-basis: 100%; text-align: center; font-size: 13px; opacity: .8; } .devby a { color: inherit; text-decoration: underline; }
 .prom-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 760px; margin: 0 auto 18px; padding: 0; }
 .prom-tabs button { cursor: pointer; font: inherit; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1.5px solid #1F4E79; background: transparent; color: #1F4E79; }
 .prom-tabs button[aria-selected="true"] { background: #1F4E79; color: #fff; }
@@ -791,6 +793,7 @@ section[id] { scroll-margin-top: 90px; }
       <a href="/politica-de-datos/">Política de tratamiento de datos</a>
       <button id="ck-open" type="button">Cookies</button>
     </nav>
+    <p class="devby">Desarrollado por <a href="https://wa.me/573166982472?text=Hola%20Ariel%2C%20vi%20la%20p%C3%A1gina%20de%20la%20Virgen%20del%20Milagro" target="_blank" rel="noopener">Ariel Avila</a></p>
   </div>
 </footer>
 
