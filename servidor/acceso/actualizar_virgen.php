@@ -13,6 +13,7 @@ $H = getenv('VG_HOME') ?: dirname(__DIR__, 2);   // /home2/arielar1
 $MAP = [   // archivo en el repo => destino en el servidor
     'pagina/index.html' => $H . '/virgendelmilagro.co/index.html',
     'pagina/virgen.webp' => $H . '/virgendelmilagro.co/virgen.webp',
+    'pagina/logo-virgen.webp' => $H . '/virgendelmilagro.co/logo-virgen.webp',
     'pagina/contenido.js' => $H . '/virgendelmilagro.co/contenido.js',
     'pagina/historia.html' => $H . '/virgendelmilagro.co/historia.html',
     'pagina/tunja.html' => $H . '/virgendelmilagro.co/tunja.html',

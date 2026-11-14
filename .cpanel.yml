@@ -3,7 +3,7 @@ deployment:
   tasks:
     - export H=/home2/arielar1
     - /bin/cp -f pagina/index.html $H/virgendelmilagro.co/index.html
-    - /bin/cp -f pagina/virgen.webp $H/virgendelmilagro.co/virgen.webp
+    - /bin/cp -f pagina/virgen.webp pagina/logo-virgen.webp $H/virgendelmilagro.co/
     - /bin/cp -f pagina/contenido.js $H/virgendelmilagro.co/contenido.js
     - /bin/cp -f pagina/historia.html $H/virgendelmilagro.co/historia.html
     - /bin/cp -f pagina/tunja.html $H/virgendelmilagro.co/tunja.html
