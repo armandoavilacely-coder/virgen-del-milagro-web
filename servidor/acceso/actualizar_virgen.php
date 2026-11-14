@@ -27,6 +27,9 @@ $MAP = [   // archivo en el repo => destino en el servidor
     'pagina/apple-touch-icon.png' => $H . '/virgendelmilagro.co/apple-touch-icon.png',
     'pagina/favicon-32.png' => $H . '/virgendelmilagro.co/favicon-32.png',
     'pagina/promesas-de-dios/index.html' => $H . '/virgendelmilagro.co/promesas-de-dios/index.html',
+    'pagina/oracion-a-la-virgen-del-milagro/index.html' => $H . '/virgendelmilagro.co/oracion-a-la-virgen-del-milagro/index.html',
+    'pagina/novena-a-la-virgen-del-milagro/index.html' => $H . '/virgendelmilagro.co/novena-a-la-virgen-del-milagro/index.html',
+    'pagina/como-rezar-el-rosario/index.html' => $H . '/virgendelmilagro.co/como-rezar-el-rosario/index.html',
     'pagina/og-virgen.jpg' => $H . '/virgendelmilagro.co/og-virgen.jpg',
     'pagina/cuadro-original.jpg' => $H . '/virgendelmilagro.co/cuadro-original.jpg',
     'pagina/tunja-plaza.webp' => $H . '/virgendelmilagro.co/tunja-plaza.webp',
@@ -73,7 +76,7 @@ $res = [];
 foreach ($MAP as $src => $dst) {
     $data = $zip->getFromName($root . '/' . explode('#', $src)[0]);
     if ($data === false || $data === '') { $res[$src] = 'no encontrado'; continue; }
-    if (!is_dir(dirname($dst)) && (strpos($dst, '/admin/') !== false || preg_match('#/virgendelmilagro\.co/(historia|tunja|politica-de-datos|promesas-de-dios)/#', $dst))) @mkdir(dirname($dst), 0755, true);
+    if (!is_dir(dirname($dst)) && (strpos($dst, '/admin/') !== false || preg_match('#/virgendelmilagro\.co/(historia|tunja|politica-de-datos|promesas-de-dios|oracion-a-la-virgen-del-milagro|novena-a-la-virgen-del-milagro|como-rezar-el-rosario)/#', $dst))) @mkdir(dirname($dst), 0755, true);
     if (!is_dir(dirname($dst))) { $res[$src] = 'carpeta destino no existe'; continue; }
     if (is_file($dst) && md5_file($dst) === md5($data)) { $res[$src] = 'igual'; continue; }
     $t = $dst . '.new';

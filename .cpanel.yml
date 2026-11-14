@@ -40,4 +40,10 @@ deployment:
     - /bin/cp -f pagina/og-virgen.jpg $H/virgendelmilagro.co/og-virgen.jpg
     - /bin/mkdir -p $H/virgendelmilagro.co/promesas-de-dios
     - /bin/cp -f pagina/promesas-de-dios/index.html $H/virgendelmilagro.co/promesas-de-dios/index.html
+    - /bin/mkdir -p $H/virgendelmilagro.co/oracion-a-la-virgen-del-milagro
+    - /bin/cp -f pagina/oracion-a-la-virgen-del-milagro/index.html $H/virgendelmilagro.co/oracion-a-la-virgen-del-milagro/index.html
+    - /bin/mkdir -p $H/virgendelmilagro.co/novena-a-la-virgen-del-milagro
+    - /bin/cp -f pagina/novena-a-la-virgen-del-milagro/index.html $H/virgendelmilagro.co/novena-a-la-virgen-del-milagro/index.html
+    - /bin/mkdir -p $H/virgendelmilagro.co/como-rezar-el-rosario
+    - /bin/cp -f pagina/como-rezar-el-rosario/index.html $H/virgendelmilagro.co/como-rezar-el-rosario/index.html
     - /bin/cp -f pagina/robots.txt pagina/sitemap.xml pagina/manifest.webmanifest pagina/icon-512.png pagina/icon-192.png pagina/apple-touch-icon.png pagina/favicon-32.png $H/virgendelmilagro.co/

@@ -684,6 +684,8 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
         <div id="dia-marias"></div>
         <div class="dia-actions">
           <button class="btn" id="dia-copy" type="button">Copiar oración</button>
+          <button class="btn alt" id="dia-wa" type="button">Compartir por WhatsApp</button>
+          <button class="btn alt" id="dia-fb" type="button">Facebook</button>
         </div>
         <p class="fine" id="dia-msg" role="status"></p>
       </div>
@@ -727,6 +729,7 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
     </div>
     <div class="prom-today" id="prom-today" aria-live="off"></div>
     <div class="cta-row prom-cta"><button class="btn" id="prom-random" type="button">Barajar y ver otra promesa</button></div>
+    <div class="cta-row prom-cta" style="margin-top:10px"><button class="btn alt" id="prom-wa" type="button">Compartir por WhatsApp</button><button class="btn alt" id="prom-fb" type="button">Facebook</button><button class="btn alt" id="prom-cp" type="button">Copiar promesa</button></div>
     <p class="sources">Versículos tal como aparecen en la Biblia Reina-Valera 1909 (dominio público). Las reflexiones son nuestras. Lee cada pasaje completo en tu Biblia.</p>
   </div>
 </section>
@@ -882,6 +885,9 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
     <nav aria-label="Pie de página">
       <a href="/promesas-de-dios/">100 promesas de Dios</a>
       <a href="/historia/">Historia de la Virgen</a>
+      <a href="/oracion-a-la-virgen-del-milagro/">Oración a la Virgen</a>
+      <a href="/novena-a-la-virgen-del-milagro/">Novena</a>
+      <a href="/como-rezar-el-rosario/">Cómo rezar el Rosario</a>
       <a href="/tunja/">Tunja</a>
       <a href="#chat">Chat bíblico</a>
       <a href="#oracion-dia">Oración del día</a>
@@ -1724,6 +1730,27 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   samplePromise.then(function (s) {
     sample = s;
     if (!s && !ENDPOINT) lockComposer("El chat funciona al abrir esta página desde Claude. Aquí no está disponible.");
+  });
+})();
+</script>
+<script>
+/* Compartir: promesa y oración del día */
+(function () {
+  var URL0 = "https://virgendelmilagro.co/";
+  function q(s) { return document.querySelector(s); }
+  function txt(s) { var e = q(s); return e ? e.textContent.trim() : ""; }
+  function promesa() { var t = txt("#prom-today h3"), c = txt("#prom-today .cita"); return t ? t + "\n" + c + "\n\n" + URL0 + "promesas-de-dios/" : URL0; }
+  function oracion() { var t = txt("#dia-titulo"), x = txt("#dia-texto"); if (x.length > 700) x = x.slice(0, 700).replace(/\s+\S*$/, "") + "…"; return "Oración del día · " + t + "\n\n" + x + "\n\n" + URL0 + "oracion-a-la-virgen-del-milagro/"; }
+  function wa(f) { return function () { window.open("https://wa.me/?text=" + encodeURIComponent(f()), "_blank", "noopener"); }; }
+  function fb(u) { return function () { window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(u), "_blank", "noopener"); }; }
+  function on(id, fn) { var e = document.getElementById(id); if (e) e.addEventListener("click", fn); }
+  on("prom-wa", wa(promesa)); on("dia-wa", wa(oracion));
+  on("prom-fb", fb(URL0 + "promesas-de-dios/")); on("dia-fb", fb(URL0 + "oracion-a-la-virgen-del-milagro/"));
+  on("prom-cp", function () {
+    var b = this, t = promesa();
+    function ok() { b.textContent = "Copiada"; setTimeout(function () { b.textContent = "Copiar promesa"; }, 2200); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function () { window.prompt("Copia la promesa:", t); });
+    else window.prompt("Copia la promesa:", t);
   });
 })();
 </script>
