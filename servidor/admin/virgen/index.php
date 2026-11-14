@@ -9,11 +9,15 @@ header('X-Robots-Tag: noindex, nofollow');
 if (defined('VG_DOMINIO')) {   // en virgendelmilagro.co/admin: inicio de sesión propio (solo HTTPS)
     require __DIR__ . '/../../acceso/vg_auth.php';
     vga_require();
+    $U = vga_user();
 } else {
     $b = ce_boot();
     $S = ($b === true) ? ce_session() : null;
     if (!$S || ($S['role'] ?? '') !== 'admin') { header('Location: /admin/'); exit; }
+    $U = ['email' => '', 'rol' => 'admin', 'nombre' => 'Propietario', 'owner' => true];
 }
+$ROL = $U['rol'];
+$PERM = ['admin' => '*', 'contabilidad' => ['datos', 'pago_add', 'pago_del', 'gasto_add', 'gasto_del', 'sub_del'], 'contenido' => ['datos', 'test_set', 'test_del', 'fb_set'], 'analista' => ['datos', 'visitas']];
 
 $subsF = ce_dir() . '/virgen_suscriptores.jsonl';
 $pagosF = ce_dir() . '/virgen_pagos.jsonl';
@@ -43,8 +47,38 @@ if ($act !== '') {
     $og = parse_url($_SERVER['HTTP_ORIGIN'] ?? '', PHP_URL_HOST);
     if (($_SERVER['HTTP_X_VG'] ?? '') !== '1' || ($og && $og !== preg_replace('/:\d+$/', '', $host))) vg_json(['ok' => false, 'e' => 'csrf'], 403);
     $in = json_decode(file_get_contents('php://input'), true) ?: [];
+    $perm = $PERM[$ROL] ?? [];
+    if ($perm !== '*' && !in_array($act, $perm, true)) vg_json(['ok' => false, 'r' => 'Tu rol no tiene permiso para esto.'], 403);
     if ($act === 'datos') {
-        vg_json(['ok' => true, 'subs' => vg_read($subsF), 'pagos' => vg_read($pagosF), 'tests' => vg_read($testF), 'gastos' => vg_read($gastosF), 'fb' => (object)vg_fb($fbF)]);
+        $fin = in_array($ROL, ['admin', 'contabilidad'], true); $con = in_array($ROL, ['admin', 'contenido'], true);
+        vg_json(['ok' => true, 'rol' => $ROL, 'quien' => $U['nombre'], 'subs' => $fin ? vg_read($subsF) : [], 'pagos' => $fin ? vg_read($pagosF) : [], 'tests' => $con ? vg_read($testF) : [], 'gastos' => $fin ? vg_read($gastosF) : [], 'fb' => (object)($con ? vg_fb($fbF) : [])]);
+    }
+    if (strpos($act, 'equipo_') === 0) {   // gestión del equipo: solo administrador, y solo en virgendelmilagro.co/admin
+        if ($ROL !== 'admin' || !defined('VG_DOMINIO')) vg_json(['ok' => false, 'r' => 'Solo el administrador puede gestionar el equipo (desde virgendelmilagro.co/admin).'], 403);
+        $pub = function () { return array_map(function ($u) { return ['email' => $u['email'] ?? '', 'nombre' => $u['nombre'] ?? '', 'rol' => $u['rol'] ?? 'analista', 'activo' => !empty($u['activo']), 'dos' => !empty($u['totp']), 'ts' => $u['ts'] ?? '']; }, vga_team()); };
+        $em = strtolower(trim((string)($in['email'] ?? '')));
+        if ($act === 'equipo_list') vg_json(['ok' => true, 'equipo' => $pub(), 'roles' => VGA_ROLES]);
+        $T = vga_team(); $idx = null; foreach ($T as $k => $u) if (strtolower((string)($u['email'] ?? '')) === $em) $idx = $k;
+        $pw = (string)($in['pw'] ?? '');
+        if ($act === 'equipo_add') {
+            $own = (string)(vga_rd('virgen_admin.json')['email'] ?? '');
+            if (!filter_var($em, FILTER_VALIDATE_EMAIL)) vg_json(['ok' => false, 'r' => 'Escribe un correo válido.'], 400);
+            if ($idx !== null || ($own !== '' && hash_equals($own, $em))) vg_json(['ok' => false, 'r' => 'Ese correo ya tiene acceso.'], 400);
+            if (!isset(VGA_ROLES[$in['rol'] ?? ''])) vg_json(['ok' => false, 'r' => 'Elige una función.'], 400);
+            if (mb_strlen($pw) < 10) vg_json(['ok' => false, 'r' => 'La contraseña inicial debe tener al menos 10 caracteres.'], 400);
+            $T[] = ['email' => $em, 'nombre' => mb_substr(strip_tags((string)($in['nombre'] ?? '')), 0, 60) ?: $em, 'rol' => $in['rol'], 'activo' => true, 'hash' => password_hash($pw, PASSWORD_DEFAULT), 'ts' => date('c')];
+            vga_team_save($T); vg_json(['ok' => true, 'equipo' => $pub()]);
+        }
+        if ($idx === null) vg_json(['ok' => false, 'r' => 'No existe ese integrante.'], 404);
+        if ($act === 'equipo_set') {
+            if (isset($in['rol'])) { if (!isset(VGA_ROLES[$in['rol']])) vg_json(['ok' => false, 'r' => 'Función no válida.'], 400); $T[$idx]['rol'] = $in['rol']; }
+            if (isset($in['activo'])) $T[$idx]['activo'] = (bool)$in['activo'];
+            if ($pw !== '') { if (mb_strlen($pw) < 10) vg_json(['ok' => false, 'r' => 'La contraseña debe tener al menos 10 caracteres.'], 400); $T[$idx]['hash'] = password_hash($pw, PASSWORD_DEFAULT); }
+            if (!empty($in['reset2fa'])) { unset($T[$idx]['totp'], $T[$idx]['pend'], $T[$idx]['rec'], $T[$idx]['last']); }
+            vga_team_save($T); vg_json(['ok' => true, 'equipo' => $pub()]);
+        }
+        if ($act === 'equipo_del') { array_splice($T, $idx, 1); vga_team_save($T); vg_json(['ok' => true, 'equipo' => $pub()]); }
+        vg_json(['ok' => false, 'r' => 'Acción desconocida.'], 400);
     }
     if ($act === 'visitas') {   // registros de visitas de los últimos 90 días (los agrega el navegador)
         $vf = ce_dir() . '/virgen_visitas.jsonl'; $out = []; $min = time() - 90 * 86400;
@@ -174,7 +208,7 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
 <script>
 (function () {
   "use strict";
-  var VG = window.VG, D = { subs: [], pagos: [], gastos: [], tests: [], fb: {} }, tab = "visitas";
+  var VG = window.VG, D = { subs: [], pagos: [], gastos: [], tests: [], fb: {}, rol: "admin", quien: "" }, tab = "visitas";
   function $(id) { return document.getElementById(id); }
   function el(t, c, x) { var n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; }
   function money(n) { return "$" + Number(n || 0).toLocaleString("es-CO"); }
@@ -182,13 +216,16 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
     return fetch("?a=" + a, { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-VG": "1" }, body: JSON.stringify(body || {}) })
       .then(function (r) { return r.json(); });
   }
-  function load() { return api("datos").then(function (d) { if (d.ok) { D.subs = d.subs; D.pagos = d.pagos; D.tests = d.tests || []; D.gastos = d.gastos || []; D.fb = d.fb || {}; } render(); }); }
+  function load() { return api("datos").then(function (d) { if (d.ok) { D.rol = d.rol || "admin"; D.quien = d.quien || ""; var ok = tabsOk(); if (!ok.some(function (t) { return t[0] === tab; })) tab = ok[0][0]; D.subs = d.subs; D.pagos = d.pagos; D.tests = d.tests || []; D.gastos = d.gastos || []; D.fb = d.fb || {}; } render(); }); }
   var TABS = [["visitas", "Visitas"], ["resumen", "Resumen"], ["usuarios", "Suscriptores"], ["pagos", "Pagos"], ["conta", "Contabilidad"], ["publicidad", "Publicidad"], ["testimonios", "Testimonios"], ["facebook", "Facebook"]];
+  var ROLTABS = { admin: null, contabilidad: ["usuarios", "pagos", "conta", "resumen"], contenido: ["publicidad", "testimonios", "facebook"], analista: ["visitas"] };
+  var ROLNOM = { admin: "Administrador", contabilidad: "Contabilidad", contenido: "Contenido y redes", analista: "Analista de visitas" };
+  function tabsOk() { var r = ROLTABS[D.rol]; var l = TABS.filter(function (t) { return !r || r.indexOf(t[0]) >= 0; }); if (D.rol === "admin") l = l.concat([["equipo", "Equipo"]]); return l; }
   function drawTabs() {
     var n = $("tabs"); n.textContent = "";
-    TABS.forEach(function (t) { var b = el("button", t[0] === tab ? "on" : "", t[1]); b.onclick = function () { tab = t[0]; render(); }; n.appendChild(b); });
+    tabsOk().forEach(function (t) { var b = el("button", t[0] === tab ? "on" : "", t[1]); b.onclick = function () { tab = t[0]; render(); }; n.appendChild(b); });
   }
-  function render() { drawTabs(); var m = $("main"); m.textContent = ""; ({ resumen: vResumen, usuarios: vUsuarios, pagos: vPagos, conta: vConta, publicidad: vPub, testimonios: vTest, facebook: vFb, visitas: vVis })[tab](m); }
+  function render() { drawTabs(); var m = $("main"); m.textContent = ""; ({ resumen: vResumen, usuarios: vUsuarios, pagos: vPagos, conta: vConta, publicidad: vPub, testimonios: vTest, facebook: vFb, visitas: vVis, equipo: vEquipo })[tab](m); if (D.quien && !$("quien")) { var q = el("span", "muted", D.quien + " · " + (ROLNOM[D.rol] || "")); q.id = "quien"; q.style.cssText = "display:block;text-align:right;font-size:13px;margin:-6px 0 6px"; m.insertBefore(q, m.firstChild); } }
 
 
   /* ---------- Visitas (solo cuentan quienes aceptaron las cookies) ---------- */
@@ -772,6 +809,37 @@ var prevN = visRango < 90 ? VIS.filter(function (r) { return (r.ev || "visita") 
       card.appendChild(tabs); card.appendChild(ta); card.appendChild(cp); show(); grid.appendChild(card);
     });
     m.appendChild(grid);
+  }
+  /* ---------- Equipo: crear usuarios según su función ---------- */
+  var EQ = null, DESC = { admin: "Ve y hace todo, incluido crear usuarios.", contabilidad: "Suscriptores, Pagos, Contabilidad y Resumen.", contenido: "Publicidad, Testimonios y Facebook.", analista: "Solo ve las Visitas." };
+  function genPw() { var a = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789", o = "", r = new Uint32Array(14); crypto.getRandomValues(r); for (var i = 0; i < 14; i++) o += a[r[i] % a.length]; return o; }
+  function vEquipo(m) {
+    m.appendChild(el("h2", null, "Equipo y funciones"));
+    m.appendChild(el("p", "muted", "Crea un usuario para cada persona y elige su función: solo verá las pestañas de esa función. Cada persona entra con su correo y contraseña (o con su cuenta de Google si ese correo es de Google), y activa su verificación en dos pasos la primera vez. Tú, como propietario, siempre tienes acceso total."));
+    if (!EQ) { api("equipo_list").then(function (d) { EQ = d.ok ? d : { equipo: [], roles: {} }; if (!d.ok) m.appendChild(el("p", "muted", d.r || "")); if (tab === "equipo") render(); }); m.appendChild(el("p", "muted", "Cargando…")); return; }
+    var box = el("div", "bar"); box.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;align-items:end;margin:10px 0";
+    function campo(lbl, node) { var w = el("label"); w.style.cssText = "display:block;font-size:13px;font-weight:600"; w.appendChild(document.createTextNode(lbl)); node.style.cssText = "display:block;width:100%;box-sizing:border-box;margin-top:3px;min-height:40px"; w.appendChild(node); return w; }
+    var nom = el("input"), cor = el("input"), rol = el("select"), pw = el("input"); cor.type = "email"; pw.type = "text"; pw.value = genPw(); pw.style.fontFamily = "monospace";
+    Object.keys(ROLNOM).forEach(function (k) { var o = el("option", null, ROLNOM[k] + " — " + DESC[k]); o.value = k; if (k === "analista") o.selected = true; rol.appendChild(o); });
+    box.appendChild(campo("Nombre", nom)); box.appendChild(campo("Correo", cor)); box.appendChild(campo("Función", rol)); box.appendChild(campo("Contraseña inicial", pw));
+    var add = el("button", "b", "Crear usuario"), msg = el("p", "muted"); box.appendChild(add); m.appendChild(box); m.appendChild(msg);
+    add.onclick = function () { api("equipo_add", { nombre: nom.value, email: cor.value, rol: rol.value, pw: pw.value }).then(function (d) { if (d.ok) { var c = cor.value, p = pw.value; EQ.equipo = d.equipo; render(); var mm = $("main").querySelector("p.eqok"); if (mm) mm.textContent = "Usuario creado. Entrégale a " + c + " esta contraseña por un medio privado: " + p; } else msg.textContent = d.r || "No se pudo crear."; }); };
+    var ok = el("p", "muted eqok"); ok.style.cssText = "font-weight:600;color:var(--navy)"; m.appendChild(ok);
+    var tb = el("table"), th = el("tr"); ["Persona", "Función", "2 pasos", "Estado", ""].forEach(function (h) { th.appendChild(el("th", null, h)); }); tb.appendChild(th);
+    var ro = el("tr"); ro.appendChild(el("td", null, "Tú (propietario)")); ro.appendChild(el("td", null, "Administrador")); ro.appendChild(el("td", null, "Sí")); ro.appendChild(el("td", null, "Activo")); ro.appendChild(el("td")); tb.appendChild(ro);
+    EQ.equipo.forEach(function (u) {
+      var tr = el("tr"), c1 = el("td"); c1.appendChild(el("b", null, u.nombre)); c1.appendChild(el("br")); c1.appendChild(el("span", "muted", u.email)); tr.appendChild(c1);
+      var c2 = el("td"), sel = el("select"); Object.keys(ROLNOM).forEach(function (k) { var o = el("option", null, ROLNOM[k]); o.value = k; if (k === u.rol) o.selected = true; sel.appendChild(o); });
+      sel.onchange = function () { api("equipo_set", { email: u.email, rol: sel.value }).then(function (d) { if (d.ok) { EQ.equipo = d.equipo; render(); } }); }; c2.appendChild(sel); tr.appendChild(c2);
+      tr.appendChild(el("td", null, u.dos ? "Sí" : "Pendiente")); tr.appendChild(el("td", null, u.activo ? "Activo" : "Desactivado"));
+      var c5 = el("td"); function bt(t, f, danger) { var b = el("button", "g", t); b.style.cssText = "margin:2px"; if (danger) b.dataset.d = "1"; b.onclick = function () { f(b); }; c5.appendChild(b); return b; }
+      bt(u.activo ? "Desactivar" : "Activar", function () { api("equipo_set", { email: u.email, activo: !u.activo }).then(function (d) { if (d.ok) { EQ.equipo = d.equipo; render(); } }); });
+      bt("Nueva contraseña", function () { var n = genPw(); api("equipo_set", { email: u.email, pw: n }).then(function (d) { if (d.ok) { EQ.equipo = d.equipo; render(); var mm = $("main").querySelector("p.eqok"); if (mm) mm.textContent = "Nueva contraseña de " + u.email + " (entrégala en privado): " + n; } else alert(d.r); }); });
+      bt("Reiniciar 2 pasos", function (b) { if (b.dataset.s) { api("equipo_set", { email: u.email, reset2fa: true }).then(function (d) { if (d.ok) { EQ.equipo = d.equipo; render(); } }); } else { b.dataset.s = 1; b.textContent = "¿Seguro? Toca de nuevo"; } });
+      bt("Eliminar", function (b) { if (b.dataset.s) { api("equipo_del", { email: u.email }).then(function (d) { if (d.ok) { EQ.equipo = d.equipo; render(); } }); } else { b.dataset.s = 1; b.textContent = "¿Seguro? Toca de nuevo"; } });
+      tr.appendChild(c5); tb.appendChild(tr);
+    });
+    var w = el("div"); w.style.overflowX = "auto"; w.appendChild(tb); m.appendChild(w);
   }
   load();
 })();

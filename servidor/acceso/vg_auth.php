@@ -15,6 +15,19 @@ function vga_gverify($cred, $cid) {   // valida el token de Google con Google y 
     return strtolower((string)($j['email'] ?? ''));
 }
 
+const VGA_ROLES = ['admin' => 'Administrador (todo)', 'contabilidad' => 'Contabilidad y pagos', 'contenido' => 'Contenido y redes', 'analista' => 'Analista de visitas'];
+function vga_team() { return array_values(array_filter(vga_rd('virgen_equipo.json'), 'is_array')); }
+function vga_team_save($t) { vga_wr('virgen_equipo.json', array_values($t)); }
+function vga_team_find($e) { foreach (vga_team() as $u) if (strtolower((string)($u['email'] ?? '')) === $e && !empty($u['activo'])) return $u; return null; }
+function vga_rec_load($e) {   // registro de acceso (clave, 2 pasos) del propietario o de un integrante del equipo
+    $c = vga_rd('virgen_admin.json'); if (!empty($c['email']) && hash_equals((string)$c['email'], $e)) return [$c, true];
+    return [vga_team_find($e) ?: [], false];
+}
+function vga_rec_save($e, $rec, $owner) {
+    if ($owner) { vga_wr('virgen_admin.json', $rec); return; }
+    $t = vga_team(); foreach ($t as $k => $u) if (strtolower((string)($u['email'] ?? '')) === $e) $t[$k] = $rec; vga_team_save($t);
+}
+function vga_user() { return $GLOBALS['vga_user'] ?? ['email' => '', 'rol' => 'admin', 'nombre' => 'Propietario', 'owner' => true]; }
 function vga_https() { return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https'; }
 function vga_f($n) { return ce_dir() . '/' . $n; }
 function vga_rd($n) { $d = is_file(vga_f($n)) ? json_decode((string)file_get_contents(vga_f($n)), true) : null; return is_array($d) ? $d : []; }
@@ -46,6 +59,9 @@ function vga_session_ok() {
     $S = vga_rd('virgen_admin_sessions.json'); $h = hash('sha256', $t); $now = time();
     foreach ($S as $k => $s) if (($s['exp'] ?? 0) < $now || ($s['last'] ?? 0) < $now - 3600) unset($S[$k]);
     if (!isset($S[$h])) { vga_wr('virgen_admin_sessions.json', $S); return false; }
+    $e = (string)($S[$h]['e'] ?? ''); $c = vga_rd('virgen_admin.json');
+    if ($e === '' || hash_equals((string)($c['email'] ?? ''), $e)) $GLOBALS['vga_user'] = ['email' => $e, 'rol' => 'admin', 'nombre' => 'Propietario', 'owner' => true];
+    else { $u = vga_team_find($e); if (!$u) return false; $GLOBALS['vga_user'] = ['email' => $e, 'rol' => isset(VGA_ROLES[$u['rol'] ?? '']) ? $u['rol'] : 'analista', 'nombre' => (string)($u['nombre'] ?? $e), 'owner' => false]; }
     $S[$h]['last'] = $now; vga_wr('virgen_admin_sessions.json', $S); return true;
 }
 function vga_cookie($val, $exp) { setcookie(VGA_COOKIE, $val, ['expires' => $exp, 'path' => '/', 'secure' => true, 'httponly' => true, 'samesite' => 'Strict']); }
@@ -78,8 +94,9 @@ function vga_require() {
         if ($post && isset($_POST['gcred']) && vga_gclient()) {
             if (!vga_limit(false)) vga_page('Demasiados intentos', 'Espera 15 minutos e inténtalo de nuevo.', 429);
             $ge = vga_gverify((string)$_POST['gcred'], vga_gclient());
-            if ($ge && !empty($cfg['email']) && hash_equals((string)$cfg['email'], $ge)) { vga_pre_new(); header('Location: ./'); exit; }
-            vga_fail(); $msg = $cfg['email'] ?? '' ? 'Esa cuenta de Google no está autorizada.' : 'Primero ingresa una vez con correo y contraseña para ligar tu correo.';
+            if ($ge && !empty($cfg['email']) && hash_equals((string)$cfg['email'], $ge)) { vga_pre_new($ge); header('Location: ./'); exit; }
+            if ($ge && vga_team_find($ge)) { vga_pre_new($ge); header('Location: ./'); exit; }
+            vga_fail(); $msg = ($cfg['email'] ?? '') ? 'Esa cuenta de Google no está autorizada.' : 'Primero ingresa una vez con correo y contraseña para ligar tu correo.';
         }
         if ($post && isset($_POST['pw'])) {
             if (!vga_limit(false)) vga_page('Demasiados intentos', 'Espera 15 minutos e inténtalo de nuevo.', 429);
@@ -87,9 +104,10 @@ function vga_require() {
             $okPw = password_verify((string)$_POST['pw'], (string)($cfg['hash'] ?? ''));
             if (!filter_var($em, FILTER_VALIDATE_EMAIL)) { $msg = 'Escribe un correo válido.'; }
             elseif ($okPw && empty($cfg['email'])) {   // primer ingreso con correo: queda ligado a esta cuenta
-                $cfg['email'] = $em; vga_wr('virgen_admin.json', $cfg); vga_pre_new(); header('Location: ./'); exit;
+                $cfg['email'] = $em; vga_wr('virgen_admin.json', $cfg); vga_pre_new($em); header('Location: ./'); exit;
             }
-            elseif ($okPw && hash_equals((string)$cfg['email'], $em)) { vga_pre_new(); header('Location: ./'); exit; }
+            elseif ($okPw && hash_equals((string)$cfg['email'], $em)) { vga_pre_new($em); header('Location: ./'); exit; }
+            elseif (($tu = vga_team_find($em)) && !empty($tu['hash']) && password_verify((string)$_POST['pw'], (string)$tu['hash'])) { vga_pre_new($em); header('Location: ./'); exit; }
             else { vga_fail(); usleep(600000); $msg = 'Correo o contraseña incorrectos.'; }
         }
         $primera = empty($cfg['email']);
@@ -98,23 +116,24 @@ function vga_require() {
             . vga_form(vga_input('correo', 'Correo electrónico', 'email') . vga_input('pw', 'Contraseña'), 'Continuar')
             . (vga_gclient() ? '<div style="text-align:center;margin:16px 0 4px;font-size:14px;color:#666">o</div><div id="g_id_onload" data-client_id="' . vga_h(vga_gclient()) . '" data-callback="vgaG" data-auto_prompt="false"></div><div class="g_id_signin" data-type="standard" data-size="large" data-text="signin_with" data-locale="es" style="display:flex;justify-content:center"></div><form id="gf" method="post" style="display:none"><input name="gcred" id="gcred"></form><script src="https://accounts.google.com/gsi/client" async defer></script><script>function vgaG(r){document.getElementById("gcred").value=r.credential;document.getElementById("gf").submit();}</script>' : ''));
     }
-    // Paso 2: verificación en dos pasos
-    $msg = '';
+    // Paso 2: verificación en dos pasos (del propietario o del integrante que ya puso su clave)
+    $who = vga_pre(); [$cfg, $isOwner] = vga_rec_load($who); $GLOBALS['vga_rs'] = [$who, $isOwner]; $msg = '';
+    if (!$cfg) { setcookie('vgpre', '', ['expires' => time() - 3600, 'path' => '/', 'secure' => true, 'httponly' => true, 'samesite' => 'Strict']); header('Location: ./'); exit; }
     if (empty($cfg['totp'])) {   // aún no activada: mostrar clave y confirmar un código
         $sec = $cfg['pend'] ?? null;
-        if (!$sec) { $sec = vga_b32(random_bytes(20)); $cfg['pend'] = $sec; vga_wr('virgen_admin.json', $cfg); }
+        if (!$sec) { $sec = vga_b32(random_bytes(20)); $cfg['pend'] = $sec; vga_rec_save($who, $cfg, $isOwner); }
         if ($post && isset($_POST['c'])) {
             if (!vga_limit(false)) vga_page('Demasiados intentos', 'Espera 15 minutos e inténtalo de nuevo.', 429);
             if (vga_totp_check($sec, (string)$_POST['c'], $cfg)) {
                 $rec = []; $plain = [];
                 for ($k = 0; $k < 8; $k++) { $c = strtoupper(bin2hex(random_bytes(4))); $plain[] = substr($c, 0, 4) . '-' . substr($c, 4); $rec[] = hash('sha256', $c); }
-                $cfg['totp'] = $sec; unset($cfg['pend']); $cfg['rec'] = $rec; vga_wr('virgen_admin.json', $cfg);
-                vga_login();
+                $cfg['totp'] = $sec; unset($cfg['pend']); $cfg['rec'] = $rec; vga_rec_save($who, $cfg, $isOwner);
+                vga_login($who);
                 vga_page('Guarda tus códigos de respaldo', '<p style="margin:0 0 8px">Si pierdes tu celular, cada uno de estos códigos sirve <b>una sola vez</b> para entrar. Anótalos en un lugar seguro: <b>no se volverán a mostrar</b>.</p><pre style="background:#FBF4E4;border-radius:10px;padding:12px;font-size:18px;line-height:1.7;margin:0 0 6px">' . implode("\n", $plain) . '</pre><a href="./" style="display:block;text-align:center;min-height:48px;line-height:48px;margin-top:10px;background:#14304F;color:#fff;border-radius:999px;font-weight:bold;text-decoration:none">Ya los guardé, entrar al panel</a>');
             }
             vga_fail(); $msg = 'Ese código no es correcto. Revisa que la hora del celular sea automática.';
         }
-        $uri = 'otpauth://totp/Virgen%20del%20Milagro:admin?secret=' . $sec . '&issuer=Virgen%20del%20Milagro&digits=6&period=30';
+        $uri = 'otpauth://totp/Virgen%20del%20Milagro:' . rawurlencode($who) . '?secret=' . $sec . '&issuer=Virgen%20del%20Milagro&digits=6&period=30';
         vga_page('Activa la verificación en dos pasos', ($msg ? '<p style="color:#9B2C2C;margin:0 0 6px"><b>' . vga_h($msg) . '</b></p>' : '')
             . '<p style="margin:0 0 8px">1. Abre <b>Google Authenticator</b> (o Authy, Microsoft Authenticator) en tu celular.<br>2. Toca <b>+ → Ingresar clave de configuración</b>.<br>3. Nombre: <i>Virgen del Milagro</i>. Clave:</p>'
             . '<p style="font-family:monospace;font-size:18px;word-break:break-all;background:#FBF4E4;border-radius:10px;padding:10px;margin:0 0 8px;user-select:all">' . implode(' ', str_split($sec, 4)) . '</p>'
@@ -124,9 +143,9 @@ function vga_require() {
     if ($post && isset($_POST['c'])) {
         if (!vga_limit(false)) vga_page('Demasiados intentos', 'Espera 15 minutos e inténtalo de nuevo.', 429);
         $in = (string)$_POST['c'];
-        if (vga_totp_check($cfg['totp'], $in, $cfg)) { vga_login(); header('Location: ./'); exit; }
+        if (vga_totp_check($cfg['totp'], $in, $cfg)) { vga_login($who); header('Location: ./'); exit; }
         $norm = strtoupper(preg_replace('/[^0-9A-Fa-f]/', '', $in)); $h = hash('sha256', $norm);
-        if (strlen($norm) === 8 && !empty($cfg['rec']) && ($k = array_search($h, $cfg['rec'], true)) !== false) { unset($cfg['rec'][$k]); $cfg['rec'] = array_values($cfg['rec']); vga_wr('virgen_admin.json', $cfg); vga_login(); header('Location: ./'); exit; }
+        if (strlen($norm) === 8 && !empty($cfg['rec']) && ($k = array_search($h, $cfg['rec'], true)) !== false) { unset($cfg['rec'][$k]); $cfg['rec'] = array_values($cfg['rec']); vga_rec_save($who, $cfg, $isOwner); vga_login($who); header('Location: ./'); exit; }
         vga_fail(); usleep(600000); $msg = 'Código incorrecto.';
     }
     vga_page('Verificación en dos pasos', ($msg ? '<p style="color:#9B2C2C;margin:0 0 6px"><b>' . vga_h($msg) . '</b></p>' : '<p style="margin:0 0 4px">Escribe el código de 6 dígitos de tu app de autenticación (o un código de respaldo).</p>') . vga_form(vga_input('c', 'Código', 'text'), 'Entrar'));
@@ -143,23 +162,24 @@ function vga_totp_check($sec, $code, &$cfg) {
         $c = $now + $d;
         if (hash_equals(vga_totp_at($sec, $c), $code)) {
             if ((int)($cfg['last'] ?? 0) >= $c) return false;   // no se puede reutilizar el mismo código
-            $cfg['last'] = $c; vga_wr('virgen_admin.json', $cfg); return true;
+            $cfg['last'] = $c; [$w, $o] = $GLOBALS['vga_rs'] ?? ['', true]; if ($w === '') vga_wr('virgen_admin.json', $cfg); else vga_rec_save($w, $cfg, $o); return true;
         }
     }
     return false;
 }
-function vga_pre() {   // contraseña ya verificada (10 min)
+function vga_pre() {   // contraseña ya verificada (10 min): devuelve el correo de quien entra, o false
     $t = $_COOKIE['vgpre'] ?? ''; if (!preg_match('/^[0-9a-f]{64}$/', $t)) return false;
     $P = vga_rd('virgen_admin_pre.json'); $h = hash('sha256', $t); $now = time();
-    foreach ($P as $k => $e) if ($e < $now) unset($P[$k]);
-    vga_wr('virgen_admin_pre.json', $P); return isset($P[$h]);
+    foreach ($P as $k => $e) if ((is_array($e) ? ($e['x'] ?? 0) : $e) < $now) unset($P[$k]);
+    vga_wr('virgen_admin_pre.json', $P); if (!isset($P[$h])) return false;
+    $e = $P[$h]; $r = is_array($e) ? (string)($e['e'] ?? '') : (string)(vga_rd('virgen_admin.json')['email'] ?? ''); return $r !== '' ? $r : false;
 }
-function vga_pre_new() {
-    $t = bin2hex(random_bytes(32)); $P = vga_rd('virgen_admin_pre.json'); $P[hash('sha256', $t)] = time() + 600; vga_wr('virgen_admin_pre.json', $P);
+function vga_pre_new($email) {
+    $t = bin2hex(random_bytes(32)); $P = vga_rd('virgen_admin_pre.json'); $P[hash('sha256', $t)] = ['x' => time() + 600, 'e' => strtolower($email)]; vga_wr('virgen_admin_pre.json', $P);
     setcookie('vgpre', $t, ['expires' => time() + 600, 'path' => '/', 'secure' => true, 'httponly' => true, 'samesite' => 'Strict']);
 }
-function vga_login() {
+function vga_login($email = '') {
     $tok = bin2hex(random_bytes(32)); $S = vga_rd('virgen_admin_sessions.json'); $now = time();
-    $S[hash('sha256', $tok)] = ['exp' => $now + 8 * 3600, 'last' => $now]; vga_wr('virgen_admin_sessions.json', $S); vga_cookie($tok, $now + 8 * 3600);
+    $S[hash('sha256', $tok)] = ['exp' => $now + 8 * 3600, 'last' => $now, 'e' => strtolower($email)]; vga_wr('virgen_admin_sessions.json', $S); vga_cookie($tok, $now + 8 * 3600);
     $t = $_COOKIE['vgpre'] ?? ''; if ($t) { $P = vga_rd('virgen_admin_pre.json'); unset($P[hash('sha256', $t)]); vga_wr('virgen_admin_pre.json', $P); setcookie('vgpre', '', ['expires' => time() - 3600, 'path' => '/', 'secure' => true, 'httponly' => true, 'samesite' => 'Strict']); }
 }
