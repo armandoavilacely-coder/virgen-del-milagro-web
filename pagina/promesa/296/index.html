@@ -593,6 +593,12 @@ a:focus-visible, button:focus-visible { outline: 3px solid #B8841F; outline-offs
 .prom-cta + .prom-cta { margin-top: 6px !important; }
 #ck .row { gap: 12px; }
 .btn:focus-visible, .chip:focus-visible, .share a:focus-visible, .share button:focus-visible { outline: 3px solid #F5CF63; outline-offset: 3px; }
+/* Chat: cabecera compacta para dar más espacio al mensaje */
+.chat-head{flex-wrap:nowrap;align-items:center;gap:8px;padding:8px 14px}
+.ver{flex-direction:row;align-items:center;gap:8px;flex:1 1 auto}
+.ver label{display:none}
+.ver select,.chat-head .ver select{flex:1 1 auto;min-width:0;font-size:14px;min-height:36px;padding:4px 8px;border-radius:10px}
+.chat-head .ghost{min-height:36px;padding:4px 12px;font-size:13px;flex:0 0 auto;white-space:nowrap}
 
 .devby { margin: 14px 0 0; flex-basis: 100%; text-align: center; font-size: 13px; opacity: .8; } .devby a { color: inherit; text-decoration: underline; }
 .prom-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 760px; margin: 0 auto 18px; padding: 0; }
