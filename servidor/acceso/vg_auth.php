@@ -20,10 +20,10 @@ function vga_page($titulo, $cuerpo, $code = 200) {
     exit;
 }
 function vga_form($extra, $btn) {
-    return '<form method="post" autocomplete="off">' . $extra . '<button style="width:100%;min-height:48px;margin-top:14px;background:#14304F;color:#fff;border:0;border-radius:999px;font-size:16px;font-weight:bold;cursor:pointer">' . $btn . '</button></form>';
+    return '<form method="post">' . $extra . '<button style="width:100%;min-height:48px;margin-top:14px;background:#14304F;color:#fff;border:0;border-radius:999px;font-size:16px;font-weight:bold;cursor:pointer">' . $btn . '</button></form>';
 }
 function vga_input($name, $label, $type = 'password') {
-    return '<label style="display:block;margin-top:10px;font-size:14px;font-weight:bold">' . $label . '<input name="' . $name . '" type="' . $type . '" required style="display:block;width:100%;box-sizing:border-box;min-height:48px;margin-top:4px;padding:0 12px;border:1px solid #C9B27A;border-radius:10px;font:inherit;font-size:16px"></label>';
+    return '<label style="display:block;margin-top:10px;font-size:14px;font-weight:bold">' . $label . '<input name="' . $name . '" type="' . $type . '"' . ($name === 'correo' ? ' autocomplete="username"' : ($name === 'pw' ? ' autocomplete="current-password"' : ($name === 'p1' || $name === 'p2' ? ' autocomplete="new-password"' : ''))) . ' required style="display:block;width:100%;box-sizing:border-box;min-height:48px;margin-top:4px;padding:0 12px;border:1px solid #C9B27A;border-radius:10px;font:inherit;font-size:16px"></label>';
 }
 function vga_limit($ok) {   // devuelve false si hay demasiados fallos recientes de esta IP
     $st = vga_rd('virgen_admin_rate.json'); $now = time(); $ip = hash('sha256', ce_ip());
@@ -64,15 +64,24 @@ function vga_require() {
         vga_page('Crear contraseña del panel', ($msg ? '<p style="color:#9B2C2C;margin:0 0 6px"><b>' . vga_h($msg) . '</b></p>' : '<p style="margin:0 0 4px">Escribe el código de instalación y elige tu contraseña. Solo tú debes conocerla. Después activarás la verificación en dos pasos.</p>')
             . vga_form(vga_input('codigo', 'Código de instalación', 'text') . vga_input('p1', 'Nueva contraseña (mínimo 12 caracteres)') . vga_input('p2', 'Repite la contraseña'), 'Crear contraseña'));
     }
-    // Paso 1: contraseña -> "pre-sesión" de 10 minutos
+    // Paso 1: correo + contraseña -> "pre-sesión" de 10 minutos
     if (!vga_pre()) {
         $msg = '';
         if ($post && isset($_POST['pw'])) {
             if (!vga_limit(false)) vga_page('Demasiados intentos', 'Espera 15 minutos e inténtalo de nuevo.', 429);
-            if (password_verify((string)$_POST['pw'], (string)($cfg['hash'] ?? ''))) { vga_pre_new(); header('Location: ./'); exit; }
-            vga_fail(); usleep(600000); $msg = 'Contraseña incorrecta.';
+            $em = strtolower(trim((string)($_POST['correo'] ?? '')));
+            $okPw = password_verify((string)$_POST['pw'], (string)($cfg['hash'] ?? ''));
+            if (!filter_var($em, FILTER_VALIDATE_EMAIL)) { $msg = 'Escribe un correo válido.'; }
+            elseif ($okPw && empty($cfg['email'])) {   // primer ingreso con correo: queda ligado a esta cuenta
+                $cfg['email'] = $em; vga_wr('virgen_admin.json', $cfg); vga_pre_new(); header('Location: ./'); exit;
+            }
+            elseif ($okPw && hash_equals((string)$cfg['email'], $em)) { vga_pre_new(); header('Location: ./'); exit; }
+            else { vga_fail(); usleep(600000); $msg = 'Correo o contraseña incorrectos.'; }
         }
-        vga_page('Administración', ($msg ? '<p style="color:#9B2C2C;margin:0 0 6px"><b>' . vga_h($msg) . '</b></p>' : '') . vga_form(vga_input('pw', 'Contraseña'), 'Continuar'));
+        $primera = empty($cfg['email']);
+        vga_page('Administración', ($msg ? '<p style="color:#9B2C2C;margin:0 0 6px"><b>' . vga_h($msg) . '</b></p>' : '')
+            . ($primera ? '<p style="margin:0 0 4px;font-size:14px">Primer ingreso con correo: el que escribas ahora quedará como el correo de acceso del panel.</p>' : '')
+            . vga_form(vga_input('correo', 'Correo electrónico', 'email') . vga_input('pw', 'Contraseña'), 'Continuar'));
     }
     // Paso 2: verificación en dos pasos
     $msg = '';
