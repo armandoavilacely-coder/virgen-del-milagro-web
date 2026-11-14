@@ -6,7 +6,7 @@
 require_once __DIR__ . '/lib.php';
 const VGA_SETUP_HASH = 'a4c5005727e30b7d502b2195f176036e264b8e4cf640a9aecebd3c6a23ba0b1b';
 const VGA_COOKIE = 'vgadm';
-const VGA_GOOGLE_CLIENT = '';   // ID de cliente de Google (público), p. ej. 123-abc.apps.googleusercontent.com
+const VGA_GOOGLE_CLIENT = '12305555740-s3rchotukqmdui6hrmd5mpf5cqqoup35.apps.googleusercontent.com';   // ID de cliente de Google (público), p. ej. 123-abc.apps.googleusercontent.com
 function vga_gclient() { $f = ce_dir() . '/virgen_google_client.txt'; $c = VGA_GOOGLE_CLIENT ?: (is_file($f) ? trim((string)file_get_contents($f)) : ''); return preg_match('/^[0-9A-Za-z._-]+\.apps\.googleusercontent\.com$/', $c) ? $c : ''; }
 function vga_gverify($cred, $cid) {   // valida el token de Google con Google y devuelve el correo verificado
     $ch = curl_init('https://oauth2.googleapis.com/tokeninfo?id_token=' . rawurlencode($cred)); curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 8]);
