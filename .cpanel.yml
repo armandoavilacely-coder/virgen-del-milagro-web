@@ -38,6 +38,8 @@ deployment:
     - /bin/mkdir -p $H/virgendelmilagro.co/politica-de-datos
     - /bin/cp -f pagina/politica-de-datos/index.html $H/virgendelmilagro.co/politica-de-datos/index.html
     - /bin/cp -f pagina/og-virgen.jpg $H/virgendelmilagro.co/og-virgen.jpg
+    - /bin/mkdir -p $H/virgendelmilagro.co/oracion
+    - /bin/cp -rf pagina/oracion/. $H/virgendelmilagro.co/oracion/
     - /bin/mkdir -p $H/virgendelmilagro.co/promesa
     - /bin/cp -rf pagina/promesa/. $H/virgendelmilagro.co/promesa/
     - /bin/mkdir -p $H/virgendelmilagro.co/promesas-de-dios

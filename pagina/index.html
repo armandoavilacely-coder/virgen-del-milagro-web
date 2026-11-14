@@ -686,6 +686,8 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
           <button class="btn" id="dia-copy" type="button">Copiar oración</button>
           <button class="btn alt" id="dia-wa" type="button">Compartir por WhatsApp</button>
           <button class="btn alt" id="dia-fb" type="button">Facebook</button>
+          <button class="btn alt" id="dia-tg" type="button">Telegram</button>
+          <button class="btn alt" id="dia-more" type="button" hidden>Otras apps</button>
         </div>
         <p class="fine" id="dia-msg" role="status"></p>
       </div>
@@ -729,7 +731,7 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
     </div>
     <div class="prom-today" id="prom-today" aria-live="off"></div>
     <div class="cta-row prom-cta"><button class="btn" id="prom-random" type="button">Barajar y ver otra promesa</button></div>
-    <div class="cta-row prom-cta" style="margin-top:10px"><button class="btn alt" id="prom-wa" type="button">Compartir por WhatsApp</button><button class="btn alt" id="prom-fb" type="button">Facebook</button><button class="btn alt" id="prom-cp" type="button">Copiar promesa</button></div>
+    <div class="cta-row prom-cta" style="margin-top:10px"><button class="btn alt" id="prom-wa" type="button">Compartir por WhatsApp</button><button class="btn alt" id="prom-fb" type="button">Facebook</button><button class="btn alt" id="prom-tg" type="button">Telegram</button><button class="btn alt" id="prom-more" type="button" hidden>Otras apps</button><button class="btn alt" id="prom-cp" type="button">Copiar promesa</button></div>
     <p class="sources">Versículos tal como aparecen en la Biblia Reina-Valera 1909 (dominio público). Las reflexiones son nuestras. Lee cada pasaje completo en tu Biblia.</p>
   </div>
 </section>
@@ -1590,7 +1592,7 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   var PLANMAP = {};
   PLAN.forEach(function (x, i) {
     var o = typeof x[1] === "number" ? ORACIONES[x[1]] : NUEVAS[x[1]];
-    PLANMAP[x[0]] = { o: o, m: MARIAS_DIA[i] };
+    PLANMAP[x[0]] = { o: o, m: MARIAS_DIA[i], id: typeof x[1] === "number" ? x[1] + 1 : ORACIONES.length + parseInt(String(x[1]).slice(1), 10) };
   });
   function two(n) { return (n < 10 ? "0" : "") + n; }
   function renderDia() {
@@ -1599,6 +1601,7 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
     var hoy = PLANMAP[key];
     /* Fuera del calendario preparado: se repite el ciclo de temas con una oración mariana de la lista */
     var o = hoy ? hoy.o : ORACIONES[n % ORACIONES.length];
+    $("postal").setAttribute("data-id", String(hoy ? hoy.id : (n % ORACIONES.length) + 1));
     var mm = hoy ? { t: "Oración a la Virgen del Milagro", p: hoy.m } : MARIAS[n % MARIAS.length];
     var todas = [mm].concat(FIJAS), m = MOODS[n % MOODS.length];
     $("dia-fecha").textContent = DIAS[d.getDay()] + " " + d.getDate() + " de " + MESES[d.getMonth()];
@@ -1735,21 +1738,28 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
 })();
 </script>
 <script>
-/* Compartir: promesa y oración del día */
+/* Compartir: promesa y oración del día (cada una con su propia tarjeta) */
 (function () {
   var URL0 = "https://virgendelmilagro.co/";
   function q(s) { return document.querySelector(s); }
   function txt(s) { var e = q(s); return e ? e.textContent.trim() : ""; }
   function promUrl() { var b = q("#prom-today"), n = b && b.getAttribute("data-i"); return n ? URL0 + "promesa/" + n + "/" : URL0 + "promesas-de-dios/"; }
-  function promesa() { var t = txt("#prom-today h3"), c = txt("#prom-today .cita"); return t ? t + "\n" + c + "\n\n" + promUrl() : URL0; }
-  function oracion() { var t = txt("#dia-titulo"), x = txt("#dia-texto"); if (x.length > 700) x = x.slice(0, 700).replace(/\s+\S*$/, "") + "…"; return "Oración del día · " + t + "\n\n" + x + "\n\n" + URL0 + "oracion-a-la-virgen-del-milagro/"; }
-  function wa(f) { return function () { window.open("https://wa.me/?text=" + encodeURIComponent(f()), "_blank", "noopener"); }; }
-  function fb(u) { return function () { window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(u), "_blank", "noopener"); }; }
+  function oraUrl() { var b = q("#postal"), n = b && b.getAttribute("data-id"); return n ? URL0 + "oracion/" + n + "/" : URL0 + "oracion-a-la-virgen-del-milagro/"; }
+  function promTxt() { var t = txt("#prom-today h3"), c = txt("#prom-today .cita"); return t ? t + "\n" + c : "Promesa de Dios"; }
+  function oraTxt() { return "Oración del día · " + txt("#dia-titulo") + "\n" + txt("#dia-frase"); }
+  var K = { prom: { url: promUrl, txt: promTxt, copy: "Copiar promesa" }, dia: { url: oraUrl, txt: oraTxt, copy: "Copiar oración" } };
+  function go(u) { window.open(u, "_blank", "noopener"); }
   function on(id, fn) { var e = document.getElementById(id); if (e) e.addEventListener("click", fn); }
-  on("prom-wa", wa(promesa)); on("dia-wa", wa(oracion));
-  on("prom-fb", function () { fb(promUrl())(); }); on("dia-fb", fb(URL0 + "oracion-a-la-virgen-del-milagro/"));
+  Object.keys(K).forEach(function (k) {
+    var c = K[k];
+    on(k + "-wa", function () { go("https://wa.me/?text=" + encodeURIComponent(c.txt() + "\n\n" + c.url())); });
+    on(k + "-fb", function () { go("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(c.url())); });
+    on(k + "-tg", function () { go("https://t.me/share/url?url=" + encodeURIComponent(c.url()) + "&text=" + encodeURIComponent(c.txt())); });
+    var more = document.getElementById(k + "-more");
+    if (more && navigator.share) { more.hidden = false; more.addEventListener("click", function () { navigator.share({ title: c.txt().split("\n")[0], text: c.txt(), url: c.url() }).catch(function () {}); }); }
+  });
   on("prom-cp", function () {
-    var b = this, t = promesa();
+    var b = this, t = promTxt() + "\n\n" + promUrl();
     function ok() { b.textContent = "Copiada"; setTimeout(function () { b.textContent = "Copiar promesa"; }, 2200); }
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function () { window.prompt("Copia la promesa:", t); });
     else window.prompt("Copia la promesa:", t);
