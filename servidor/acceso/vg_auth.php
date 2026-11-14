@@ -6,6 +6,14 @@
 require_once __DIR__ . '/lib.php';
 const VGA_SETUP_HASH = 'a4c5005727e30b7d502b2195f176036e264b8e4cf640a9aecebd3c6a23ba0b1b';
 const VGA_COOKIE = 'vgadm';
+const VGA_GOOGLE_CLIENT = '';   // ID de cliente de Google (público), p. ej. 123-abc.apps.googleusercontent.com
+function vga_gclient() { $f = ce_dir() . '/virgen_google_client.txt'; $c = VGA_GOOGLE_CLIENT ?: (is_file($f) ? trim((string)file_get_contents($f)) : ''); return preg_match('/^[0-9A-Za-z._-]+\.apps\.googleusercontent\.com$/', $c) ? $c : ''; }
+function vga_gverify($cred, $cid) {   // valida el token de Google con Google y devuelve el correo verificado
+    $ch = curl_init('https://oauth2.googleapis.com/tokeninfo?id_token=' . rawurlencode($cred)); curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 8]);
+    $r = curl_exec($ch); curl_close($ch); $j = json_decode((string)$r, true);
+    if (!is_array($j) || ($j['aud'] ?? '') !== $cid || !in_array((string)($j['iss'] ?? ''), ['accounts.google.com', 'https://accounts.google.com'], true) || ($j['exp'] ?? 0) < time() || !in_array((string)($j['email_verified'] ?? ''), ['true', '1'], true)) return '';
+    return strtolower((string)($j['email'] ?? ''));
+}
 
 function vga_https() { return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https'; }
 function vga_f($n) { return ce_dir() . '/' . $n; }
@@ -67,6 +75,12 @@ function vga_require() {
     // Paso 1: correo + contraseña -> "pre-sesión" de 10 minutos
     if (!vga_pre()) {
         $msg = '';
+        if ($post && isset($_POST['gcred']) && vga_gclient()) {
+            if (!vga_limit(false)) vga_page('Demasiados intentos', 'Espera 15 minutos e inténtalo de nuevo.', 429);
+            $ge = vga_gverify((string)$_POST['gcred'], vga_gclient());
+            if ($ge && !empty($cfg['email']) && hash_equals((string)$cfg['email'], $ge)) { vga_pre_new(); header('Location: ./'); exit; }
+            vga_fail(); $msg = $cfg['email'] ?? '' ? 'Esa cuenta de Google no está autorizada.' : 'Primero ingresa una vez con correo y contraseña para ligar tu correo.';
+        }
         if ($post && isset($_POST['pw'])) {
             if (!vga_limit(false)) vga_page('Demasiados intentos', 'Espera 15 minutos e inténtalo de nuevo.', 429);
             $em = strtolower(trim((string)($_POST['correo'] ?? '')));
@@ -81,7 +95,8 @@ function vga_require() {
         $primera = empty($cfg['email']);
         vga_page('Administración', ($msg ? '<p style="color:#9B2C2C;margin:0 0 6px"><b>' . vga_h($msg) . '</b></p>' : '')
             . ($primera ? '<p style="margin:0 0 4px;font-size:14px">Primer ingreso con correo: el que escribas ahora quedará como el correo de acceso del panel.</p>' : '')
-            . vga_form(vga_input('correo', 'Correo electrónico', 'email') . vga_input('pw', 'Contraseña'), 'Continuar'));
+            . vga_form(vga_input('correo', 'Correo electrónico', 'email') . vga_input('pw', 'Contraseña'), 'Continuar')
+            . (vga_gclient() ? '<div style="text-align:center;margin:16px 0 4px;font-size:14px;color:#666">o</div><div id="g_id_onload" data-client_id="' . vga_h(vga_gclient()) . '" data-callback="vgaG" data-auto_prompt="false"></div><div class="g_id_signin" data-type="standard" data-size="large" data-text="signin_with" data-locale="es" style="display:flex;justify-content:center"></div><form id="gf" method="post" style="display:none"><input name="gcred" id="gcred"></form><script src="https://accounts.google.com/gsi/client" async defer></script><script>function vgaG(r){document.getElementById("gcred").value=r.credential;document.getElementById("gf").submit();}</script>' : ''));
     }
     // Paso 2: verificación en dos pasos
     $msg = '';
