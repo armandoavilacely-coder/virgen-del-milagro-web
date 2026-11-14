@@ -1636,6 +1636,7 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   function fillPromise(i) {
     var p = PROMESAS[i];
     promBox.textContent = "";
+    promBox.setAttribute("data-i", String(i + 1));
     promBox.appendChild(el("p", "k", "Promesa " + (i + 1) + " de " + PROMESAS.length + " · " + p.k));
     promBox.appendChild(el("h3", null, "«" + p.t + "»"));
     promBox.appendChild(el("p", "cita", p.c + " · Reina-Valera 1909"));
@@ -1739,13 +1740,14 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   var URL0 = "https://virgendelmilagro.co/";
   function q(s) { return document.querySelector(s); }
   function txt(s) { var e = q(s); return e ? e.textContent.trim() : ""; }
-  function promesa() { var t = txt("#prom-today h3"), c = txt("#prom-today .cita"); return t ? t + "\n" + c + "\n\n" + URL0 + "promesas-de-dios/" : URL0; }
+  function promUrl() { var b = q("#prom-today"), n = b && b.getAttribute("data-i"); return n ? URL0 + "promesa/" + n + "/" : URL0 + "promesas-de-dios/"; }
+  function promesa() { var t = txt("#prom-today h3"), c = txt("#prom-today .cita"); return t ? t + "\n" + c + "\n\n" + promUrl() : URL0; }
   function oracion() { var t = txt("#dia-titulo"), x = txt("#dia-texto"); if (x.length > 700) x = x.slice(0, 700).replace(/\s+\S*$/, "") + "…"; return "Oración del día · " + t + "\n\n" + x + "\n\n" + URL0 + "oracion-a-la-virgen-del-milagro/"; }
   function wa(f) { return function () { window.open("https://wa.me/?text=" + encodeURIComponent(f()), "_blank", "noopener"); }; }
   function fb(u) { return function () { window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(u), "_blank", "noopener"); }; }
   function on(id, fn) { var e = document.getElementById(id); if (e) e.addEventListener("click", fn); }
   on("prom-wa", wa(promesa)); on("dia-wa", wa(oracion));
-  on("prom-fb", fb(URL0 + "promesas-de-dios/")); on("dia-fb", fb(URL0 + "oracion-a-la-virgen-del-milagro/"));
+  on("prom-fb", function () { fb(promUrl())(); }); on("dia-fb", fb(URL0 + "oracion-a-la-virgen-del-milagro/"));
   on("prom-cp", function () {
     var b = this, t = promesa();
     function ok() { b.textContent = "Copiada"; setTimeout(function () { b.textContent = "Copiar promesa"; }, 2200); }

@@ -83,5 +83,22 @@ foreach ($MAP as $src => $dst) {
     if (file_put_contents($t, $data) === false || !rename($t, $dst)) { @unlink($t); $res[$src] = 'error al escribir'; continue; }
     $res[$src] = 'actualizado';
 }
+// Carpeta de promesas (una página y una imagen por promesa): copia solo lo que cumpla el patrón.
+$pre = $root . '/pagina/promesa/'; $np = ['actualizado' => 0, 'igual' => 0, 'error' => 0];
+for ($zi = 0; $zi < $zip->numFiles; $zi++) {
+    $zn = $zip->getNameIndex($zi);
+    if (strpos($zn, $pre) !== 0) continue;
+    $rel = substr($zn, strlen($pre));
+    if (!preg_match('#^(\d{1,3})/(index\\.html|og\\.jpg)$#', $rel)) continue;
+    $dst = $H . '/virgendelmilagro.co/promesa/' . $rel;
+    if (!is_dir(dirname($dst))) @mkdir(dirname($dst), 0755, true);
+    $data = $zip->getFromIndex($zi);
+    if ($data === false || $data === '' || !is_dir(dirname($dst))) { $np['error']++; continue; }
+    if (is_file($dst) && md5_file($dst) === md5($data)) { $np['igual']++; continue; }
+    $t = $dst . '.new';
+    if (file_put_contents($t, $data) === false || !rename($t, $dst)) { @unlink($t); $np['error']++; continue; }
+    $np['actualizado']++;
+}
+$res['promesa/*'] = $np;
 $zip->close(); @unlink($tmp);
 au_out(['ok' => true, 'archivos' => $res, 'hora' => date('c')]);
