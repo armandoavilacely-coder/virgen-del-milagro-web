@@ -208,11 +208,11 @@ var prevN = visRango < 90 ? VIS.filter(function (r) { return (r.ev || "visita") 
     var PAL = ["#14304F", "#C9962E", "#2F8F83", "#B5475B", "#6B7FD7", "#8C6D3F", "#7A8B99"];
     function card(titulo, nodo, nota) { var c = el("div", "vcard"); c.appendChild(el("h3", null, titulo)); c.appendChild(nodo); if (nota) c.appendChild(el("p", "muted", nota)); return c; }
     function S(tag, at, txt) { var n = document.createElementNS("http://www.w3.org/2000/svg", tag); for (var k in at) n.setAttribute(k, at[k]); if (txt != null) n.textContent = txt; return n; }
-    function svgBox(w, h) { var sv = S("svg", { viewBox: "0 0 " + w + " " + h, role: "img" }); sv.style.cssText = "width:100%;height:auto;display:block"; return sv; }
+    function svgBox(w, h) { var sv = S("svg", { viewBox: "0 0 " + w + " " + h, role: "img" }); sv.style.cssText = "width:100%;max-width:560px;height:auto;display:block"; return sv; }
     function nice(mx) { if (mx <= 4) return 4; var p = Math.pow(10, Math.floor(Math.log10(mx))), f = mx / p; return (f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; }
     /* línea/área por día */
     function lineChart(labels, series) {
-      var W = CW, H = 250, L = 38, R = 12, T = 14, B = 30, sv = svgBox(W, H), mx = 1;
+      var W = Math.min(CW, 560), H = 150, L = 30, R = 10, T = 10, B = 24, sv = svgBox(W, H), mx = 1;
       series.forEach(function (s) { s.vals.forEach(function (v) { if (v > mx) mx = v; }); }); var top = nice(mx);
       function X(i) { return L + (labels.length < 2 ? 0 : i * (W - L - R) / (labels.length - 1)); } function Y(v) { return T + (H - T - B) * (1 - v / top); }
       for (var g = 0; g <= 4; g++) { var v = top * g / 4, y = Y(v); sv.appendChild(S("line", { x1: L, x2: W - R, y1: y, y2: y, stroke: "#E3E8F2", "stroke-width": 1 })); sv.appendChild(S("text", { x: L - 6, y: y + 4, "text-anchor": "end", "font-size": 11, fill: "#5B6B85" }, String(Math.round(v)))); }
@@ -221,14 +221,14 @@ var prevN = visRango < 90 ? VIS.filter(function (r) { return (r.ev || "visita") 
       series.forEach(function (s, si) {
         var pts = s.vals.map(function (v, i) { return X(i) + "," + Y(v); }).join(" ");
         if (si === 0 && s.vals.length > 1) sv.appendChild(S("polygon", { points: X(0) + "," + Y(0) + " " + pts + " " + X(s.vals.length - 1) + "," + Y(0), fill: s.color, opacity: 0.12 }));
-        sv.appendChild(S("polyline", { points: pts, fill: "none", stroke: s.color, "stroke-width": 2.5, "stroke-linejoin": "round", "stroke-linecap": "round" }));
-        s.vals.forEach(function (v, i) { var c = S("circle", { cx: X(i), cy: Y(v), r: labels.length > 45 ? 2 : 3.5, fill: "#fff", stroke: s.color, "stroke-width": 2 }); c.appendChild(S("title", {}, labels[i] + " · " + s.name + ": " + v)); sv.appendChild(c); });
+        sv.appendChild(S("polyline", { points: pts, fill: "none", stroke: s.color, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }));
+        s.vals.forEach(function (v, i) { var c = S("circle", { cx: X(i), cy: Y(v), r: labels.length > 20 ? 1.6 : 3, fill: "#fff", stroke: s.color, "stroke-width": 1.6 }); c.appendChild(S("title", {}, labels[i] + " · " + s.name + ": " + v)); sv.appendChild(c); });
       });
       return sv;
     }
     /* columnas */
     function colChart(vals, labs, color, hi) {
-      var W = CW, H = 210, L = 30, R = 8, T = 12, B = 26, sv = svgBox(W, H), mx = Math.max.apply(null, vals.concat([1])), top = nice(mx), bw = (W - L - R) / vals.length;
+      var W = Math.min(CW, 560), H = 140, L = 28, R = 8, T = 10, B = 22, sv = svgBox(W, H), mx = Math.max.apply(null, vals.concat([1])), top = nice(mx), bw = (W - L - R) / vals.length;
       for (var g = 0; g <= 4; g++) { var y = T + (H - T - B) * (1 - g / 4); sv.appendChild(S("line", { x1: L, x2: W - R, y1: y, y2: y, stroke: "#E3E8F2" })); sv.appendChild(S("text", { x: L - 5, y: y + 4, "text-anchor": "end", "font-size": 11, fill: "#5B6B85" }, String(Math.round(top * g / 4)))); }
       var im = vals.indexOf(mx);
       vals.forEach(function (v, i) {
