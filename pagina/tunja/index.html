@@ -567,6 +567,31 @@ a:focus-visible, button:focus-visible { outline: 3px solid #B8841F; outline-offs
 @media (prefers-reduced-motion: reduce) { a, button { transition: none; } a:hover, button:hover { transform: none !important; } }
 @media (hover: none) { a:hover, button:hover { transform: none !important; } }
 
+/* ===== Botones: azul rey con letras doradas, más separados ===== */
+:root { --btn-bg: #1B3FA8; --btn-ink: #F5CF63; --btn-gold: #F5CF63; --btn-hover: #2450C8; }
+.btn, .btn.alt, .go, .go.stop, .chip, .more, .ghost, .menu a.pill, .share a, .share button, #ck button, #ck .si, #ck .no, .ros-tabs button, .prom-tabs button, .comm-sec .btn {
+  background: var(--btn-bg); color: var(--btn-gold); border: 1.5px solid #D4A93A; border-radius: 999px; font-weight: 700; text-decoration: none;
+  box-shadow: 0 4px 12px rgba(27, 63, 168, .28);
+}
+.btn, .btn.alt, .comm-sec .btn { padding: 13px 28px; }
+.chip { padding: 9px 18px; }
+.go { border-radius: 999px; }
+.btn:hover, .btn.alt:hover, .go:hover, .chip:hover, .more:hover, .ghost:hover, .menu a.pill:hover, .share a:hover, .share button:hover, #ck button:hover, #ck .si:hover, #ck .no:hover, .ros-tabs button:hover, .prom-tabs button:hover, .comm-sec .btn:hover {
+  background: var(--btn-hover); color: #FFE08A; border-color: #F5CF63;
+}
+.ros-tabs button.on, .prom-tabs button[aria-selected="true"], .ros-tabs button[aria-selected="true"] { background: #F5CF63; color: #14308A; border-color: #1B3FA8; box-shadow: 0 4px 12px rgba(212, 169, 58, .45); }
+.ros-tabs button small { color: inherit; }
+.btn:disabled, .go:disabled, .chip:disabled { opacity: .55; }
+.dia-actions, .ros-actions, .cta-row, .prom-today .row, .share, .chips, .prom-tabs, .ros-tabs, #ck .row { gap: 14px 16px; }
+.prom-tabs { gap: 10px 12px; }
+.ros-tabs { gap: 10px 12px; }
+.cta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 16px; }
+.cta-row p { flex: 0 0 100%; }
+.prom-cta { margin-top: 18px !important; }
+.prom-cta + .prom-cta { margin-top: 6px !important; }
+#ck .row { gap: 12px; }
+.btn:focus-visible, .chip:focus-visible, .share a:focus-visible, .share button:focus-visible { outline: 3px solid #F5CF63; outline-offset: 3px; }
+
 .devby { margin: 14px 0 0; flex-basis: 100%; text-align: center; font-size: 13px; opacity: .8; } .devby a { color: inherit; text-decoration: underline; }
 .prom-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 760px; margin: 0 auto 18px; padding: 0; }
 .prom-tabs button { cursor: pointer; font: inherit; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1.5px solid #1F4E79; background: transparent; color: #1F4E79; }
