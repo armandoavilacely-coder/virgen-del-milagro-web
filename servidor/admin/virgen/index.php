@@ -121,7 +121,7 @@ nav button{border:1px solid var(--line);border-bottom:0;background:#E9EEF7;paddi
 nav button.on{background:var(--card);color:var(--navy)}
 main{background:var(--card);margin:0 24px 40px;border:1px solid var(--line);padding:22px;border-radius:0 14px 14px 14px;min-height:60vh}
 h2{margin:0 0 14px;font:600 28px "Cormorant Garamond",Georgia,serif}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:20px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px;margin-bottom:20px}
 .kpi{border:1px solid var(--line);border-radius:12px;padding:14px;background:#FAFBFE}.kpi b{display:block;font-size:26px;color:var(--navy)}.kpi span{font-size:13px;color:var(--soft)}
 table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#F0F3FA;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--soft)}
 .tw{overflow-x:auto}
@@ -140,6 +140,10 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
 .post canvas{width:100%;height:auto;border-radius:10px;border:1px solid var(--line);background:#dde}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;color:var(--soft)}.tabs button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
 .row2{display:flex;gap:8px;flex-wrap:wrap}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:18px;margin-top:10px}
+.vcard{border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px;min-width:0;box-shadow:0 1px 2px rgba(20,48,79,.05)}
+.vcard h3{margin:0 0 10px;font:600 21px "Cormorant Garamond",Georgia,serif;color:var(--navy)}
+.vcard .muted{margin:8px 0 0}
 @media(max-width:600px){main{margin:0 8px 24px;padding:14px}nav,header{padding-inline:12px}.posts{grid-template-columns:minmax(0,1fr)}}
 </style></head>
 <body>
@@ -193,25 +197,111 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
     m.appendChild(bar);
     var ids = {}; vs.forEach(function (r) { ids[r.vid] = 1; }); var nuevos = vs.filter(function (r) { return r.nuevo; }).length;
     var hoy = bogota(Date.now() / 1000).d, hoyN = VIS.filter(function (r) { return (r.ev || "visita") === "visita" && bogota(r.t).d === hoy; }).length;
-    var k = el("div", "kpis");
-    [[vs.length, "Visitas (sesiones)"], [Object.keys(ids).length, "Personas distintas"], [nuevos, "Personas nuevas"], [vs.length - nuevos, "Volvieron a visitarnos"], [hoyN, "Visitas hoy"]].forEach(function (x) { var d = el("div", "kpi"); d.appendChild(el("b", null, String(x[0]))); d.appendChild(el("span", null, x[1])); k.appendChild(d); });
+var prevN = visRango < 90 ? VIS.filter(function (r) { return (r.ev || "visita") === "visita" && r.t >= corte - visRango * 86400 && r.t < corte; }).length : null;
+    function delta(a, b) { if (b === null || b === undefined) return ""; if (!b) return a ? "▲ nuevo" : ""; var p = Math.round((a - b) / b * 100); return (p >= 0 ? "▲ " : "▼ ") + Math.abs(p) + "% vs periodo anterior"; }
+        var k = el("div", "kpis");
+    [[vs.length, "Visitas (sesiones)"], [Object.keys(ids).length, "Personas distintas"], [nuevos, "Personas nuevas"], [vs.length - nuevos, "Volvieron a visitarnos"], [hoyN, "Visitas hoy"]].forEach(function (x, i) { var d = el("div", "kpi"); d.appendChild(el("b", null, String(x[0]))); d.appendChild(el("span", null, x[1])); if (i === 0 && delta(vs.length, prevN)) { var dd = el("small", null, delta(vs.length, prevN)); dd.style.cssText = "display:block;margin-top:4px;font-size:12px;font-weight:700;color:" + (vs.length >= prevN ? "var(--ok)" : "var(--bad)"); d.appendChild(dd); } k.appendChild(d); });
     m.appendChild(k);
     m.appendChild(el("p", "muted", "Solo se cuentan las personas que aceptaron las cookies; el número real de visitantes es algo mayor. Horas en hora de Colombia. No se guarda la dirección IP."));
     if (!vs.length) { m.appendChild(el("p", null, "Todavía no hay visitas registradas en este periodo. Aparecerán cuando alguien acepte las cookies en virgendelmilagro.co.")); return; }
-    var g = el("div"); g.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:26px 30px;margin-top:10px";
-    g.appendChild(bars("Países", top(vs, function (r) { return r.pais; }, 8), vs.length));
-    g.appendChild(bars("Ciudades", top(vs, function (r) { return r.ciudad ? r.ciudad + (r.cc ? " (" + r.cc + ")" : "") : ""; }, 12), vs.length));
-    g.appendChild(bars("Departamentos / regiones", top(vs, function (r) { return r.region; }, 8), vs.length));
+    var CW = Math.max(290, Math.min(680, ($("main").clientWidth || 700) - 64));
+    var PAL = ["#14304F", "#C9962E", "#2F8F83", "#B5475B", "#6B7FD7", "#8C6D3F", "#7A8B99"];
+    function card(titulo, nodo, nota) { var c = el("div", "vcard"); c.appendChild(el("h3", null, titulo)); c.appendChild(nodo); if (nota) c.appendChild(el("p", "muted", nota)); return c; }
+    function S(tag, at, txt) { var n = document.createElementNS("http://www.w3.org/2000/svg", tag); for (var k in at) n.setAttribute(k, at[k]); if (txt != null) n.textContent = txt; return n; }
+    function svgBox(w, h) { var sv = S("svg", { viewBox: "0 0 " + w + " " + h, role: "img" }); sv.style.cssText = "width:100%;height:auto;display:block"; return sv; }
+    function nice(mx) { if (mx <= 4) return 4; var p = Math.pow(10, Math.floor(Math.log10(mx))), f = mx / p; return (f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; }
+    /* línea/área por día */
+    function lineChart(labels, series) {
+      var W = CW, H = 250, L = 38, R = 12, T = 14, B = 30, sv = svgBox(W, H), mx = 1;
+      series.forEach(function (s) { s.vals.forEach(function (v) { if (v > mx) mx = v; }); }); var top = nice(mx);
+      function X(i) { return L + (labels.length < 2 ? 0 : i * (W - L - R) / (labels.length - 1)); } function Y(v) { return T + (H - T - B) * (1 - v / top); }
+      for (var g = 0; g <= 4; g++) { var v = top * g / 4, y = Y(v); sv.appendChild(S("line", { x1: L, x2: W - R, y1: y, y2: y, stroke: "#E3E8F2", "stroke-width": 1 })); sv.appendChild(S("text", { x: L - 6, y: y + 4, "text-anchor": "end", "font-size": 11, fill: "#5B6B85" }, String(Math.round(v)))); }
+      var paso = Math.max(1, Math.ceil(labels.length / (W < 420 ? 4 : 7)));
+      labels.forEach(function (d, i) { if (i % paso === 0 || i === labels.length - 1) sv.appendChild(S("text", { x: X(i), y: H - 9, "text-anchor": i === 0 ? "start" : i === labels.length - 1 ? "end" : "middle", "font-size": 11, fill: "#5B6B85" }, d.slice(8) + "/" + d.slice(5, 7))); });
+      series.forEach(function (s, si) {
+        var pts = s.vals.map(function (v, i) { return X(i) + "," + Y(v); }).join(" ");
+        if (si === 0 && s.vals.length > 1) sv.appendChild(S("polygon", { points: X(0) + "," + Y(0) + " " + pts + " " + X(s.vals.length - 1) + "," + Y(0), fill: s.color, opacity: 0.12 }));
+        sv.appendChild(S("polyline", { points: pts, fill: "none", stroke: s.color, "stroke-width": 2.5, "stroke-linejoin": "round", "stroke-linecap": "round" }));
+        s.vals.forEach(function (v, i) { var c = S("circle", { cx: X(i), cy: Y(v), r: labels.length > 45 ? 2 : 3.5, fill: "#fff", stroke: s.color, "stroke-width": 2 }); c.appendChild(S("title", {}, labels[i] + " · " + s.name + ": " + v)); sv.appendChild(c); });
+      });
+      return sv;
+    }
+    /* columnas */
+    function colChart(vals, labs, color, hi) {
+      var W = CW, H = 210, L = 30, R = 8, T = 12, B = 26, sv = svgBox(W, H), mx = Math.max.apply(null, vals.concat([1])), top = nice(mx), bw = (W - L - R) / vals.length;
+      for (var g = 0; g <= 4; g++) { var y = T + (H - T - B) * (1 - g / 4); sv.appendChild(S("line", { x1: L, x2: W - R, y1: y, y2: y, stroke: "#E3E8F2" })); sv.appendChild(S("text", { x: L - 5, y: y + 4, "text-anchor": "end", "font-size": 11, fill: "#5B6B85" }, String(Math.round(top * g / 4)))); }
+      var im = vals.indexOf(mx);
+      vals.forEach(function (v, i) {
+        var h = (H - T - B) * v / top, r = S("rect", { x: L + i * bw + 2, y: T + (H - T - B) - h, width: Math.max(2, bw - 4), height: Math.max(v ? 2 : 0, h), rx: 3, fill: i === im && hi ? "#C9962E" : color }); r.appendChild(S("title", {}, labs[i] + ": " + v)); sv.appendChild(r);
+        if (i % (vals.length > 12 ? 3 : 1) === 0) sv.appendChild(S("text", { x: L + i * bw + bw / 2, y: H - 8, "text-anchor": "middle", "font-size": 11, fill: "#5B6B85" }, labs[i]));
+      });
+      return sv;
+    }
+    /* anillo + leyenda */
+    function donut(pares) {
+      var w = el("div"); w.style.cssText = "display:flex;gap:18px;align-items:center;flex-wrap:wrap"; var tot = pares.reduce(function (a, p) { return a + p[1]; }, 0);
+      if (!tot) { w.appendChild(el("p", "muted", "Aún sin datos.")); return w; }
+      var sv = S("svg", { viewBox: "0 0 120 120", role: "img" }); sv.style.cssText = "width:128px;height:128px;flex:none"; var C = 2 * Math.PI * 46, off = 0;
+      pares.forEach(function (p, i) { var len = p[1] / tot * C, c = S("circle", { cx: 60, cy: 60, r: 46, fill: "none", stroke: PAL[i % PAL.length], "stroke-width": 22, "stroke-dasharray": len + " " + (C - len), "stroke-dashoffset": -off, transform: "rotate(-90 60 60)" }); c.appendChild(S("title", {}, p[0] + ": " + p[1])); sv.appendChild(c); off += len; });
+      sv.appendChild(S("text", { x: 60, y: 66, "text-anchor": "middle", "font-size": 20, "font-weight": 700, fill: "#14304F" }, String(tot))); w.appendChild(sv);
+      var lg = el("div"); lg.style.cssText = "display:grid;gap:5px;font-size:14px;min-width:140px;flex:1";
+      pares.forEach(function (p, i) { var r = el("div"); r.style.cssText = "display:flex;gap:8px;align-items:center"; var d = el("span"); d.style.cssText = "width:11px;height:11px;border-radius:3px;flex:none;background:" + PAL[i % PAL.length]; r.appendChild(d); r.appendChild(el("span", null, p[0])); var q = el("span", "muted", p[1] + " · " + Math.round(p[1] / tot * 100) + "%"); q.style.marginLeft = "auto"; r.appendChild(q); lg.appendChild(r); });
+      w.appendChild(lg); return w;
+    }
+    /* mapa de calor día de la semana × hora */
+    function heat() {
+      var DS = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"], M = []; for (var d = 0; d < 7; d++) { M.push([]); for (var h = 0; h < 24; h++) M[d].push(0); }
+      vs.forEach(function (r) { var b = bogota(r.t); M[new Date(b.d + "T12:00:00Z").getUTCDay()][b.h]++; }); var mx = 1; M.forEach(function (f) { f.forEach(function (v) { if (v > mx) mx = v; }); });
+      var W = CW, L = 34, cw = (W - L - 4) / 24, ch = 24, H = 7 * ch + 28, sv = svgBox(W, H);
+      [1, 2, 3, 4, 5, 6, 0].forEach(function (d, fi) {
+        sv.appendChild(S("text", { x: L - 6, y: fi * ch + 16, "text-anchor": "end", "font-size": 11, fill: "#5B6B85" }, DS[d]));
+        for (var h = 0; h < 24; h++) { var v = M[d][h], rc = S("rect", { x: L + h * cw + 1, y: fi * ch + 1, width: cw - 2, height: ch - 2, rx: 4, fill: v ? "#14304F" : "#EEF2F9", opacity: v ? 0.18 + 0.82 * v / mx : 1 }); rc.appendChild(S("title", {}, DS[d] + " " + ("0" + h).slice(-2) + ":00 · " + v + " visitas")); sv.appendChild(rc); }
+      });
+      for (var h2 = 0; h2 < 24; h2 += 3) sv.appendChild(S("text", { x: L + h2 * cw + cw / 2, y: H - 6, "text-anchor": "middle", "font-size": 11, fill: "#5B6B85" }, ("0" + h2).slice(-2) + "h"));
+      return sv;
+    }
+    /* embudo de acciones */
+    function embudo() {
+      var nom = { donar: "Tocaron «Aportar»", suscribir: "Tocaron «Suscribirme»", facebook: "Tocaron Facebook", chat: "Usaron el chat" }, w = el("div"), pers = Object.keys(ids).length || 1;
+      var por = {}; evs.forEach(function (r) { var k = nom[r.ev] || r.ev; (por[k] = por[k] || {})[r.vid] = 1; });
+      var filas = [["Personas que visitaron", Object.keys(ids).length]].concat(Object.keys(por).map(function (k) { return [k, Object.keys(por[k]).length]; }).sort(function (a, b) { return b[1] - a[1]; }));
+      filas.forEach(function (f, i) {
+        var r = el("div"); r.style.cssText = "display:grid;grid-template-columns:minmax(120px,40%) 1fr auto;gap:8px;align-items:center;margin:5px 0;font-size:14px"; r.appendChild(el("span", null, f[0]));
+        var b = el("div"); b.style.cssText = "background:#E6EBF5;border-radius:7px;height:16px"; var q = el("div"); q.style.cssText = "height:16px;border-radius:7px;background:" + PAL[i % PAL.length] + ";width:" + Math.max(f[1] ? 3 : 0, Math.round(f[1] / pers * 100)) + "%"; b.appendChild(q); r.appendChild(b);
+        r.appendChild(el("span", "muted", f[1] + (i ? " · " + Math.round(f[1] / pers * 100) + "% de visitantes" : ""))); w.appendChild(r);
+      });
+      if (filas.length === 1) w.appendChild(el("p", "muted", "Aún nadie ha tocado «Aportar», «Suscribirme» o el chat en este periodo."));
+      return w;
+    }
+    /* barras horizontales de colores */
+    function barras(pares, total, color) {
+      var w = el("div"); if (!pares.length) { w.appendChild(el("p", "muted", "Aún sin datos.")); return w; } var mx = pares[0][1];
+      pares.forEach(function (p, i) {
+        var r = el("div"); r.style.cssText = "display:grid;grid-template-columns:minmax(90px,36%) 1fr auto;gap:8px;align-items:center;margin:4px 0;font-size:14px"; var t = el("span", null, p[0]); t.style.cssText = "overflow:hidden;text-overflow:ellipsis;white-space:nowrap"; t.title = p[0]; r.appendChild(t);
+        var b = el("div"); b.style.cssText = "background:#E6EBF5;border-radius:7px;height:14px"; var q = el("div"); q.style.cssText = "height:14px;border-radius:7px;background:" + (color || (i === 0 ? "#C9962E" : "#14304F")) + ";width:" + Math.max(3, Math.round(p[1] / mx * 100)) + "%"; b.appendChild(q); r.appendChild(b);
+        r.appendChild(el("span", "muted", p[1] + " · " + Math.round(p[1] / total * 100) + "%")); w.appendChild(r);
+      });
+      return w;
+    }
+    /* datos por día */
+    var dl = [], now0 = Math.floor(Date.now() / 1000); for (var di = visRango - 1; di >= 0; di--) dl.push(bogota(now0 - di * 86400).d);
+    var porDia = {}, perDia = {}; vs.forEach(function (r) { var d = bogota(r.t).d; porDia[d] = (porDia[d] || 0) + 1; (perDia[d] = perDia[d] || {})[r.vid] = 1; });
+    var gr = el("div", "vgrid");
+    if (dl.length > 1) gr.appendChild(card("Visitas por día", lineChart(dl, [{ name: "Visitas", color: "#14304F", vals: dl.map(function (d) { return porDia[d] || 0; }) }, { name: "Personas distintas", color: "#C9962E", vals: dl.map(function (d) { return perDia[d] ? Object.keys(perDia[d]).length : 0; }) }]), "Azul: visitas · Dorado: personas distintas"));
+    gr.firstChild && dl.length > 1 && (gr.firstChild.style.gridColumn = "1 / -1");
     var hrs = []; for (var i = 0; i < 24; i++) hrs.push(0); vs.forEach(function (r) { hrs[bogota(r.t).h]++; });
-    g.appendChild(bars("Horas del día (Colombia)", hrs.map(function (n, h) { return [("0" + h).slice(-2) + ":00", n]; }).filter(function (p) { return p[1] > 0; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 12), vs.length));
-    var dias = {}; vs.forEach(function (r) { var d = bogota(r.t).d; dias[d] = (dias[d] || 0) + 1; });
-    g.appendChild(bars("Días con más visitas", Object.keys(dias).map(function (d) { return [d, dias[d]]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 10), vs.length));
-    g.appendChild(bars("Dispositivo", top(vs, "disp", 4), vs.length));
-    g.appendChild(bars("Sistema", top(vs, "so", 6), vs.length));
-    g.appendChild(bars("Navegador", top(vs, "nav", 6), vs.length));
-    g.appendChild(bars("Vienen de", top(vs.map(function (r) { return { x: r.ref || "Directo / WhatsApp / Facebook app" }; }), "x", 8), vs.length));
-    var nom = { donar: "Tocaron «Aportar»", suscribir: "Tocaron «Suscribirme»", facebook: "Tocaron Facebook", chat: "Usaron el chat" };
-    g.appendChild(bars("Acciones", top(evs, function (r) { return nom[r.ev] || r.ev; }, 6), 0));
+    gr.appendChild(card("¿A qué hora nos visitan? (hora de Colombia)", colChart(hrs, hrs.map(function (_, h) { return ("0" + h).slice(-2) + "h"; }), "#14304F", true), "En dorado, la hora con más visitas."));
+    gr.appendChild(card("Día de la semana y hora", heat(), "Más oscuro = más visitas."));
+    gr.appendChild(card("¿Qué hacen los visitantes?", embudo()));
+    gr.appendChild(card("Nuevos y recurrentes", donut([["Personas nuevas", nuevos], ["Volvieron a visitarnos", vs.length - nuevos]])));
+    gr.appendChild(card("Dispositivo", donut(top(vs, "disp", 5))));
+    gr.appendChild(card("Países", barras(top(vs, function (r) { return r.pais; }, 8), vs.length)));
+    gr.appendChild(card("Ciudades", barras(top(vs, function (r) { return r.ciudad ? r.ciudad + (r.cc ? " (" + r.cc + ")" : "") : ""; }, 12), vs.length)));
+    gr.appendChild(card("Departamentos / regiones", barras(top(vs, function (r) { return r.region; }, 8), vs.length)));
+    gr.appendChild(card("Vienen de", barras(top(vs.map(function (r) { return { x: r.ref || "Directo / WhatsApp / Facebook app" }; }), "x", 8), vs.length)));
+    gr.appendChild(card("Sistema", donut(top(vs, "so", 6))));
+    gr.appendChild(card("Navegador", donut(top(vs, "nav", 6))));
+    var g = gr;
     m.appendChild(g);
     var ex = el("button", "g", "Descargar CSV"); ex.style.marginTop = "18px";
     ex.onclick = function () {
