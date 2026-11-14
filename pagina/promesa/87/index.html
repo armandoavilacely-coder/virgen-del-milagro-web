@@ -348,6 +348,16 @@ section, header, footer { margin-inline: calc(-1 * max(16px, env(safe-area-inset
 .card, .fact, .prayer-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
 .card:hover, .fact:hover, .prayer-card:hover { transform: translateY(-6px); box-shadow: 0 0 0 4px rgba(242, 214, 138, 0.4), 0 24px 44px var(--shadow); }
 .prom-today { animation: pop 0.45s ease; }
+.prom-tabs { display: flex; flex-wrap: nowrap; gap: 8px; overflow-x: auto; max-width: 56rem; margin: 0 auto 18px; padding: 4px 2px 10px; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+.prom-tabs button { flex: 0 0 auto; cursor: pointer; font: inherit; font-size: 15px; font-weight: 600; padding: 9px 16px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--card-solid); color: inherit; white-space: nowrap; }
+.prom-tabs button:hover { border-color: var(--gold-ink); }
+.prom-tabs button[aria-selected="true"] { background: #1F4E79; border-color: #1F4E79; color: #fff; }
+.prom-more { max-width: 56rem; margin: 22px auto 0; }
+.prom-more-t { margin: 0 0 10px; font-weight: 700; color: var(--gold-ink); text-align: center; }
+.prom-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 8px; max-height: 20rem; overflow-y: auto; padding: 2px; }
+.prom-list button { cursor: pointer; font: inherit; font-size: 14px; text-align: left; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--card-solid); color: inherit; min-width: 0; }
+.prom-list button:hover { border-color: var(--gold-ink); }
+.prom-list button b { display: block; font-size: 12px; letter-spacing: .04em; color: var(--gold-ink); }
 @keyframes pop { from { opacity: 0; transform: translateY(14px) scale(0.97); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .btn:hover, .card:hover, .fact:hover, .prayer-card:hover, .chip:hover, .more:hover { transform: none; } .prom-today { animation: none; } }
 
@@ -519,6 +529,10 @@ a, button, select, textarea, input { -webkit-tap-highlight-color: rgba(30, 79, 1
   .top .menu { position: fixed; z-index: 49; left: max(10px, env(safe-area-inset-left, 0px)); right: max(10px, env(safe-area-inset-right, 0px)); bottom: calc(70px + env(safe-area-inset-bottom, 0px)); max-height: min(68vh, 520px); overflow-y: auto; overscroll-behavior: contain; flex-basis: auto; }
 }
 
+.prom-tabs { display: flex; flex-wrap: nowrap; gap: 8px; overflow-x: auto; max-width: 760px; margin: 0 auto 18px; padding: 4px 2px 10px; }
+.prom-tabs button { flex: 0 0 auto; cursor: pointer; font: inherit; font-size: 15px; font-weight: 600; padding: 9px 16px; border-radius: 999px; border: 1.5px solid #1F4E79; background: transparent; color: #1F4E79; white-space: nowrap; }
+.prom-tabs button[aria-selected="true"] { background: #1F4E79; color: #fff; }
+.grp[hidden] { display: none; }
 /* Páginas interiores: Historia y Tunja */
 .pgtop { padding-block: 8px 0; }
 .pg-hero { text-align: center; padding-block: 28px 12px; }
@@ -676,7 +690,7 @@ section[id] { scroll-margin-top: 90px; }
 <section class="pg-sec">
   <div class="wrap">
     <div class="pg-hero">
-      <p class="eyebrow">Promesa 87 de 100 · Cuando sientes que Dios se demora</p>
+      <p class="eyebrow">Esperanza y futuro · Cuando sientes que Dios se demora</p>
       <h1 class="script">2 Pedro 3,9</h1>
     </div>
   </div>
@@ -688,10 +702,14 @@ section[id] { scroll-margin-top: 90px; }
       <p class="sub" style="font-size:16px"><b>2 Pedro 3,9 · Reina-Valera 1909</b></p>
       <p style="font-size:18px">A veces pensamos que Dios se tarda. Pedro explica que no se retrasa en cumplir su promesa, sino que tiene paciencia con nosotros, porque no quiere que nadie se pierda. Lo que nos parece demora puede ser misericordia. Dios ve lo que nosotros no vemos y escoge el momento justo. Si estás esperando una respuesta, confía en que su tiempo es sabio. Mientras tanto, aprovecha para crecer en paciencia y en confianza en Él.</p>
     </div>
-    <div class="share" data-t="«El Señor no tarda su promesa, como algunos la tienen por tardanza; sino que es paciente para con nosotros, no queriendo que ninguno perezca, sino que todos procedan al arrepentimiento.» — 2 Pedro 3,9" data-u="https://virgendelmilagro.co/promesa/87/"></div>
-    <div class="pg-cta"><a class="btn alt" href="/promesa/86/">← Anterior</a><a class="btn alt" href="/promesa/88/">Siguiente →</a></div>
+    <div class="share" data-t="🙏 Cuando sientes que Dios se demora
+«El Señor no tarda su promesa, como algunos la tienen por tardanza; sino que es paciente para con nosotros, no queriendo que ninguno perezca, sino que todos procedan al arrepentimiento.»
+— 2 Pedro 3,9
+
+#VirgenDelMilagro #Tunja #PalabraDeDios #Fe" data-u="https://virgendelmilagro.co/promesa/87/"></div>
+    <div class="pg-cta"><a class="btn" id="rnd" href="/promesas-de-dios/">Otra promesa al azar</a><script>document.getElementById("rnd").href="/promesa/"+(1+Math.floor(Math.random()*365))+"/";</script></div>
     <div class="pg-cta">
-      <a class="btn" href="/promesas-de-dios/">Ver las 100 promesas</a>
+      <a class="btn" href="/promesas-de-dios/">Ver más promesas</a>
       <a class="btn alt" href="/#promesas">Promesa del día</a>
       <a class="btn alt" href="/#oracion-dia">Oración del día</a>
     </div>
@@ -701,12 +719,16 @@ section[id] { scroll-margin-top: 90px; }
 (function(){
   document.querySelectorAll('.share').forEach(function(box){
     var t = box.getAttribute('data-t') || document.title, u = box.getAttribute('data-u') || location.href.split('#')[0];
-    var txt = encodeURIComponent(t + ' ' + u);
+    var txt = encodeURIComponent(t + '\n\n' + u);
     box.innerHTML = '<a class="wa" target="_blank" rel="noopener" href="https://wa.me/?text=' + txt + '">Compartir por WhatsApp</a>' +
-      '<a class="fb" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(u) + '">Facebook</a>' +
+      '<a class="fb" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(u) + '&quote=' + encodeURIComponent(t) + '">Facebook</a>' +
       '<a target="_blank" rel="noopener" href="https://t.me/share/url?url=' + encodeURIComponent(u) + '&text=' + encodeURIComponent(t) + '">Telegram</a>' +
       (navigator.share ? '<button type="button" class="more">Otras apps</button>' : '') +
       '<button type="button" class="cp">Copiar enlace</button>';
+    var fb = box.querySelector('.fb');
+    fb.addEventListener('click', function(){
+      try { navigator.clipboard.writeText(t + '\n\n' + u).then(function(){ var d = document.getElementById('sh-toast'); if (!d) { d = document.createElement('div'); d.id = 'sh-toast'; d.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);max-width:90vw;background:#1F4E79;color:#fff;padding:12px 18px;border-radius:12px;font:600 15px system-ui,sans-serif;z-index:9999'; document.body.appendChild(d); } d.textContent = 'Texto copiado. Pégalo en tu publicación de Facebook.'; d.hidden = false; setTimeout(function(){ d.hidden = true; }, 6000); }, function(){}); } catch (e) {}
+    });
     var mo = box.querySelector('.more');
     if (mo) mo.addEventListener('click', function(){ navigator.share({ title: t, text: t, url: u }).catch(function(){}); });
     var b = box.querySelector('.cp');
@@ -724,7 +746,7 @@ section[id] { scroll-margin-top: 90px; }
     <div><b>Virgen del Milagro</b><small>Tunja, Boyacá, Colombia</small></div>
     <nav aria-label="Pie de página">
       <a href="/">Inicio</a>
-      <a href="/promesas-de-dios/">100 promesas de Dios</a>
+      <a href="/promesas-de-dios/">Promesas de Dios</a>
       <a href="/historia/">Historia de la Virgen</a>
       <a href="/oracion-a-la-virgen-del-milagro/">Oración a la Virgen</a>
       <a href="/novena-a-la-virgen-del-milagro/">Novena</a>
