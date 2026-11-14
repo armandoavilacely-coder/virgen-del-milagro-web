@@ -288,6 +288,16 @@ var prevN = visRango < 90 ? VIS.filter(function (r) { return (r.ev || "visita") 
     /* datos por día */
     var dl = [], now0 = Math.floor(Date.now() / 1000); for (var di = visRango - 1; di >= 0; di--) dl.push(bogota(now0 - di * 86400).d);
     var porDia = {}, perDia = {}; vs.forEach(function (r) { var d = bogota(r.t).d; porDia[d] = (porDia[d] || 0) + 1; (perDia[d] = perDia[d] || {})[r.vid] = 1; });
+    function dondeTabla() {
+      var mp = {}; vs.forEach(function (r) { var k = (r.ciudad || "Sin dato") + "|" + (r.region || "Sin dato") + "|" + (r.pais || "Sin dato"); var o = mp[k] || (mp[k] = { c: r.ciudad || "Sin dato", d: r.region || "Sin dato", p: r.pais || "Sin dato", v: 0, ids: {} }); o.v++; o.ids[r.vid] = 1; });
+      var lista = Object.keys(mp).map(function (k) { return mp[k]; }).sort(function (a, b) { return b.v - a.v; });
+      var box = el("div"); box.style.cssText = "overflow-x:auto;max-height:420px;overflow-y:auto";
+      var t = el("table"), th = el("thead"), hr = el("tr");
+      ["Ciudad", "Departamento / región", "País", "Visitas", "Personas"].forEach(function (h) { hr.appendChild(el("th", null, h)); }); th.appendChild(hr); t.appendChild(th);
+      var tb = el("tbody"); lista.forEach(function (o) { var tr = el("tr"); [o.c, o.d, o.p, String(o.v), String(Object.keys(o.ids).length)].forEach(function (x) { tr.appendChild(el("td", null, x)); }); tb.appendChild(tr); });
+      if (!lista.length) { var tr0 = el("tr"); tr0.appendChild(el("td", null, "Todavía no hay visitas en este periodo.")); tb.appendChild(tr0); }
+      t.appendChild(tb); box.appendChild(t); return box;
+    }
     var gr = el("div", "vgrid");
     if (dl.length > 1) gr.appendChild(card("Visitas por día", lineChart(dl, [{ name: "Visitas", color: "#14304F", vals: dl.map(function (d) { return porDia[d] || 0; }) }, { name: "Personas distintas", color: "#C9962E", vals: dl.map(function (d) { return perDia[d] ? Object.keys(perDia[d]).length : 0; }) }]), "Azul: visitas · Dorado: personas distintas"));
     gr.firstChild && dl.length > 1 && (gr.firstChild.className += " wide");
@@ -297,6 +307,7 @@ var prevN = visRango < 90 ? VIS.filter(function (r) { return (r.ev || "visita") 
     gr.appendChild(card("¿Qué hacen los visitantes?", embudo()));
     gr.appendChild(card("Nuevos y recurrentes", donut([["Personas nuevas", nuevos], ["Volvieron a visitarnos", vs.length - nuevos]])));
     gr.appendChild(card("Dispositivo", donut(top(vs, "disp", 5))));
+    var dc = card("¿De dónde nos visitan? Ciudad, departamento y país", dondeTabla(), "Se calcula por la ubicación aproximada de la conexión; solo cuenta a quienes aceptaron las cookies."); dc.className += " wide"; gr.appendChild(dc);
     gr.appendChild(card("Países", barras(top(vs, function (r) { return r.pais; }, 8), vs.length)));
     gr.appendChild(card("Ciudades", barras(top(vs, function (r) { return r.ciudad ? r.ciudad + (r.cc ? " (" + r.cc + ")" : "") : ""; }, 12), vs.length)));
     gr.appendChild(card("Departamentos / regiones", barras(top(vs, function (r) { return r.region; }, 8), vs.length)));
