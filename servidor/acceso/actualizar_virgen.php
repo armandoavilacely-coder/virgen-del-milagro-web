@@ -26,6 +26,7 @@ $MAP = [   // archivo en el repo => destino en el servidor
     'pagina/icon-512.png' => $H . '/virgendelmilagro.co/icon-512.png',
     'pagina/icon-192.png' => $H . '/virgendelmilagro.co/icon-192.png',
     'pagina/apple-touch-icon.png' => $H . '/virgendelmilagro.co/apple-touch-icon.png',
+    'pagina/favicon.ico' => $H . '/virgendelmilagro.co/favicon.ico',
     'pagina/favicon-32.png' => $H . '/virgendelmilagro.co/favicon-32.png',
     'pagina/promesas-de-dios/index.html' => $H . '/virgendelmilagro.co/promesas-de-dios/index.html',
     'pagina/oracion-a-la-virgen-del-milagro/index.html' => $H . '/virgendelmilagro.co/oracion-a-la-virgen-del-milagro/index.html',
