@@ -38,3 +38,6 @@ deployment:
     - /bin/mkdir -p $H/virgendelmilagro.co/politica-de-datos
     - /bin/cp -f pagina/politica-de-datos/index.html $H/virgendelmilagro.co/politica-de-datos/index.html
     - /bin/cp -f pagina/og-virgen.jpg $H/virgendelmilagro.co/og-virgen.jpg
+    - /bin/mkdir -p $H/virgendelmilagro.co/promesas-de-dios
+    - /bin/cp -f pagina/promesas-de-dios/index.html $H/virgendelmilagro.co/promesas-de-dios/index.html
+    - /bin/cp -f pagina/robots.txt pagina/sitemap.xml pagina/manifest.webmanifest pagina/icon-512.png pagina/icon-192.png pagina/apple-touch-icon.png pagina/favicon-32.png $H/virgendelmilagro.co/

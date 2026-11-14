@@ -19,6 +19,14 @@ $MAP = [   // archivo en el repo => destino en el servidor
     'pagina/historia/index.html' => $H . '/virgendelmilagro.co/historia/index.html',
     'pagina/tunja/index.html' => $H . '/virgendelmilagro.co/tunja/index.html',
     'pagina/politica-de-datos/index.html' => $H . '/virgendelmilagro.co/politica-de-datos/index.html',
+    'pagina/robots.txt' => $H . '/virgendelmilagro.co/robots.txt',
+    'pagina/sitemap.xml' => $H . '/virgendelmilagro.co/sitemap.xml',
+    'pagina/manifest.webmanifest' => $H . '/virgendelmilagro.co/manifest.webmanifest',
+    'pagina/icon-512.png' => $H . '/virgendelmilagro.co/icon-512.png',
+    'pagina/icon-192.png' => $H . '/virgendelmilagro.co/icon-192.png',
+    'pagina/apple-touch-icon.png' => $H . '/virgendelmilagro.co/apple-touch-icon.png',
+    'pagina/favicon-32.png' => $H . '/virgendelmilagro.co/favicon-32.png',
+    'pagina/promesas-de-dios/index.html' => $H . '/virgendelmilagro.co/promesas-de-dios/index.html',
     'pagina/og-virgen.jpg' => $H . '/virgendelmilagro.co/og-virgen.jpg',
     'pagina/cuadro-original.jpg' => $H . '/virgendelmilagro.co/cuadro-original.jpg',
     'pagina/tunja-plaza.webp' => $H . '/virgendelmilagro.co/tunja-plaza.webp',
@@ -65,7 +73,7 @@ $res = [];
 foreach ($MAP as $src => $dst) {
     $data = $zip->getFromName($root . '/' . explode('#', $src)[0]);
     if ($data === false || $data === '') { $res[$src] = 'no encontrado'; continue; }
-    if (!is_dir(dirname($dst)) && (strpos($dst, '/admin/') !== false || preg_match('#/virgendelmilagro\.co/(historia|tunja|politica-de-datos)/#', $dst))) @mkdir(dirname($dst), 0755, true);
+    if (!is_dir(dirname($dst)) && (strpos($dst, '/admin/') !== false || preg_match('#/virgendelmilagro\.co/(historia|tunja|politica-de-datos|promesas-de-dios)/#', $dst))) @mkdir(dirname($dst), 0755, true);
     if (!is_dir(dirname($dst))) { $res[$src] = 'carpeta destino no existe'; continue; }
     if (is_file($dst) && md5_file($dst) === md5($data)) { $res[$src] = 'igual'; continue; }
     $t = $dst . '.new';
