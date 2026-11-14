@@ -174,7 +174,7 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
 <script>
 (function () {
   "use strict";
-  var VG = window.VG, D = { subs: [], pagos: [], gastos: [], tests: [], fb: {} }, tab = "resumen";
+  var VG = window.VG, D = { subs: [], pagos: [], gastos: [], tests: [], fb: {} }, tab = "visitas";
   function $(id) { return document.getElementById(id); }
   function el(t, c, x) { var n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; }
   function money(n) { return "$" + Number(n || 0).toLocaleString("es-CO"); }
@@ -183,7 +183,7 @@ button.x{background:none;border:0;color:var(--bad);cursor:pointer;font:inherit}
       .then(function (r) { return r.json(); });
   }
   function load() { return api("datos").then(function (d) { if (d.ok) { D.subs = d.subs; D.pagos = d.pagos; D.tests = d.tests || []; D.gastos = d.gastos || []; D.fb = d.fb || {}; } render(); }); }
-  var TABS = [["resumen", "Resumen"], ["usuarios", "Suscriptores"], ["pagos", "Pagos"], ["conta", "Contabilidad"], ["publicidad", "Publicidad"], ["testimonios", "Testimonios"], ["facebook", "Facebook"], ["visitas", "Visitas"]];
+  var TABS = [["visitas", "Visitas"], ["resumen", "Resumen"], ["usuarios", "Suscriptores"], ["pagos", "Pagos"], ["conta", "Contabilidad"], ["publicidad", "Publicidad"], ["testimonios", "Testimonios"], ["facebook", "Facebook"]];
   function drawTabs() {
     var n = $("tabs"); n.textContent = "";
     TABS.forEach(function (t) { var b = el("button", t[0] === tab ? "on" : "", t[1]); b.onclick = function () { tab = t[0]; render(); }; n.appendChild(b); });
